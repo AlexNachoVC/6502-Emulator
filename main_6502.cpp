@@ -17,11 +17,19 @@ struct CPU {
     Byte D : 1;         // Status Flag  
     Byte B : 1;         // Status Flag  
     Byte C : 1;         // Status Flag  
-    Byte v : 1;         // Status Flag  
+    Byte V : 1;         // Status Flag  
     Byte N : 1;         // Status Flag  
+
+    void Reset() {
+        PC = 0xFFFC;
+        SP = 0x0100;
+        C = Z = I = D = B = V = N = 0;
+        A = X = Y = 0;
+    }
 };
 
 int main() {
     CPU cpu;
+    cpu.Reset();
     return 0;
 }
