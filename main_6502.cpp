@@ -18,6 +18,14 @@ struct Mem {
 
     /* Read 1 byte */
     Byte operator[] (u32 Address) const {
+
+        // Assert here Addres is < MAX_MEM
+        return Data[Address];
+    }
+
+    /* Write 1 byte */
+    Byte& operator[] (u32 Address)  {
+        
         // Assert here Addres is < MAX_MEM
         return Data[Address];
     }
@@ -81,6 +89,10 @@ int main() {
     Mem mem;
     CPU cpu;
     cpu.Reset( mem );
+    // Start - Inline a little program
+    mem[0xFFFC] = CPU::INS_LDA_IM;
+    mem[0xFFFD] = 0x42;
+    // End - inline a little program
     cpu.Execute( 2, mem);
     return 0;
 }
