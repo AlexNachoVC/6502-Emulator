@@ -29,6 +29,13 @@ struct Mem {
         // Assert here Addres is < MAX_MEM
         return Data[Address];
     }
+
+    /* Write 2 bytes */
+    void WriteWord( Word Value, u32 Address, u32& Cycles) {
+        Data[Address]       = Value & 0xFF;
+        Data[Address + 1]   = (Value >> 8);
+        Cycles -= 2;
+    }
 };
 struct CPU {
 
@@ -61,6 +68,25 @@ struct CPU {
         return Data;
     }
 
+    Word FetchWord( u32& Cycles, Mem& memory ) {
+        // 6502 is little endian
+        Word Data = memory[PC];
+        PC++;
+        
+
+        Data |= (memory[PC] << 8);
+        PC++;
+
+        Cycles -=2;
+
+        // if you wanted to handle endianness
+        // you would have to swap bytes here
+        // if ( PLATFORM_BIG_ENDIAN )
+        //    SwapBytesInWord(Data) 
+
+        return Data;
+    }
+
     Byte ReadByte( u32& Cycles, Byte Address, Mem& memory ){
         Byte Data = memory[Address];
         Cycles--;
@@ -71,7 +97,8 @@ struct CPU {
     static constexpr Byte 
         INS_LDA_IM = 0xA9,
         INS_LDA_ZP = 0XA5,
-        INS_LDA_ZPX = 0XB5;
+        INS_LDA_ZPX = 0XB5,
+        INS_JSR = 0X20;
 
     void LDASetStatus() {
         Z = (A == 0);
@@ -103,6 +130,13 @@ struct CPU {
                     A = ReadByte( Cycles, ZeroPageAddress, memory );
                     LDASetStatus();
                 } break;
+                case INS_JSR:
+                {
+                    Word SubAddress = FetchWord( Cycles, memory );
+                    memory.WriteWord( PC - 1, SP, Cycles );
+                    PC = SubAddress;
+                    Cycles--;
+                } break;
 
                 default:
                 {
@@ -118,10 +152,12 @@ int main() {
     CPU cpu;
     cpu.Reset( mem );
     // Start - Inline a little program
-    mem[0xFFFC] = CPU::INS_LDA_ZP;
+    mem[0xFFFC] = CPU::INS_JSR;
     mem[0xFFFD] = 0x42;
-    mem[0x0042] = 0x84;
+    mem[0xFFDE] = 0x42;
+    mem[0x4242] = CPU::INS_LDA_IM;
+    mem[0x4243] = 0x84;
     // End - inline a little program
-    cpu.Execute( 3, mem);
+    cpu.Execute( 9, mem);
     return 0;
 }
