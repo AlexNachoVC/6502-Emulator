@@ -70,7 +70,8 @@ struct CPU {
     // Opcodes
     static constexpr Byte 
         INS_LDA_IM = 0xA9,
-        INS_LDA_ZP = 0XA5;
+        INS_LDA_ZP = 0XA5,
+        INS_LDA_ZPX = 0XB5;
 
     void LDASetStatus() {
         Z = (A == 0);
@@ -91,6 +92,14 @@ struct CPU {
                 case INS_LDA_ZP:
                 {
                     Byte ZeroPageAddress = FetchByte(Cycles, memory); 
+                    A = ReadByte( Cycles, ZeroPageAddress, memory );
+                    LDASetStatus();
+                } break;
+                case INS_LDA_ZPX:
+                {
+                    Byte ZeroPageAddress = FetchByte(Cycles, memory); 
+                    ZeroPageAddress += X;
+                    Cycles--;
                     A = ReadByte( Cycles, ZeroPageAddress, memory );
                     LDASetStatus();
                 } break;
