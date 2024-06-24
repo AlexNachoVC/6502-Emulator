@@ -1,4 +1,4 @@
-#include "main_6502.h"
+#include "6502Lib\src\public\main_6502.h"
 
 int main() {
     Mem mem;
