@@ -15,16 +15,18 @@ protected:
     }
 };
 
-TEST_F( M6502Test1, RunALittleInLineProgram) {
+TEST_F( M6502Test1, LDAImmediateCanLoadAValueIntoTheARegister) 
+{
+    // Given: 
     // Start - Inline a little program
-    mem[0xFFFC] = CPU::INS_JSR;
-    mem[0xFFFD] = 0x42;
-    mem[0xFFFE] = 0x42;
-    mem[0x4242] = CPU::INS_LDA_IM;
-    mem[0x4243] = 0x84;
+    mem[0xFFFC] = CPU::INS_LDA_IM;
+    mem[0xFFFD] = 0x84;
     // End - inline a little program
-    cpu.Execute( 9, mem);
 
+    // When:
+    cpu.Execute( 2, mem);
+
+    // Then: 
     EXPECT_EQ( cpu.A, 0x84);
 }
 
