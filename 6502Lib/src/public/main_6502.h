@@ -134,6 +134,7 @@ struct CPU {
                 {
                     Word SubAddress = FetchWord( Cycles, memory );
                     memory.WriteWord( PC - 1, SP, Cycles );
+                    SP += 2;
                     PC = SubAddress;
                     Cycles--;
                 } break;
