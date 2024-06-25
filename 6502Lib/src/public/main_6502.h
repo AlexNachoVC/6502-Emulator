@@ -50,7 +50,6 @@ struct CPU {
     Byte I : 1;         // Status Flag  
     Byte D : 1;         // Status Flag  
     Byte B : 1;         // Status Flag  
-    Byte C : 1;         // Status Flag  
     Byte V : 1;         // Status Flag  
     Byte N : 1;         // Status Flag  
 
