@@ -25,10 +25,11 @@ TEST_F( M6502Test1, LDAImmediateCanLoadAValueIntoTheARegister )
 
     // When:
     CPU CPUCopy = cpu;
-    cpu.Execute( 2, mem );
+    s32 CyclesUsed = cpu.Execute( 2, mem );
 
     // Then: 
     EXPECT_EQ( cpu.A, 0x84 );
+    EXPECT_EQ( CyclesUsed, 2 );
     EXPECT_FALSE( cpu.Z );
     EXPECT_TRUE( cpu.N );
     EXPECT_EQ( cpu.C, CPUCopy.C);
@@ -50,10 +51,11 @@ TEST_F( M6502Test1, LDAZeroPageCanLoadAValueIntoTheARegister )
 
     // When:
     CPU CPUCopy = cpu;
-    cpu.Execute( 3, mem );
+    s32 CyclesUsed = cpu.Execute( 3, mem );
 
     // Then: 
     EXPECT_EQ( cpu.A, 0x37 );
+    EXPECT_EQ( CyclesUsed, 3 );
     EXPECT_FALSE( cpu.Z );
     EXPECT_FALSE( cpu.N );
     EXPECT_EQ( cpu.C, CPUCopy.C);
@@ -75,10 +77,11 @@ TEST_F( M6502Test1, LDAZeroPageXCanLoadAValueIntoTheARegister )
 
     // When:
     CPU CPUCopy = cpu;
-    cpu.Execute( 4, mem );
+    s32 CyclesUsed = cpu.Execute( 4, mem );
 
     // Then: 
     EXPECT_EQ( cpu.A, 0x37 );
+    EXPECT_EQ( CyclesUsed, 4 );
     EXPECT_FALSE( cpu.Z );
     EXPECT_FALSE( cpu.N );
     EXPECT_EQ( cpu.C, CPUCopy.C);
@@ -88,7 +91,7 @@ TEST_F( M6502Test1, LDAZeroPageXCanLoadAValueIntoTheARegister )
     EXPECT_EQ( cpu.V, CPUCopy.V);
 }
 
-TEST_F( M6502Test1, LDAZeroPageCanLoadAValueIntoTheARegisterWhenItWraps ) 
+TEST_F( M6502Test1, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItWraps ) 
 {
     // Given: 
     cpu.X = 0xFF;
@@ -100,10 +103,11 @@ TEST_F( M6502Test1, LDAZeroPageCanLoadAValueIntoTheARegisterWhenItWraps )
 
     // When:
     CPU CPUCopy = cpu;
-    cpu.Execute( 4, mem );
+    s32 CyclesUsed = cpu.Execute( 4, mem );
 
     // Then: 
     EXPECT_EQ( cpu.A, 0x37 );
+    EXPECT_EQ( CyclesUsed, 4 );
     EXPECT_FALSE( cpu.Z );
     EXPECT_FALSE( cpu.N );
     EXPECT_EQ( cpu.C, CPUCopy.C);
