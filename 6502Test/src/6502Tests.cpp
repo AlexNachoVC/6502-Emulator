@@ -15,7 +15,7 @@ protected:
     }
 };
 
-TEST_F( M6502Test1, LDAImmediateCanLoadAValueIntoTheARegister) 
+TEST_F( M6502Test1, LDAImmediateCanLoadAValueIntoTheARegister ) 
 {
     // Given: 
     // Start - Inline a little program
@@ -24,13 +24,14 @@ TEST_F( M6502Test1, LDAImmediateCanLoadAValueIntoTheARegister)
     // End - inline a little program
 
     // When:
-    cpu.Execute( 2, mem);
+    cpu.Execute( 2, mem );
 
     // Then: 
-    EXPECT_EQ( cpu.A, 0x84);
+    EXPECT_EQ( cpu.A, 0x84 );
+    
 }
 
-TEST_F( M6502Test1, LDAZeroPageCanLoadAValueIntoTheARegister) 
+TEST_F( M6502Test1, LDAZeroPageCanLoadAValueIntoTheARegister ) 
 {
     // Given: 
     // Start - Inline a little program
@@ -40,11 +41,46 @@ TEST_F( M6502Test1, LDAZeroPageCanLoadAValueIntoTheARegister)
     // End - inline a little program
 
     // When:
-    cpu.Execute( 3, mem);
+    cpu.Execute( 3, mem );
 
     // Then: 
-    EXPECT_EQ( cpu.A, 0x37);
+    EXPECT_EQ( cpu.A, 0x37 );
 }
+
+TEST_F( M6502Test1, LDAZeroPageXCanLoadAValueIntoTheARegister ) 
+{
+    // Given: 
+    cpu.X = 5;
+    // Start - Inline a little program
+    mem[0xFFFC] = CPU::INS_LDA_ZPX;
+    mem[0xFFFD] = 0x42;
+    mem[0x0047] = 0x37;
+    // End - inline a little program
+
+    // When:
+    cpu.Execute( 4, mem );
+
+    // Then: 
+    EXPECT_EQ( cpu.A, 0x37 );
+}
+
+TEST_F( M6502Test1, LDAZeroPageCanLoadAValueIntoTheARegisterWhenItWraps ) 
+{
+    // Given: 
+    cpu.X = 0xFF;
+    // Start - Inline a little program
+    mem[0xFFFC] = CPU::INS_LDA_ZPX;
+    mem[0xFFFD] = 0x80;
+    mem[0x007F] = 0x37;
+    // End - inline a little program
+
+    // When:
+    cpu.Execute( 4, mem );
+
+    // Then: 
+    EXPECT_EQ( cpu.A, 0x37 );
+}
+
 #if 0
 #include "main_6502.h"
 
