@@ -15,6 +15,14 @@ protected:
     }
 };
 
+static void VerifyUnmodifiedFlagsFromLDA( const CPU& cpu, const CPU& CPUCopy) { 
+    EXPECT_EQ( cpu.C, CPUCopy.C);
+    EXPECT_EQ( cpu.I, CPUCopy.I);
+    EXPECT_EQ( cpu.D, CPUCopy.D);
+    EXPECT_EQ( cpu.B, CPUCopy.B);
+    EXPECT_EQ( cpu.V, CPUCopy.V);
+}
+
 TEST_F( M6502Test1, LDAImmediateCanLoadAValueIntoTheARegister ) 
 {
     // Given: 
@@ -32,12 +40,7 @@ TEST_F( M6502Test1, LDAImmediateCanLoadAValueIntoTheARegister )
     EXPECT_EQ( CyclesUsed, 2 );
     EXPECT_FALSE( cpu.Z );
     EXPECT_TRUE( cpu.N );
-    EXPECT_EQ( cpu.C, CPUCopy.C);
-    EXPECT_EQ( cpu.I, CPUCopy.I);
-    EXPECT_EQ( cpu.D, CPUCopy.D);
-    EXPECT_EQ( cpu.B, CPUCopy.B);
-    EXPECT_EQ( cpu.V, CPUCopy.V);
-
+    VerifyUnmodifiedFlagsFromLDA( cpu, CPUCopy);
 }
 
 TEST_F( M6502Test1, LDAZeroPageCanLoadAValueIntoTheARegister ) 
@@ -58,11 +61,7 @@ TEST_F( M6502Test1, LDAZeroPageCanLoadAValueIntoTheARegister )
     EXPECT_EQ( CyclesUsed, 3 );
     EXPECT_FALSE( cpu.Z );
     EXPECT_FALSE( cpu.N );
-    EXPECT_EQ( cpu.C, CPUCopy.C);
-    EXPECT_EQ( cpu.I, CPUCopy.I);
-    EXPECT_EQ( cpu.D, CPUCopy.D);
-    EXPECT_EQ( cpu.B, CPUCopy.B);
-    EXPECT_EQ( cpu.V, CPUCopy.V);
+    VerifyUnmodifiedFlagsFromLDA( cpu, CPUCopy);
 }
 
 TEST_F( M6502Test1, LDAZeroPageXCanLoadAValueIntoTheARegister ) 
@@ -84,11 +83,7 @@ TEST_F( M6502Test1, LDAZeroPageXCanLoadAValueIntoTheARegister )
     EXPECT_EQ( CyclesUsed, 4 );
     EXPECT_FALSE( cpu.Z );
     EXPECT_FALSE( cpu.N );
-    EXPECT_EQ( cpu.C, CPUCopy.C);
-    EXPECT_EQ( cpu.I, CPUCopy.I);
-    EXPECT_EQ( cpu.D, CPUCopy.D);
-    EXPECT_EQ( cpu.B, CPUCopy.B);
-    EXPECT_EQ( cpu.V, CPUCopy.V);
+    VerifyUnmodifiedFlagsFromLDA( cpu, CPUCopy);
 }
 
 TEST_F( M6502Test1, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItWraps ) 
@@ -110,11 +105,7 @@ TEST_F( M6502Test1, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItWraps )
     EXPECT_EQ( CyclesUsed, 4 );
     EXPECT_FALSE( cpu.Z );
     EXPECT_FALSE( cpu.N );
-    EXPECT_EQ( cpu.C, CPUCopy.C);
-    EXPECT_EQ( cpu.I, CPUCopy.I);
-    EXPECT_EQ( cpu.D, CPUCopy.D);
-    EXPECT_EQ( cpu.B, CPUCopy.B);
-    EXPECT_EQ( cpu.V, CPUCopy.V);
+    VerifyUnmodifiedFlagsFromLDA( cpu, CPUCopy);
 }
 
 #if 0
