@@ -85,6 +85,23 @@ TEST_F( M6502Test1, LDAImmediateCanLoadAValueIntoTheARegister )
     VerifyUnmodifiedFlagsFromLDA( cpu, CPUCopy );
 }
 
+TEST_F( M6502Test1, LDAImmediateCanAffectTheZeroFlag ) 
+{
+    // Given: 
+    cpu.A = 0x44;
+    mem[0xFFFC] = CPU::INS_LDA_IM;
+    mem[0xFFFD] = 0x0;
+    CPU CPUCopy = cpu;
+
+    // When:   
+    cpu.Execute( 2, mem );
+
+    // Then: 
+    EXPECT_TRUE( cpu.Z );
+    EXPECT_FALSE( cpu.N );
+    VerifyUnmodifiedFlagsFromLDA( cpu, CPUCopy );
+}
+
 TEST_F( M6502Test1, LDAZeroPageCanLoadAValueIntoTheARegister ) 
 {
     // Given: 
