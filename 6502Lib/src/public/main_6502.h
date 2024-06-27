@@ -33,7 +33,7 @@ struct Mem {
     }
 
     /* Write 2 bytes */
-    void WriteWord( Word Value, u32 Address, u32& Cycles) {
+    void WriteWord( Word Value, u32 Address, s32& Cycles) {
         Data[Address]       = Value & 0xFF;
         Data[Address + 1]   = (Value >> 8);
         Cycles -= 2;
@@ -62,14 +62,14 @@ struct CPU {
         memory.Initialise();
     }
 
-    Byte FetchByte( u32& Cycles, Mem& memory ) {
+    Byte FetchByte( s32& Cycles, Mem& memory ) {
         Byte Data = memory[PC];
         PC++;
         Cycles--;
         return Data;
     }
 
-    Word FetchWord( u32& Cycles, Mem& memory ) {
+    Word FetchWord( s32& Cycles, Mem& memory ) {
         // 6502 is little endian
         Word Data = memory[PC];
         PC++;
@@ -88,7 +88,7 @@ struct CPU {
         return Data;
     }
 
-    Byte ReadByte( u32& Cycles, Byte Address, Mem& memory ){
+    Byte ReadByte( s32& Cycles, Byte Address, Mem& memory ){
         Byte Data = memory[Address];
         Cycles--;
         return Data;
@@ -107,9 +107,9 @@ struct CPU {
     }
 
     /* @return the number of cycles that were used */
-    s32 Execute ( u32 Cycles, Mem& memory ) {
+    s32 Execute ( s32 Cycles, Mem& memory ) {
 
-        const u32 CyclesRequested = Cycles;
+        const s32 CyclesRequested = Cycles;
         while (Cycles > 0) {
             Byte Ins = FetchByte(Cycles, memory);
             switch ( Ins ) {
