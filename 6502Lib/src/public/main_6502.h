@@ -144,7 +144,7 @@ struct CPU {
 
                 default:
                 {
-                    printf("Instruction not handled %d", Ins);
+                    printf("Instruction %d not handled\n", Ins);
                 } break;
             }
         }

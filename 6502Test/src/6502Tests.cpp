@@ -23,6 +23,48 @@ static void VerifyUnmodifiedFlagsFromLDA( const CPU& cpu, const CPU& CPUCopy) {
     EXPECT_EQ( cpu.V, CPUCopy.V);
 }
 
+TEST_F( M6502Test1, TheCPUDoesNothingWhenWeExecuteZeroCycles ) 
+{   
+    // Given: 
+    constexpr s32 NUM_CYCLES = 0;
+
+    // When:
+    s32 CyclesUsed = cpu.Execute( NUM_CYCLES, mem );
+
+    // Then:
+    EXPECT_EQ( CyclesUsed, 0 );
+}
+
+TEST_F( M6502Test1, CPUCanExecuteMoreCyclesThanRequestedIfRequiredByTheInstruction ) 
+{
+    // Given: 
+    mem[0xFFFC] = CPU::INS_LDA_IM;
+    mem[0xFFFD] = 0x84;
+    CPU CPUCopy = cpu;
+    constexpr s32 NUM_CYCLES = 1;
+
+    // When:
+    s32 CyclesUsed = cpu.Execute( NUM_CYCLES, mem );
+
+    // Then: 
+    EXPECT_EQ( CyclesUsed, 2 );
+}
+
+TEST_F( M6502Test1, ExecutingABadInstructionDoesNotPutUsInAnInfiniteLoop ) 
+{
+    // Given: 
+    mem[0xFFFC] = 0x0;  // Invalid Instruction/Opcode
+    mem[0xFFFD] = 0x0;
+    CPU CPUCopy = cpu;
+    constexpr s32 NUM_CYCLES = 1;
+
+    // When:
+    s32 CyclesUsed = cpu.Execute( NUM_CYCLES, mem );
+
+    // Then: 
+    EXPECT_EQ( CyclesUsed, NUM_CYCLES );
+}
+
 TEST_F( M6502Test1, LDAImmediateCanLoadAValueIntoTheARegister ) 
 {
     // Given: 
