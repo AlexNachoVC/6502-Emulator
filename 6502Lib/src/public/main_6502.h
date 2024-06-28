@@ -93,6 +93,13 @@ struct CPU {
         Cycles--;
         return Data;
     }
+
+
+    Word ReadWord( s32& Cycles, Word Address, Mem& memory ){
+        Byte LoByte = ReadByte( Cycles, Address, memory );
+        Byte HiByte = ReadByte( Cycles, Address + 1, memory );
+        return LoByte | (HiByte << 8);
+    }
     // Opcodes
     static constexpr Byte 
         INS_LDA_IM = 0xA9,
@@ -161,6 +168,14 @@ struct CPU {
                     {
                         Cycles--;
                     }
+                } break;
+                case INS_LDA_INDX:
+                {
+                    Byte ZPAdress = FetchByte( Cycles, memory );
+                    ZPAdress += X;
+                    Cycles--;
+                    Word EffectiveAddress = ReadWord( Cycles, ZPAdress, memory );
+                    A = ReadByte( Cycles, EffectiveAddress, memory );
                 } break;
                 case INS_JSR:
                 {
