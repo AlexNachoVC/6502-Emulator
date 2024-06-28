@@ -232,6 +232,50 @@ TEST_F( M6502Test1, LDAAbsoluteXCanLoadAValueIntoTheARegisterWhenItCrossesAPageB
     VerifyUnmodifiedFlagsFromLDA( cpu, CPUCopy );
 }
 
+TEST_F( M6502Test1, LDAAbsoluteYCanLoadAValueIntoTheARegister ) 
+{
+    // Given: ;
+    cpu.X = 1;
+    mem[0xFFFC] = CPU::INS_LDA_ABSY;
+    mem[0xFFFD] = 0x80;
+    mem[0xFFFE] = 0x44; // 0x4480
+    mem[0x4481] = 0x37;
+    constexpr s32 EXPECTED_CYCLES = 4;
+    CPU CPUCopy = cpu;
+
+    // When:
+    s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
+
+    // Then: 
+    EXPECT_EQ( cpu.A, 0x37 );
+    EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
+    EXPECT_FALSE( cpu.Z );
+    EXPECT_FALSE( cpu.N );
+    VerifyUnmodifiedFlagsFromLDA( cpu, CPUCopy );
+}
+
+TEST_F( M6502Test1, LDAAbsoluteYCanLoadAValueIntoTheARegisterWhenItCrossesAPageBoundary ) 
+{
+    // Given: ;
+    cpu.X = 0xFF;
+    mem[0xFFFC] = CPU::INS_LDA_ABSY;
+    mem[0xFFFD] = 0x02;
+    mem[0xFFFE] = 0x44; // 0x4480
+    mem[0x4481] = 0x37; // 0x4402 + 0xFF crosses page boundary!
+    constexpr s32 EXPECTED_CYCLES = 5;
+    CPU CPUCopy = cpu;
+
+    // When:
+    s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
+
+    // Then: 
+    EXPECT_EQ( cpu.A, 0x37 );
+    EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
+    EXPECT_FALSE( cpu.Z );
+    EXPECT_FALSE( cpu.N );
+    VerifyUnmodifiedFlagsFromLDA( cpu, CPUCopy );
+}
+
 #if 0
 #include "main_6502.h"
 
