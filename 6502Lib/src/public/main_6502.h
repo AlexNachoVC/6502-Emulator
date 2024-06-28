@@ -177,6 +177,17 @@ struct CPU {
                     Word EffectiveAddress = ReadWord( Cycles, ZPAdress, memory );
                     A = ReadByte( Cycles, EffectiveAddress, memory );
                 } break;
+                case INS_LDA_INDY:
+                {
+                    Byte ZPAdress = FetchByte( Cycles, memory );
+                    Word EffectiveAddress = ReadWord( Cycles, ZPAdress, memory );
+                    Word EffectiveAddressY = EffectiveAddress + Y;
+                    A = ReadByte( Cycles, EffectiveAddressY, memory );
+                    if ( EffectiveAddressY - EffectiveAddress >= 0xFF ) 
+                    {
+                        Cycles--;
+                    }
+                } break;
                 case INS_JSR:
                 {
                     Word SubAddress = FetchWord( Cycles, memory );
