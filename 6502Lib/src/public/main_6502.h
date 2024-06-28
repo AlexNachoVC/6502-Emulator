@@ -88,12 +88,11 @@ struct CPU {
         return Data;
     }
 
-    Byte ReadByte( s32& Cycles, Byte Address, Mem& memory ){
+    Byte ReadByte( s32& Cycles, Word Address, Mem& memory ){
         Byte Data = memory[Address];
         Cycles--;
         return Data;
     }
-
     // Opcodes
     static constexpr Byte 
         INS_LDA_IM = 0xA9,
@@ -137,6 +136,11 @@ struct CPU {
                     Cycles--;
                     A = ReadByte( Cycles, ZeroPageAddress, memory );
                     LDASetStatus();
+                } break;
+                case INS_LDA_ABS:
+                {
+                    Word AbsAddress = FetchWord( Cycles, memory);
+                    A = ReadByte( Cycles, AbsAddress, memory);
                 } break;
                 case INS_JSR:
                 {
