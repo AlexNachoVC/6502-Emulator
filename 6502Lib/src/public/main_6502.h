@@ -151,7 +151,16 @@ struct CPU {
                     {
                         Cycles--;
                     }
-                    
+                } break;
+                case INS_LDA_ABSY:
+                {
+                    Word AbsAddress = FetchWord( Cycles, memory );
+                    Word AbsAddressY = AbsAddress + Y;
+                    A = ReadByte( Cycles, AbsAddressY, memory );
+                    if ( AbsAddressY - AbsAddress >= 0xFF ) 
+                    {
+                        Cycles--;
+                    }
                 } break;
                 case INS_JSR:
                 {

@@ -221,7 +221,7 @@ TEST_F( M6502Test1, LDAAbsoluteXCanLoadAValueIntoTheARegisterWhenItCrossesAPageB
 TEST_F( M6502Test1, LDAAbsoluteYCanLoadAValueIntoTheARegister ) 
 {
     // Given: ;
-    cpu.X = 1;
+    cpu.Y = 1;
     mem[0xFFFC] = CPU::INS_LDA_ABSY;
     mem[0xFFFD] = 0x80;
     mem[0xFFFE] = 0x44; // 0x4480
@@ -243,11 +243,11 @@ TEST_F( M6502Test1, LDAAbsoluteYCanLoadAValueIntoTheARegister )
 TEST_F( M6502Test1, LDAAbsoluteYCanLoadAValueIntoTheARegisterWhenItCrossesAPageBoundary ) 
 {
     // Given: ;
-    cpu.X = 0xFF;
+    cpu.Y = 0xFF;
     mem[0xFFFC] = CPU::INS_LDA_ABSY;
     mem[0xFFFD] = 0x02;
     mem[0xFFFE] = 0x44; // 0x4480
-    mem[0x4481] = 0x37; // 0x4402 + 0xFF crosses page boundary!
+    mem[0x4501] = 0x37; // 0x4402 + 0xFF crosses page boundary!
     constexpr s32 EXPECTED_CYCLES = 5;
     CPU CPUCopy = cpu;
 
