@@ -50,20 +50,6 @@ TEST_F( M6502Test1, CPUCanExecuteMoreCyclesThanRequestedIfRequiredByTheInstructi
     EXPECT_EQ( CyclesUsed, 2 );
 }
 
-TEST_F( M6502Test1, ExecutingABadInstructionDoesNotPutUsInAnInfiniteLoop ) 
-{
-    // Given: 
-    mem[0xFFFC] = 0x0;  // Invalid Instruction/Opcode
-    mem[0xFFFD] = 0x0;
-    CPU CPUCopy = cpu;
-    constexpr s32 NUM_CYCLES = 1;
-
-    // When:
-    s32 CyclesUsed = cpu.Execute( NUM_CYCLES, mem );
-
-    // Then: 
-    EXPECT_EQ( CyclesUsed, NUM_CYCLES );
-}
 
 TEST_F( M6502Test1, LDAImmediateCanLoadAValueIntoTheARegister ) 
 {
@@ -217,7 +203,7 @@ TEST_F( M6502Test1, LDAAbsoluteXCanLoadAValueIntoTheARegisterWhenItCrossesAPageB
     mem[0xFFFC] = CPU::INS_LDA_ABSX;
     mem[0xFFFD] = 0x02;
     mem[0xFFFE] = 0x44; // 0x4480
-    mem[0x4481] = 0x37; // 0x4402 + 0xFF crosses page boundary!
+    mem[0x4501] = 0x37; // 0x4402 + 0xFF crosses page boundary!
     constexpr s32 EXPECTED_CYCLES = 5;
     CPU CPUCopy = cpu;
 

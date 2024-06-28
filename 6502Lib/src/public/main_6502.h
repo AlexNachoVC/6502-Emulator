@@ -139,8 +139,19 @@ struct CPU {
                 } break;
                 case INS_LDA_ABS:
                 {
-                    Word AbsAddress = FetchWord( Cycles, memory);
-                    A = ReadByte( Cycles, AbsAddress, memory);
+                    Word AbsAddress = FetchWord( Cycles, memory );
+                    A = ReadByte( Cycles, AbsAddress, memory );
+                } break;
+                case INS_LDA_ABSX:
+                {
+                    Word AbsAddress = FetchWord( Cycles, memory );
+                    Word AbsAddressX = AbsAddress + X;
+                    A = ReadByte( Cycles, AbsAddressX, memory );
+                    if ( AbsAddressX - AbsAddress >= 0xFF ) 
+                    {
+                        Cycles--;
+                    }
+                    
                 } break;
                 case INS_JSR:
                 {
@@ -154,6 +165,7 @@ struct CPU {
                 default:
                 {
                     printf("Instruction %d not handled\n", Ins);
+                    throw -1;
                 } break;
             }
         }
