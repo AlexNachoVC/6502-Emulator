@@ -94,12 +94,12 @@ struct CPU {
         return Data;
     }
 
-
     Word ReadWord( s32& Cycles, Word Address, Mem& memory ){
         Byte LoByte = ReadByte( Cycles, Address, memory );
         Byte HiByte = ReadByte( Cycles, Address + 1, memory );
         return LoByte | (HiByte << 8);
     }
+    
     // Opcodes
     static constexpr Byte 
         INS_LDA_IM = 0xA9,
