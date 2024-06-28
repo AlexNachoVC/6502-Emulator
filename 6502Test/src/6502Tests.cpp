@@ -276,6 +276,29 @@ TEST_F( M6502Test1, LDAAbsoluteYCanLoadAValueIntoTheARegisterWhenItCrossesAPageB
     VerifyUnmodifiedFlagsFromLDA( cpu, CPUCopy );
 }
 
+TEST_F( M6502Test1, LDAIndirectXCanLoadAValueIntoTheARegisterWhenItCrossesAPageBoundary ) 
+{
+    // Given: ;
+    cpu.X = 0x04;
+    mem[0xFFFC] = CPU::INS_LDA_INDX;
+    mem[0xFFFD] = 0x02;
+    mem[0x0006] = 0x00; // 0x2 + 0x4
+    mem[0x0007] = 0x80; 
+    mem[0x8000] = 0x37;
+    constexpr s32 EXPECTED_CYCLES = 6;
+    CPU CPUCopy = cpu;
+
+    // When:
+    s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
+
+    // Then: 
+    EXPECT_EQ( cpu.A, 0x37 );
+    EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
+    EXPECT_FALSE( cpu.Z );
+    EXPECT_FALSE( cpu.N );
+    VerifyUnmodifiedFlagsFromLDA( cpu, CPUCopy );
+}
+
 #if 0
 #include "main_6502.h"
 
