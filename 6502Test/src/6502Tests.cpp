@@ -18,6 +18,7 @@ protected:
     void TestLoadRegisterImmediate( Byte Opcode, Byte CPU::*Register );
     void TestLoadRegisterZeroPage( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
     void TestLoadRegisterZeroPageX( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
+    void TestLoadRegisterZeroPageY( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
 
 
 };
@@ -146,6 +147,26 @@ void M6502Test1::TestLoadRegisterZeroPageX( Byte OpcodeToTest, Byte CPU::*Regist
 {
     // Given: 
     cpu.X = 5;
+    mem[0xFFFC] = OpcodeToTest;
+    mem[0xFFFD] = 0x42;
+    mem[0x0047] = 0x37;
+
+    // When:
+    CPU CPUCopy = cpu;
+    s32 CyclesUsed = cpu.Execute( 4, mem );
+
+    // Then: 
+    EXPECT_EQ( cpu.*RegisterToTest, 0x37 );
+    EXPECT_EQ( CyclesUsed, 4 );
+    EXPECT_FALSE( cpu.Z );
+    EXPECT_FALSE( cpu.N );
+    VerifyUnmodifiedFlagsFromLDA( cpu, CPUCopy );
+}
+
+void M6502Test1::TestLoadRegisterZeroPageY( Byte OpcodeToTest, Byte CPU::*RegisterToTest )
+{
+    // Given: 
+    cpu.Y = 5;
     mem[0xFFFC] = OpcodeToTest;
     mem[0xFFFD] = 0x42;
     mem[0x0047] = 0x37;
