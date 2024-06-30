@@ -82,7 +82,10 @@ TEST_F( M6502Test1, LDXImmediateCanLoadAValueIntoTheXRegister )
     TestLoadRegisterImmediate( CPU::INS_LDX_IM, &CPU::X );
 }
 
-
+TEST_F( M6502Test1, LDYImmediateCanLoadAValueIntoTheYRegister ) 
+{
+    TestLoadRegisterImmediate( CPU::INS_LDY_IM, &CPU::Y );
+}
 
 TEST_F( M6502Test1, LDAImmediateCanAffectTheZeroFlag ) 
 {
