@@ -164,24 +164,17 @@ void M6502Test1::TestLoadRegisterZeroPageX( Byte OpcodeToTest, Byte CPU::*Regist
 
 TEST_F( M6502Test1, LDAZeroPageXCanLoadAValueIntoTheARegister ) 
 {
-    // Given: 
-    cpu.X = 5;
-    // Start - Inline a little program
-    mem[0xFFFC] = CPU::INS_LDA_ZPX;
-    mem[0xFFFD] = 0x42;
-    mem[0x0047] = 0x37;
-    // End - inline a little program
+    TestLoadRegisterZeroPageX( CPU::INS_LDA_ZPX, &CPU::A );
+}
 
-    // When:
-    CPU CPUCopy = cpu;
-    s32 CyclesUsed = cpu.Execute( 4, mem );
+TEST_F( M6502Test1, LDXZeroPageYCanLoadAValueIntoTheXRegister ) 
+{
+    TestLoadRegisterZeroPageY( CPU::INS_LDX_ZPY, &CPU::X );
+}
 
-    // Then: 
-    EXPECT_EQ( cpu.A, 0x37 );
-    EXPECT_EQ( CyclesUsed, 4 );
-    EXPECT_FALSE( cpu.Z );
-    EXPECT_FALSE( cpu.N );
-    VerifyUnmodifiedFlagsFromLDA( cpu, CPUCopy );
+TEST_F( M6502Test1, LDYZeroPageXCanLoadAValueIntoTheYRegister ) 
+{
+    TestLoadRegisterZeroPageX( CPU::INS_LDY_ZPX, &CPU::Y );
 }
 
 TEST_F( M6502Test1, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItWraps ) 
