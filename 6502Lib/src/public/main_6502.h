@@ -2,12 +2,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-using Byte = unsigned char;
-using Word = unsigned short;
+namespace m6502 
+{
+    using Byte = unsigned char;
+    using Word = unsigned short;
 
-using u32 = unsigned int;
-using s32 = signed int;
-struct Mem {
+    using u32 = unsigned int;
+    using s32 = signed int;
+
+    struct Mem;
+    struct CPU;
+}
+
+
+struct m6502::Mem {
     
     static constexpr u32 MAX_MEM = 1024 * 64;
     Byte Data[MAX_MEM];
@@ -39,7 +47,7 @@ struct Mem {
         Cycles -= 2;
     }
 };
-struct CPU {
+struct m6502::CPU {
 
     Word PC;            // Program Counter
     Word SP;            // Stack Pointer

@@ -1,9 +1,10 @@
 #include <gtest/gtest.h>
 #include "main_6502.h"
 
-
+using namespace m6502;
 class M6502Test1 : public testing::Test {
 protected:
+    
     Mem mem;
     CPU cpu;
 
