@@ -124,11 +124,13 @@ struct m6502::CPU {
         INS_LDX_ZP = 0xA6,
         INS_LDX_ZPY = 0xB6,
         INS_LDX_ABS = 0xAE,
+        INS_LDX_ABSY = 0xBE,
         // LDY
         INS_LDY_IM = 0xA0,
         INS_LDY_ZP = 0xA4,
         INS_LDY_ZPX = 0xB4,
         INS_LDY_ABS = 0xAC,
+        INS_LDY_ABSX = 0xBC,
         INS_JSR = 0x20;
 
     void LDASetStatus() {
