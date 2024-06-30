@@ -19,6 +19,7 @@ protected:
     void TestLoadRegisterZeroPage( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
     void TestLoadRegisterZeroPageX( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
     void TestLoadRegisterZeroPageY( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
+    void TestLoadRegisterAbsolute( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
 
 
 };
@@ -220,10 +221,10 @@ TEST_F( M6502Test1, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItWraps )
     VerifyUnmodifiedFlagsFromLDA( cpu, CPUCopy );
 }
 
-TEST_F( M6502Test1, LDAAbsoluteCanLoadAValueIntoTheARegister ) 
+void M6502Test1::TestLoadRegisterAbsolute( Byte OpcodeToTest, Byte CPU::*RegisterToTest )
 {
     // Given: 
-    mem[0xFFFC] = CPU::INS_LDA_ABS;
+    mem[0xFFFC] = OpcodeToTest;
     mem[0xFFFD] = 0x80;
     mem[0xFFFE] = 0x44; // 0x4480
     mem[0x4480] = 0x37;
@@ -234,11 +235,26 @@ TEST_F( M6502Test1, LDAAbsoluteCanLoadAValueIntoTheARegister )
     s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
     // Then: 
-    EXPECT_EQ( cpu.A, 0x37 );
+    EXPECT_EQ( cpu.*RegisterToTest, 0x37 );
     EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
     EXPECT_FALSE( cpu.Z );
     EXPECT_FALSE( cpu.N );
     VerifyUnmodifiedFlagsFromLDA( cpu, CPUCopy );
+}
+
+TEST_F( M6502Test1, LDAAbsoluteCanLoadAValueIntoTheARegister ) 
+{
+    TestLoadRegisterAbsolute( CPU::INS_LDA_ABS, &CPU::A );
+}
+
+TEST_F( M6502Test1, LDXAbsoluteCanLoadAValueIntoTheXRegister ) 
+{
+    TestLoadRegisterAbsolute( CPU::INS_LDX_ABS, &CPU::X );
+}
+
+TEST_F( M6502Test1, LDYAbsoluteCanLoadAValueIntoTheYRegister ) 
+{
+    TestLoadRegisterAbsolute( CPU::INS_LDY_ABS, &CPU::Y );
 }
 
 TEST_F( M6502Test1, LDAAbsoluteXCanLoadAValueIntoTheARegister ) 
