@@ -77,6 +77,13 @@ TEST_F( M6502Test1, LDAImmediateCanLoadAValueIntoTheARegister )
     TestLoadRegisterImmediate( CPU::INS_LDA_IM, &CPU::A );
 }
 
+TEST_F( M6502Test1, LDXImmediateCanLoadAValueIntoTheXRegister ) 
+{
+    TestLoadRegisterImmediate( CPU::INS_LDX_IM, &CPU::X );
+}
+
+
+
 TEST_F( M6502Test1, LDAImmediateCanAffectTheZeroFlag ) 
 {
     // Given: 
