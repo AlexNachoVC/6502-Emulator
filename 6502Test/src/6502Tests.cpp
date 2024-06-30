@@ -14,6 +14,8 @@ protected:
 
     virtual void TearDown(){
     }
+
+    void TestLoadRegisterImmediate( Byte Opcode, Byte CPU::*Register );
 };
 
 static void VerifyUnmodifiedFlagsFromLDA( const CPU& cpu, const CPU& CPUCopy) { 
@@ -52,24 +54,27 @@ TEST_F( M6502Test1, CPUCanExecuteMoreCyclesThanRequestedIfRequiredByTheInstructi
 }
 
 
-TEST_F( M6502Test1, LDAImmediateCanLoadAValueIntoTheARegister ) 
+void M6502Test1::TestLoadRegisterImmediate( Byte OpcodeToTest, Byte CPU::*RegisterToTest )
 {
     // Given: 
-    // Start - Inline a little program
-    mem[0xFFFC] = CPU::INS_LDA_IM;
+    mem[0xFFFC] = OpcodeToTest;
     mem[0xFFFD] = 0x84;
-    // End - inline a little program
 
     // When:
     CPU CPUCopy = cpu;
     s32 CyclesUsed = cpu.Execute( 2, mem );
 
     // Then: 
-    EXPECT_EQ( cpu.A, 0x84 );
+    EXPECT_EQ( cpu.*RegisterToTest, 0x84 );
     EXPECT_EQ( CyclesUsed, 2 );
     EXPECT_FALSE( cpu.Z );
     EXPECT_TRUE( cpu.N );
     VerifyUnmodifiedFlagsFromLDA( cpu, CPUCopy );
+}
+
+TEST_F( M6502Test1, LDAImmediateCanLoadAValueIntoTheARegister ) 
+{
+    TestLoadRegisterImmediate( CPU::INS_LDA_IM, &CPU::A );
 }
 
 TEST_F( M6502Test1, LDAImmediateCanAffectTheZeroFlag ) 
