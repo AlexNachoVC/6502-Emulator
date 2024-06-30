@@ -110,6 +110,7 @@ struct m6502::CPU {
     
     // Opcodes
     static constexpr Byte 
+        // LDA
         INS_LDA_IM = 0xA9,
         INS_LDA_ZP = 0xA5,
         INS_LDA_ZPX = 0xB5,
@@ -118,8 +119,12 @@ struct m6502::CPU {
         INS_LDA_ABSY = 0xB9,
         INS_LDA_INDX = 0xA1,
         INS_LDA_INDY = 0xB1,
+        // LDX
         INS_LDX_IM = 0xA2,
+        INS_LDX_ZP = 0xA6,
+        // LDY
         INS_LDY_IM = 0xA0,
+        INS_LDY_ZP = 0xA4,
         INS_JSR = 0x20;
 
     void LDASetStatus() {

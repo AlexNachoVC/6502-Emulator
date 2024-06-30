@@ -16,6 +16,8 @@ protected:
     }
 
     void TestLoadRegisterImmediate( Byte Opcode, Byte CPU::*Register );
+    void TestLoadRegisterZeroPage( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
+
 };
 
 static void VerifyUnmodifiedFlagsFromLDA( const CPU& cpu, const CPU& CPUCopy) { 
@@ -104,25 +106,38 @@ TEST_F( M6502Test1, LDAImmediateCanAffectTheZeroFlag )
     VerifyUnmodifiedFlagsFromLDA( cpu, CPUCopy );
 }
 
-TEST_F( M6502Test1, LDAZeroPageCanLoadAValueIntoTheARegister ) 
+void M6502Test1::TestLoadRegisterZeroPage( Byte OpcodeToTest, Byte CPU::*RegisterToTest )
 {
     // Given: 
-    // Start - Inline a little program
-    mem[0xFFFC] = CPU::INS_LDA_ZP;
+    mem[0xFFFC] = OpcodeToTest;
     mem[0xFFFD] = 0x42;
     mem[0x0042] = 0x37;
-    // End - inline a little program
 
     // When:
     CPU CPUCopy = cpu;
     s32 CyclesUsed = cpu.Execute( 3, mem );
 
     // Then: 
-    EXPECT_EQ( cpu.A, 0x37 );
+    EXPECT_EQ( cpu.*RegisterToTest, 0x37 );
     EXPECT_EQ( CyclesUsed, 3 );
     EXPECT_FALSE( cpu.Z );
     EXPECT_FALSE( cpu.N );
     VerifyUnmodifiedFlagsFromLDA( cpu, CPUCopy );
+}
+
+TEST_F( M6502Test1, LDAZeroPageCanLoadAValueIntoTheARegister ) 
+{
+    TestLoadRegisterZeroPage( CPU::INS_LDA_ZP, &CPU::A );
+}
+
+TEST_F( M6502Test1, LDXZeroPageCanLoadAValueIntoTheXRegister ) 
+{
+    TestLoadRegisterZeroPage( CPU::INS_LDX_ZP, &CPU::X );
+}
+
+TEST_F( M6502Test1, LDYZeroPageCanLoadAValueIntoTheYRegister ) 
+{
+    TestLoadRegisterZeroPage( CPU::INS_LDY_ZP, &CPU::Y );
 }
 
 TEST_F( M6502Test1, LDAZeroPageXCanLoadAValueIntoTheARegister ) 
