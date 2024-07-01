@@ -143,4 +143,7 @@ struct m6502::CPU {
 
     /* @return the number of cycles that were used */
     s32 Execute ( s32 Cycles, Mem& memory );
+    
+    /* Addresing mode - Zero Page */
+    Word AddressZeroPage(s32 &Cycles, Mem &memory);
 };

@@ -1,5 +1,10 @@
 #include "m6502.h"
 
+m6502::Word m6502::CPU::AddressZeroPage( s32& Cycles, Mem& memory ) {
+    Byte ZeroPaggeAddress = FetchByte( Cycles, memory );
+    return ZeroPaggeAddress;
+}
+
 m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
 
     const s32 CyclesRequested = Cycles;
@@ -23,9 +28,21 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
             } break;
             case INS_LDA_ZP:
             {
-                Byte ZeroPageAddress = FetchByte(Cycles, memory); 
-                A = ReadByte( Cycles, ZeroPageAddress, memory );
+                Word Address = AddressZeroPage( Cycles, memory );
+                A = ReadByte( Cycles, Address, memory );
                 LoadRegisterSetStatus( A );
+            } break;
+            case INS_LDX_ZP:
+            {
+                Word Address = AddressZeroPage( Cycles, memory );
+                X = ReadByte( Cycles, Address, memory );
+                LoadRegisterSetStatus( X );
+            } break;
+            case INS_LDY_ZP:
+            {
+                Word Address = AddressZeroPage( Cycles, memory );
+                Y = ReadByte( Cycles, Address, memory );
+                LoadRegisterSetStatus( Y );
             } break;
             case INS_LDA_ZPX:
             {
