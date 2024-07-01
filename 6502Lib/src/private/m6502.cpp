@@ -5,6 +5,13 @@ m6502::Word m6502::CPU::AddressZeroPage( s32& Cycles, Mem& memory ) {
     return ZeroPaggeAddress;
 }
 
+m6502::Word m6502::CPU::AddressZeroPageX( s32& Cycles, Mem& memory ) {
+    Byte ZeroPageAddress = FetchByte(Cycles, memory); 
+    ZeroPageAddress += X;
+    Cycles--;
+    return ZeroPageAddress;
+}
+
 m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
 
     const s32 CyclesRequested = Cycles;
@@ -46,12 +53,17 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
             } break;
             case INS_LDA_ZPX:
             {
-                Byte ZeroPageAddress = FetchByte(Cycles, memory); 
-                ZeroPageAddress += X;
-                Cycles--;
-                A = ReadByte( Cycles, ZeroPageAddress, memory );
+                Word Address = AddressZeroPageX( Cycles, memory );
+                A = ReadByte( Cycles, Address, memory );
                 LoadRegisterSetStatus( A );
             } break;
+            case INS_LDY_ZPX:
+            {
+                Word Address = AddressZeroPageX( Cycles, memory );
+                Y = ReadByte( Cycles, Address, memory );
+                LoadRegisterSetStatus( Y );
+            } break;
+            
             case INS_LDA_ABS:
             {
                 Word AbsAddress = FetchWord( Cycles, memory );
