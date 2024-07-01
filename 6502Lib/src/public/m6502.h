@@ -133,7 +133,9 @@ struct m6502::CPU {
         INS_LDY_ABSX = 0xBC,
         INS_JSR = 0x20;
 
-    /* @Register The A,X or Y Register */
+    /* Sets the correct Process status after a load register instruction
+    *  - LDA, LDX, LDY
+    *  @Register The A,X or Y Register */
     void LoadRegisterSetStatus( Byte Register ) {
         Z = (Register == 0);
         N = (Register & 0b10000000) > 0;

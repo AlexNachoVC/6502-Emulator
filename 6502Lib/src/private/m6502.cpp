@@ -39,6 +39,7 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
             {
                 Word AbsAddress = FetchWord( Cycles, memory );
                 A = ReadByte( Cycles, AbsAddress, memory );
+                LoadRegisterSetStatus( A ); 
             } break;
             case INS_LDA_ABSX:
             {
@@ -49,6 +50,7 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
                 {
                     Cycles--;
                 }
+                LoadRegisterSetStatus( A ); 
             } break;
             case INS_LDA_ABSY:
             {
@@ -59,6 +61,7 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
                 {
                     Cycles--;
                 }
+                LoadRegisterSetStatus( A ); 
             } break;
             case INS_LDA_INDX:
             {
@@ -67,6 +70,7 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
                 Cycles--;
                 Word EffectiveAddress = ReadWord( Cycles, ZPAdress, memory );
                 A = ReadByte( Cycles, EffectiveAddress, memory );
+                LoadRegisterSetStatus( A ); 
             } break;
             case INS_LDA_INDY:
             {
@@ -78,6 +82,7 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
                 {
                     Cycles--;
                 }
+                LoadRegisterSetStatus( A ); 
             } break;
             case INS_JSR:
             {
