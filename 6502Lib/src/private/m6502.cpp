@@ -8,15 +8,24 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
         switch ( Ins ) {
             case INS_LDA_IM:
             {
-                Byte Value = FetchByte(Cycles, memory); 
-                A = Value;
-                LDASetStatus();
+                A = FetchByte(Cycles, memory);
+                LoadRegisterSetStatus( A );
+            } break;
+            case INS_LDX_IM:
+            {
+                X = FetchByte(Cycles, memory);
+                LoadRegisterSetStatus( X );
+            } break;
+            case INS_LDY_IM:
+            {
+                Y = FetchByte(Cycles, memory);
+                LoadRegisterSetStatus( Y );
             } break;
             case INS_LDA_ZP:
             {
                 Byte ZeroPageAddress = FetchByte(Cycles, memory); 
                 A = ReadByte( Cycles, ZeroPageAddress, memory );
-                LDASetStatus();
+                LoadRegisterSetStatus( A );
             } break;
             case INS_LDA_ZPX:
             {
@@ -24,7 +33,7 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
                 ZeroPageAddress += X;
                 Cycles--;
                 A = ReadByte( Cycles, ZeroPageAddress, memory );
-                LDASetStatus();
+                LoadRegisterSetStatus( A );
             } break;
             case INS_LDA_ABS:
             {

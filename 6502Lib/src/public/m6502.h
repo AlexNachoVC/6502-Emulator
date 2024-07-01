@@ -133,9 +133,10 @@ struct m6502::CPU {
         INS_LDY_ABSX = 0xBC,
         INS_JSR = 0x20;
 
-    void LDASetStatus() {
-        Z = (A == 0);
-        N = (A & 0b10000000) > 0;
+    /* @Register The A,X or Y Register */
+    void LoadRegisterSetStatus( Byte Register ) {
+        Z = (Register == 0);
+        N = (Register & 0b10000000) > 0;
     }
 
     /* @return the number of cycles that were used */
