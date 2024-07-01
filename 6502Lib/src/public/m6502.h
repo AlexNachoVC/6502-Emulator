@@ -149,4 +149,9 @@ struct m6502::CPU {
     
     /* Addressing mode - Zero Page X*/
     Word AddressZeroPageX(s32 &Cycles, Mem &memory);
+    
+    /* Addressing mode - Zero Page Y*/
+    Word AddressZeroPageY(s32 &Cycles, Mem &memory);
+
+    
 };
