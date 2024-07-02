@@ -1,49 +1,5 @@
 #include "m6502.h"
 
-m6502::Word m6502::CPU::AddressZeroPage( s32& Cycles, Mem& memory ) {
-    Byte ZeroPaggeAddress = FetchByte( Cycles, memory );
-    return ZeroPaggeAddress;
-}
-
-m6502::Word m6502::CPU::AddressZeroPageX( s32& Cycles, Mem& memory ) {
-    Byte ZeroPageAddress = FetchByte(Cycles, memory); 
-    ZeroPageAddress += X;
-    Cycles--;
-    return ZeroPageAddress;
-}
-
-m6502::Word m6502::CPU::AddressZeroPageY( s32& Cycles, Mem& memory ) {
-    Byte ZeroPageAddress = FetchByte(Cycles, memory); 
-    ZeroPageAddress += Y;
-    Cycles--;
-    return ZeroPageAddress;
-}
-
-m6502::Word m6502::CPU::AddressAbsolute( s32& Cycles, Mem& memory ) {
-    Word AbsAddress = FetchWord( Cycles, memory );
-    return AbsAddress;
-}
-m6502::Word m6502::CPU::AddressAbsoluteX( s32& Cycles, Mem& memory ) {
-    Word AbsAddress = FetchWord( Cycles, memory );
-    Word AbsAddressX = AbsAddress + X;
-    if ( AbsAddressX - AbsAddress >= 0xFF ) 
-    {
-        Cycles--;
-    }
-    return AbsAddressX;
-}
-m6502::Word m6502::CPU::AddressAbsoluteY( s32& Cycles, Mem& memory ) {
-    Word AbsAddress = FetchWord( Cycles, memory );
-    Word AbsAddressY = AbsAddress + Y;
-    if ( AbsAddressY - AbsAddress >= 0xFF ) 
-    {
-        Cycles--;
-    }
-    return AbsAddressY;
-}
-
-
-
 m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
 
     const s32 CyclesRequested = Cycles;
@@ -183,4 +139,47 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
 
     const s32 NumCyclesUsed = CyclesRequested - Cycles;
     return NumCyclesUsed;
+}
+
+
+m6502::Word m6502::CPU::AddressZeroPage( s32& Cycles, Mem& memory ) {
+    Byte ZeroPaggeAddress = FetchByte( Cycles, memory );
+    return ZeroPaggeAddress;
+}
+
+m6502::Word m6502::CPU::AddressZeroPageX( s32& Cycles, Mem& memory ) {
+    Byte ZeroPageAddress = FetchByte(Cycles, memory); 
+    ZeroPageAddress += X;
+    Cycles--;
+    return ZeroPageAddress;
+}
+
+m6502::Word m6502::CPU::AddressZeroPageY( s32& Cycles, Mem& memory ) {
+    Byte ZeroPageAddress = FetchByte(Cycles, memory); 
+    ZeroPageAddress += Y;
+    Cycles--;
+    return ZeroPageAddress;
+}
+
+m6502::Word m6502::CPU::AddressAbsolute( s32& Cycles, Mem& memory ) {
+    Word AbsAddress = FetchWord( Cycles, memory );
+    return AbsAddress;
+}
+m6502::Word m6502::CPU::AddressAbsoluteX( s32& Cycles, Mem& memory ) {
+    Word AbsAddress = FetchWord( Cycles, memory );
+    Word AbsAddressX = AbsAddress + X;
+    if ( AbsAddressX - AbsAddress >= 0xFF ) 
+    {
+        Cycles--;
+    }
+    return AbsAddressX;
+}
+m6502::Word m6502::CPU::AddressAbsoluteY( s32& Cycles, Mem& memory ) {
+    Word AbsAddress = FetchWord( Cycles, memory );
+    Word AbsAddressY = AbsAddress + Y;
+    if ( AbsAddressY - AbsAddress >= 0xFF ) 
+    {
+        Cycles--;
+    }
+    return AbsAddressY;
 }
