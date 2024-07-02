@@ -158,4 +158,7 @@ struct m6502::CPU {
 
     /* Addressing mode - Absolute with X offset*/
     Word AddressAbsoluteX(s32 &Cycles, Mem &memory);
+
+    /* Addressing mode - Absolute with Y offset*/
+    Word AddressAbsoluteY(s32 &Cycles, Mem &memory);
 };

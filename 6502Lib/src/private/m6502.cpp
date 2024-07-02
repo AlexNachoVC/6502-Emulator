@@ -32,6 +32,15 @@ m6502::Word m6502::CPU::AddressAbsoluteX( s32& Cycles, Mem& memory ) {
     }
     return AbsAddressX;
 }
+m6502::Word m6502::CPU::AddressAbsoluteY( s32& Cycles, Mem& memory ) {
+    Word AbsAddress = FetchWord( Cycles, memory );
+    Word AbsAddressY = AbsAddress + Y;
+    if ( AbsAddressY - AbsAddress >= 0xFF ) 
+    {
+        Cycles--;
+    }
+    return AbsAddressY;
+}
 
 
 
@@ -124,14 +133,15 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
             } break;
             case INS_LDA_ABSY:
             {
-                Word AbsAddress = FetchWord( Cycles, memory );
-                Word AbsAddressY = AbsAddress + Y;
-                A = ReadByte( Cycles, AbsAddressY, memory );
-                if ( AbsAddressY - AbsAddress >= 0xFF ) 
-                {
-                    Cycles--;
-                }
+                Word Address = AddressAbsoluteY( Cycles, memory );
+                A = ReadByte( Cycles, Address, memory );
                 LoadRegisterSetStatus( A ); 
+            } break;
+            case INS_LDX_ABSY:
+            {
+                Word Address = AddressAbsoluteY( Cycles, memory );
+                X = ReadByte( Cycles, Address, memory );
+                LoadRegisterSetStatus( X ); 
             } break;
             case INS_LDA_INDX:
             {
