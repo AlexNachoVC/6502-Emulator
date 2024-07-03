@@ -137,7 +137,8 @@ struct m6502::CPU {
         INS_STA_ZPX = 0x95,
         // STX
         INS_STX_ZP = 0x86,
-        INS_STX_ABS = 0x8E ,
+        INS_STX_ABS = 0x8E,
+        INS_STX_ZPY = 0x96,
         // STY 
         INS_STY_ZP = 0x84,
         INS_STY_ABS = 0x8C,
