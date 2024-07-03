@@ -49,3 +49,13 @@ TEST_F( M6502StoreRegisterTests, STAZeroPageCanStoreTheARegisterIntoMemory )
 {
     TestStoreRegisterZeroPage( CPU::INS_STA_ZP, &CPU::A );
 }
+
+TEST_F( M6502StoreRegisterTests, STXZeroPageCanStoreTheXRegisterIntoMemory )
+{
+    TestStoreRegisterZeroPage( CPU::INS_STX_ZP, &CPU::X );
+}
+
+TEST_F( M6502StoreRegisterTests, STYZeroPageCanStoreTheYRegisterIntoMemory )
+{
+    TestStoreRegisterZeroPage( CPU::INS_STY_ZP, &CPU::Y );
+}

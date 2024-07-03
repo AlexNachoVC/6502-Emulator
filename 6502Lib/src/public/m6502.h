@@ -133,7 +133,11 @@ struct m6502::CPU {
         INS_LDY_ABSX = 0xBC,
         // STA
         INS_STA_ZP = 0X85,
-        
+        // STX
+        INS_STX_ZP = 0x86,
+        // STY 
+        INS_STY_ZP = 0x84,
+
         INS_JSR = 0x20;
 
     /* Sets the correct Process status after a load register instruction
