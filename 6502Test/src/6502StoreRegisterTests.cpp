@@ -43,6 +43,26 @@ protected:
         EXPECT_EQ( mem[0x0080], 0x2F );
         VerifyUnmodifiedFlagsFromStoreRegister( cpu, CPUCopy );
     }
+
+    void TestStoreRegisterAbsolute( Byte OpcodeToTest, Byte CPU::*RegisterToTest ) 
+    {
+        // Given:
+        cpu.*RegisterToTest = 0x2F;
+        mem[0xFFFC] = OpcodeToTest;
+        mem[0xFFFD] = 0x00;
+        mem[0xFFFE] = 0x80;
+        mem[0x8000] = 0x00;
+        constexpr s32 EXPECTED_CYCLES = 4;
+        CPU CPUCopy = cpu;
+
+        // When:
+        const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem);
+
+        // Then:
+        EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+        EXPECT_EQ( mem[0x8000], 0x2F );
+        VerifyUnmodifiedFlagsFromStoreRegister( cpu, CPUCopy );
+    }
 };
 
 TEST_F( M6502StoreRegisterTests, STAZeroPageCanStoreTheARegisterIntoMemory )
@@ -58,4 +78,19 @@ TEST_F( M6502StoreRegisterTests, STXZeroPageCanStoreTheXRegisterIntoMemory )
 TEST_F( M6502StoreRegisterTests, STYZeroPageCanStoreTheYRegisterIntoMemory )
 {
     TestStoreRegisterZeroPage( CPU::INS_STY_ZP, &CPU::Y );
+}
+
+TEST_F( M6502StoreRegisterTests, STAAbsoluteCanStoreTheARegisterIntoMemory )
+{
+    TestStoreRegisterAbsolute( CPU::INS_STA_ABS, &CPU::A );
+}
+
+TEST_F( M6502StoreRegisterTests, STXAbsoluteCanStoreTheXRegisterIntoMemory )
+{
+    TestStoreRegisterAbsolute( CPU::INS_STX_ABS, &CPU::X );
+}
+
+TEST_F( M6502StoreRegisterTests, STYAbsoluteCanStoreTheYRegisterIntoMemory )
+{
+    TestStoreRegisterAbsolute( CPU::INS_STY_ABS, &CPU::Y );
 }

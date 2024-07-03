@@ -133,10 +133,13 @@ struct m6502::CPU {
         INS_LDY_ABSX = 0xBC,
         // STA
         INS_STA_ZP = 0X85,
+        INS_STA_ABS = 0X8D,
         // STX
         INS_STX_ZP = 0x86,
+        INS_STX_ABS = 0x8E ,
         // STY 
         INS_STY_ZP = 0x84,
+        INS_STY_ABS = 0x8C,
 
         INS_JSR = 0x20;
 
