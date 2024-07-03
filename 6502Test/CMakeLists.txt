@@ -14,8 +14,8 @@ FetchContent_MakeAvailable(googletest)
 # source for the test executable
 set  (M6502_SOURCES
     "src/main_6502.cpp"
-    "src/6502Tests.cpp")
-
+    "src/6502LoadRegisterTests.cpp"
+    "src/6502StoreRegisterTests.cpp")
 source_group("src" FILES ${M6502_SOURCES})
 
 add_executable( M6502Test ${M6502_SOURCES} )
