@@ -187,6 +187,6 @@ struct m6502::CPU {
     /* Addressing mode - Indirect X | Indexed Indirect*/
     Word AddressIndirectX(s32 &Cycles, const Mem &memory);
     
-    /* Addressing mode - Indirect X | Indexed Indirect*/
+    /* Addressing mode - Indirect X | Indirect Indexed*/
     Word AddressIndirectY(s32 &Cycles, const Mem &memory);
 };
