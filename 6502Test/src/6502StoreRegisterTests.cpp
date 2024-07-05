@@ -137,17 +137,17 @@ TEST_F( M6502StoreRegisterTests, STYAbsoluteCanStoreTheYRegisterIntoMemory )
 
 TEST_F( M6502StoreRegisterTests, STAZeroPageXCanStoreTheARegisterIntoMemory )
 {
-    TestStoreRegisterAbsolute( CPU::INS_STA_ZPX, &CPU::A );
+    TestStoreRegisterZeroPageX( CPU::INS_STA_ZPX, &CPU::A );
 }
 
 TEST_F( M6502StoreRegisterTests, STXZeroPageYCanStoreTheXRegisterIntoMemory )
 {
-    TestStoreRegisterAbsolute( CPU::INS_STX_ZPY, &CPU::X );
+    TestStoreRegisterZeroPageY( CPU::INS_STX_ZPY, &CPU::X );
 }
 
 TEST_F( M6502StoreRegisterTests, STYZeroPageXCanStoreTheYRegisterIntoMemory )
 {
-    TestStoreRegisterAbsolute( CPU::INS_STY_ZPX, &CPU::Y );
+    TestStoreRegisterZeroPageX( CPU::INS_STY_ZPX, &CPU::Y );
 }
 
 TEST_F( M6502StoreRegisterTests, STAAbsoluteXCanStoreTheARegisterIntoMemory )
