@@ -108,6 +108,11 @@ struct m6502::CPU {
         return LoByte | (HiByte << 8);
     }
     
+    void WriteByte( Byte Value, s32& Cycles, Word Address, Mem& memory ) {
+        memory[Address] = Value;
+        Cycles--;
+    }
+
     // Opcodes
     static constexpr Byte 
         // LDA
