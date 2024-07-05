@@ -161,9 +161,17 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
             } break;
             case INS_STA_ABSX:
             {
+                // TODO: AddressAbsoluteX can consume an extra cycle on boundaries?
                 Word Address = AddressAbsoluteX( Cycles, memory );
                 WriteByte( A, Cycles, Address, memory );
-                Cycles--; //TODO: Why is tis cycle consumed?
+                Cycles--; //TODO: Why is this cycle consumed?
+            } break;
+            case INS_STA_ABSY:
+            {
+                // TODO: AddressAbsoluteX can consume an extra cycle on boundaries?
+                Word Address = AddressAbsoluteY( Cycles, memory );
+                WriteByte( A, Cycles, Address, memory );
+                Cycles--; //TODO: Why is this cycle consumed?
             } break;
             case INS_JSR:
             {
