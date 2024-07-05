@@ -119,6 +119,16 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
                 Word Address = AddressZeroPage( Cycles, memory );
                 WriteByte( A, Cycles, Address, memory );
             } break;
+            case INS_STX_ZP:
+            {
+                Word Address = AddressZeroPage( Cycles, memory );
+                WriteByte( X, Cycles, Address, memory );
+            } break;
+            case INS_STY_ZP:
+            {
+                Word Address = AddressZeroPage( Cycles, memory );
+                WriteByte( Y, Cycles, Address, memory );
+            } break;
             case INS_JSR:
             {
                 Word SubAddress = FetchWord( Cycles, memory );
