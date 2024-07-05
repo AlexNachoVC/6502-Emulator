@@ -134,7 +134,11 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
                 Word Address = AddressZeroPageX( Cycles, memory );
                 WriteByte( A, Cycles, Address, memory );
             } break;
-            
+            case INS_STX_ZPY:
+            {
+                Word Address = AddressZeroPageY( Cycles, memory );
+                WriteByte( X, Cycles, Address, memory );
+            } break;
             case INS_STY_ZPX:
             {
                 Word Address = AddressZeroPageX( Cycles, memory );
