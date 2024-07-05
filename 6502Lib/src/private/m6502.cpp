@@ -159,6 +159,12 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
                 Word Address = AddressAbsolute( Cycles, memory );
                 WriteByte( Y, Cycles, Address, memory );
             } break;
+            case INS_STA_ABSX:
+            {
+                Word Address = AddressAbsoluteX( Cycles, memory );
+                WriteByte( A, Cycles, Address, memory );
+                Cycles--; //TODO: Why is tis cycle consumed?
+            } break;
             case INS_JSR:
             {
                 Word SubAddress = FetchWord( Cycles, memory );

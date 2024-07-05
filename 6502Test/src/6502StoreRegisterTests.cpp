@@ -166,7 +166,7 @@ TEST_F( M6502StoreRegisterTests, STAAbsoluteXCanStoreTheARegisterIntoMemory )
 
     // Then:
     EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-    EXPECT_EQ( mem[0x008F], 0x42 );
+    EXPECT_EQ( mem[0x800F], 0x42 );
     VerifyUnmodifiedFlagsFromStoreRegister( cpu, CPUCopy );
 }
 
