@@ -96,13 +96,13 @@ struct m6502::CPU {
         return Data;
     }
 
-    Byte ReadByte( s32& Cycles, Word Address, Mem& memory ){
+    Byte ReadByte( s32& Cycles, Word Address, const Mem& memory ){
         Byte Data = memory[Address];
         Cycles--;
         return Data;
     }
 
-    Word ReadWord( s32& Cycles, Word Address, Mem& memory ){
+    Word ReadWord( s32& Cycles, Word Address, const Mem& memory ){
         Byte LoByte = ReadByte( Cycles, Address, memory );
         Byte HiByte = ReadByte( Cycles, Address + 1, memory );
         return LoByte | (HiByte << 8);
@@ -183,4 +183,7 @@ struct m6502::CPU {
 
     /* Addressing mode - Absolute with Y offset*/
     Word AddressAbsoluteY(s32 &Cycles, const Mem &memory);
+
+    /* Addressing mode - Indirect X | Indexed Indirect*/
+    Word AddressIndirectX(s32 &Cycles, const Mem &memory);
 };

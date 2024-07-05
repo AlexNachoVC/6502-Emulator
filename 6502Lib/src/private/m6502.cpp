@@ -97,11 +97,8 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
             } break;
             case INS_LDA_INDX:
             {
-                Byte ZPAdress = FetchByte( Cycles, memory );
-                ZPAdress += X;
-                Cycles--;
-                Word EffectiveAddress = ReadWord( Cycles, ZPAdress, memory );
-                LoadRegister( EffectiveAddress, A );
+                Word Address = AddressIndirectX( Cycles, memory );
+                LoadRegister( Address, A );
             } break;
             case INS_LDA_INDY:
             {
@@ -173,6 +170,12 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
                 WriteByte( A, Cycles, Address, memory );
                 Cycles--; //TODO: Why is this cycle consumed?
             } break;
+            case INS_STA_INDX:
+            {
+                Word Address = AddressIndirectX( Cycles, memory );
+                WriteByte( A, Cycles, Address, memory );
+            } break;
+            
             case INS_JSR:
             {
                 Word SubAddress = FetchWord( Cycles, memory );
@@ -235,4 +238,12 @@ m6502::Word m6502::CPU::AddressAbsoluteY( s32& Cycles, const Mem& memory ) {
         Cycles--;
     }
     return AbsAddressY;
+}
+
+m6502::Word m6502::CPU::AddressIndirectX( s32& Cycles, const Mem& memory ) {
+    Byte ZPAdress = FetchByte( Cycles, memory );
+    ZPAdress += X;
+    Cycles--;
+    Word EffectiveAddress = ReadWord( Cycles, ZPAdress, memory );
+    return EffectiveAddress;
 }
