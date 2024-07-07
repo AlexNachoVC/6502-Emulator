@@ -40,12 +40,6 @@ struct m6502::Mem {
         return Data[Address];
     }
 
-    /* Write 2 bytes */
-    void WriteWord( Word Value, u32 Address, s32& Cycles) {
-        Data[Address]       = Value & 0xFF;
-        Data[Address + 1]   = (Value >> 8);
-        Cycles -= 2;
-    }
 };
 struct m6502::CPU {
 
@@ -108,9 +102,17 @@ struct m6502::CPU {
         return LoByte | (HiByte << 8);
     }
     
+    /* Write 1 byte to memory */
     void WriteByte( Byte Value, s32& Cycles, Word Address, Mem& memory ) {
         memory[Address] = Value;
         Cycles--;
+    }
+
+    /* Write 2 bytes to memory */
+    void WriteWord( Word Value, s32& Cycles, Word Address, Mem& memory ) {
+        memory[Address]       = Value & 0xFF;
+        memory[Address + 1]   = (Value >> 8);
+        Cycles -= 2;
     }
 
     // Opcodes
