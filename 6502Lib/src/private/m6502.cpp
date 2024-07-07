@@ -173,8 +173,7 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
             case INS_JSR:
             {
                 Word SubAddress = FetchWord( Cycles, memory );
-                WriteWord( PC - 1, Cycles, SP, memory );
-                SP += 2;
+                PushPCToStack( Cycles, memory );
                 PC = SubAddress;
                 Cycles--;
             } break;

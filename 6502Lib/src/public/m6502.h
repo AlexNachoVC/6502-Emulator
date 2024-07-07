@@ -44,7 +44,7 @@ struct m6502::Mem {
 struct m6502::CPU {
 
     Word PC;            // Program Counter
-    Word SP;            // Stack Pointer
+    Byte SP;            // Stack Pointer
 
     Byte A, X, Y;       // Registers
 
@@ -112,6 +112,17 @@ struct m6502::CPU {
         memory[Address]       = Value & 0xFF;
         memory[Address + 1]   = (Value >> 8);
         Cycles -= 2;
+    }
+
+    /* @return the stack pointer as a full 16-bit address (in the 1st page) */
+    Word SPToAddress() const {
+        return 0x100 | SP;
+    }
+
+    /* Push the PC-1 onto the stack */
+    void PushPCToStack( s32& Cycles, Mem& memory ) {
+        WriteWord( PC - 1, Cycles, SPToAddress(), memory );
+        SP -= 2;
     }
 
     // Opcodes
