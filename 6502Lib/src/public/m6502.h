@@ -76,16 +76,10 @@ struct m6502::CPU {
         Word Data = memory[PC];
         PC++;
         
-
         Data |= (memory[PC] << 8);
         PC++;
 
         Cycles -=2;
-
-        // if you wanted to handle endianness
-        // you would have to swap bytes here
-        // if ( PLATFORM_BIG_ENDIAN )
-        //    SwapBytesInWord(Data) 
 
         return Data;
     }
