@@ -125,6 +125,13 @@ struct m6502::CPU {
         SP -= 2;
     }
 
+    Word PopWordFromStack( s32& Cycles, Mem& memory ) {
+        Word ValueFromStack = ReadWord( Cycles, SPToAddress(), memory );
+        SP += 2;
+        
+        return ValueFromStack;
+    }
+
     // Opcodes
     static constexpr Byte 
         // LDA
