@@ -57,8 +57,13 @@ struct m6502::CPU {
     Byte N : 1;         // Status Flag  
 
     void Reset( Mem& memory) {
-        PC = 0xFFFC;
-        SP = 0x0100;
+        Reset( 0xFFFC, memory );
+        
+    }
+
+    void Reset( Word ResetVector, Mem& memory) {
+        PC = ResetVector;
+        SP = 0xFF;
         C = Z = I = D = B = V = N = 0;
         A = X = Y = 0;
         memory.Initialise();
@@ -148,8 +153,9 @@ struct m6502::CPU {
         INS_STY_ZP = 0x84,
         INS_STY_ABS = 0x8C,
         INS_STY_ZPX = 0x94,
-
-        INS_JSR = 0x20;
+        //
+        INS_JSR = 0x20,
+        INS_RTS = 0x60;
 
     /* Sets the correct Process status after a load register instruction
     *  - LDA, LDX, LDY
