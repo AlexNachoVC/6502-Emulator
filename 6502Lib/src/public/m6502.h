@@ -121,13 +121,14 @@ struct m6502::CPU {
 
     /* Push the PC-1 onto the stack */
     void PushPCToStack( s32& Cycles, Mem& memory ) {
-        WriteWord( PC - 1, Cycles, SPToAddress(), memory );
+        WriteWord( PC - 1, Cycles, SPToAddress() - 1, memory );
         SP -= 2;
     }
 
     Word PopWordFromStack( s32& Cycles, Mem& memory ) {
-        Word ValueFromStack = ReadWord( Cycles, SPToAddress(), memory );
+        Word ValueFromStack = ReadWord( Cycles, SPToAddress() + 1, memory );
         SP += 2;
+        Cycles--;
         
         return ValueFromStack;
     }

@@ -180,7 +180,8 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
             case INS_RTS:
             {
                 Word ReturnAddress = PopWordFromStack( Cycles, memory );
-                PC = ReturnAddress;
+                PC = ReturnAddress + 1;
+                Cycles -= 2;
             } break;
             default:
             {
