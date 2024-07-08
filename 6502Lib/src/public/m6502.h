@@ -12,6 +12,7 @@ namespace m6502
 
     struct Mem;
     struct CPU;
+    struct StatusFlags;
 }
 
 
@@ -41,13 +42,8 @@ struct m6502::Mem {
     }
 
 };
-struct m6502::CPU {
 
-    Word PC;            // Program Counter
-    Byte SP;            // Stack Pointer
-
-    Byte A, X, Y;       // Registers
-
+struct m6502::StatusFlags {
     Byte C : 1;         // Status Flag                
     Byte Z : 1;         // Status Flag  
     Byte I : 1;         // Status Flag  
@@ -55,6 +51,19 @@ struct m6502::CPU {
     Byte B : 1;         // Status Flag  
     Byte V : 1;         // Status Flag  
     Byte N : 1;         // Status Flag  
+};
+struct m6502::CPU {
+
+    Word PC;            // Program Counter
+    Byte SP;            // Stack Pointer
+
+    Byte A, X, Y;       // Registers
+
+    union // processor status
+    {
+        Byte PS;
+        StatusFlags Bit;
+    };
 
     void Reset( Mem& memory) {
         Reset( 0xFFFC, memory );
@@ -64,7 +73,7 @@ struct m6502::CPU {
     void Reset( Word ResetVector, Mem& memory) {
         PC = ResetVector;
         SP = 0xFF;
-        C = Z = I = D = B = V = N = 0;
+        Bit.C = Bit.Z = Bit.I = Bit.D = Bit.B = Bit.V = Bit.N = 0;
         A = X = Y = 0;
         memory.Initialise();
     }
@@ -180,8 +189,8 @@ struct m6502::CPU {
     *  - LDA, LDX, LDY
     *  @Register The A,X or Y Register */
     void LoadRegisterSetStatus( Byte Register ) {
-        Z = (Register == 0);
-        N = (Register & 0b10000000) > 0;
+        Bit.Z = (Register == 0);
+        Bit.N = (Register & 0b10000000) > 0;
     }
 
     /* @return the number of cycles that were used */
