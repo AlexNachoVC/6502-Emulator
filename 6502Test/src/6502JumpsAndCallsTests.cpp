@@ -57,4 +57,25 @@ TEST_F( M6502JumpsAndCallsTests, JSRDoesNotAffectTheProcessorStatus )
     // Then:
     EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
     EXPECT_EQ( cpu.PS, CPUCopy.PS );
+    EXPECT_NE( cpu.SP, CPUCopy.SP );
+}
+
+
+TEST_F( M6502JumpsAndCallsTests, RTSRDoesNotAffectTheProcessorStatus )
+{
+    // Given:
+    cpu.Reset( 0xFF00, mem );
+    mem[0xFF00] = CPU::INS_JSR;
+    mem[0xFF01] = 0x00;
+    mem[0xFF02] = 0x80;
+    mem[0x8000] = CPU::INS_RTS;
+    constexpr s32 EXPECTED_CYCLES = 6 + 6;
+    CPU CPUCopy = cpu;
+
+    // When:
+    const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem);
+
+    // Then:
+    EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+    EXPECT_EQ( cpu.PS, CPUCopy.PS );
 }
