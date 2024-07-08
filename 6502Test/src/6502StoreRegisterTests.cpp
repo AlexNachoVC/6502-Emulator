@@ -4,13 +4,13 @@
 using namespace m6502;
 
 static void VerifyUnmodifiedFlagsFromStoreRegister( const CPU& cpu, const CPU& CPUCopy) { 
-    EXPECT_EQ( cpu.Bit.C, CPUCopy.Bit.C);
-    EXPECT_EQ( cpu.Bit.I, CPUCopy.Bit.I);
-    EXPECT_EQ( cpu.Bit.D, CPUCopy.Bit.D);
-    EXPECT_EQ( cpu.Bit.B, CPUCopy.Bit.B);
-    EXPECT_EQ( cpu.Bit.V, CPUCopy.Bit.V);
-    EXPECT_EQ( cpu.Bit.Z, CPUCopy.Bit.Z);
-    EXPECT_EQ( cpu.Bit.N, CPUCopy.Bit.N);
+    EXPECT_EQ( cpu.Flag.C, CPUCopy.Flag.C);
+    EXPECT_EQ( cpu.Flag.I, CPUCopy.Flag.I);
+    EXPECT_EQ( cpu.Flag.D, CPUCopy.Flag.D);
+    EXPECT_EQ( cpu.Flag.B, CPUCopy.Flag.B);
+    EXPECT_EQ( cpu.Flag.V, CPUCopy.Flag.V);
+    EXPECT_EQ( cpu.Flag.Z, CPUCopy.Flag.Z);
+    EXPECT_EQ( cpu.Flag.N, CPUCopy.Flag.N);
 }
 class M6502StoreRegisterTests : public testing::Test {
 protected:

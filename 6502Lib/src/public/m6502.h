@@ -49,6 +49,7 @@ struct m6502::StatusFlags {
     Byte I : 1;         // Status Flag  
     Byte D : 1;         // Status Flag  
     Byte B : 1;         // Status Flag  
+    Byte Unused : 1;    // Not used. Supposed to be logical 1 at all times
     Byte V : 1;         // Status Flag  
     Byte N : 1;         // Status Flag  
 };
@@ -62,7 +63,7 @@ struct m6502::CPU {
     union // processor status
     {
         Byte PS;
-        StatusFlags Bit;
+        StatusFlags Flag;
     };
 
     void Reset( Mem& memory) {
@@ -73,7 +74,7 @@ struct m6502::CPU {
     void Reset( Word ResetVector, Mem& memory) {
         PC = ResetVector;
         SP = 0xFF;
-        Bit.C = Bit.Z = Bit.I = Bit.D = Bit.B = Bit.V = Bit.N = 0;
+        Flag.C = Flag.Z = Flag.I = Flag.D = Flag.B = Flag.V = Flag.N = 0;
         A = X = Y = 0;
         memory.Initialise();
     }
@@ -189,8 +190,8 @@ struct m6502::CPU {
     *  - LDA, LDX, LDY
     *  @Register The A,X or Y Register */
     void LoadRegisterSetStatus( Byte Register ) {
-        Bit.Z = (Register == 0);
-        Bit.N = (Register & 0b10000000) > 0;
+        Flag.Z = (Register == 0);
+        Flag.N = (Register & 0b10000000) > 0;
     }
 
     /* @return the number of cycles that were used */

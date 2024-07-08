@@ -40,4 +40,3 @@ TEST_F( M6502JumpsAndCallsTests, CanJumpToAsubroutineAndJumpBackAgain )
     EXPECT_EQ( cpu.A, 0x42 );
     EXPECT_EQ( cpu.SP, CPUCopy.SP );
 }
-
