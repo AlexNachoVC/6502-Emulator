@@ -135,6 +135,14 @@ struct m6502::CPU {
         SP -= 2;
     }
 
+    void PushByteOntoStack( s32& Cycles, Byte Value, Mem& memory ) {
+        Word SPWord = SPToAddress();
+        memory[SPWord] = Value;
+        Cycles--;
+        SP--;
+        Cycles--;
+    }
+
     Word PopWordFromStack( s32& Cycles, Mem& memory ) {
         Word ValueFromStack = ReadWord( Cycles, SPToAddress() + 1, memory );
         SP += 2;

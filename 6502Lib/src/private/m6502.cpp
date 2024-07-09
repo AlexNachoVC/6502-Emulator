@@ -212,6 +212,10 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
                 SP = X;
                 Cycles--;
             } break;
+            case INS_PHA:
+            {
+                PushByteOntoStack( Cycles, A, memory );
+            } break;
             default:
             {
                 printf("Instruction %d not handled\n", Ins);
