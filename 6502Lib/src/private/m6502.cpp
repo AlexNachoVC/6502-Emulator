@@ -225,6 +225,10 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
                 A = PopByteFromStack( Cycles, memory );       
                 LoadRegisterSetStatus( A );         
             } break;
+            case INS_PLP:
+            {
+                PS = PopByteFromStack( Cycles, memory );
+            } break;
             default:
             {
                 printf("Instruction %d not handled\n", Ins);
