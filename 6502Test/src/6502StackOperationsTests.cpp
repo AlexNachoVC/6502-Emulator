@@ -121,9 +121,10 @@ TEST_F( M6502StackOperationsTests, PHACanPushARegisterOntoTheStack )
     EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
     EXPECT_EQ( mem[cpu.SPToAddress() + 1], cpu.A );
     EXPECT_EQ( cpu.PS, CPUCopy.PS );
+    EXPECT_EQ( cpu.SP, 0xFE );
 }
 
-TEST_F( M6502StackOperationsTests, PHPCanPushARegisterOntoTheStackPointer )
+TEST_F( M6502StackOperationsTests, PHPCanPushProcessorStatusOntoTheStack )
 {
     // Given:
     cpu.Reset( 0xFF00, mem );
@@ -139,6 +140,7 @@ TEST_F( M6502StackOperationsTests, PHPCanPushARegisterOntoTheStackPointer )
     EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
     EXPECT_EQ( mem[cpu.SPToAddress() + 1], 0xCC );
     EXPECT_EQ( cpu.PS, CPUCopy.PS );
+    EXPECT_EQ( cpu.SP, 0xFE );
 }
 
 TEST_F( M6502StackOperationsTests, PLACanPullAValueFromTheStackIntoTheARegister )
@@ -158,6 +160,7 @@ TEST_F( M6502StackOperationsTests, PLACanPullAValueFromTheStackIntoTheARegister 
     // Then:
     EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
     EXPECT_EQ( cpu.A, 0x42 );
+    EXPECT_EQ( cpu.SP, 0xFF );
 }
 
 TEST_F( M6502StackOperationsTests, PLACanPullAZeroValueFromTheStackIntoTheARegister )
@@ -181,6 +184,7 @@ TEST_F( M6502StackOperationsTests, PLACanPullAZeroValueFromTheStackIntoTheARegis
     EXPECT_EQ( cpu.A, 0x00 );
     EXPECT_TRUE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
+    EXPECT_EQ( cpu.SP, 0xFF );
 }
 
 TEST_F( M6502StackOperationsTests, PLACanPullANegativeValueFromTheStackIntoTheARegister )
@@ -204,6 +208,7 @@ TEST_F( M6502StackOperationsTests, PLACanPullANegativeValueFromTheStackIntoTheAR
     EXPECT_EQ( cpu.A, 0b10000001 );
     EXPECT_TRUE( cpu.Flag.N );
     EXPECT_FALSE( cpu.Flag.Z );
+    EXPECT_EQ( cpu.SP, 0xFF );  
 }
 
 TEST_F( M6502StackOperationsTests, PLPCanPullAValueFromTheStackIntoTheProcessorStatus )
