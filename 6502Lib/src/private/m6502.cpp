@@ -220,6 +220,10 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
             {
                 PushByteOntoStack( Cycles, PS, memory );
             } break;
+            case INS_PLA:
+            {
+                A = PopByteFromStack( Cycles, memory );                
+            } break;
             default:
             {
                 printf("Instruction %d not handled\n", Ins);

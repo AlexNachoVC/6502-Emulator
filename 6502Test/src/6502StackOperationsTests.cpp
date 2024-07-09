@@ -146,7 +146,7 @@ TEST_F( M6502StackOperationsTests, PLACanPullAValueFromTheStackIntoTheARegister 
     // Given:
     cpu.Reset( 0xFF00, mem );
     cpu.A = 0x00;
-    cpu.SP = 0xFF;
+    cpu.SP = 0xFE;
     mem[0x01FF] = 0x42; 
     mem[0xFF00] = CPU::INS_PLA;
     constexpr s32 EXPECTED_CYCLES = 4;

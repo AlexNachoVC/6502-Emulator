@@ -151,6 +151,13 @@ struct m6502::CPU {
         return ValueFromStack;
     }
 
+    Byte PopByteFromStack( s32& Cycles, Mem& memory ){
+        Byte ValueFromStack = ReadByte( Cycles, SPToAddress() + 1, memory );
+        Cycles -= 2;
+
+        return ValueFromStack;
+    }
+
     // Opcodes
     static constexpr Byte 
         // LDA
