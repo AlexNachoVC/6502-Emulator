@@ -104,3 +104,21 @@ TEST_F( M6502StackOperationsTests, TXSCanTransferXRegisterToTheStackPointer )
     EXPECT_EQ( cpu.PS, CPUCopy.PS );
 }
 
+
+TEST_F( M6502StackOperationsTests, PHACanPushARegisterOntoTheStackPointer )
+{
+    // Given:
+    cpu.Reset( 0xFF00, mem );
+    cpu.A = 0x42;
+    mem[0xFF00] = CPU::INS_PHA;
+    constexpr s32 EXPECTED_CYCLES = 3;
+    CPU CPUCopy = cpu;
+
+    // When:
+    const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem);
+
+    // Then:
+    EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+    EXPECT_EQ( mem[cpu.SPToAddress() + 1], cpu.A );
+    EXPECT_EQ( cpu.PS, CPUCopy.PS );
+}
