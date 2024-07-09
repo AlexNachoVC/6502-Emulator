@@ -159,3 +159,49 @@ TEST_F( M6502StackOperationsTests, PLACanPullAValueFromTheStackIntoTheARegister 
     EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
     EXPECT_EQ( cpu.A, 0x42 );
 }
+
+TEST_F( M6502StackOperationsTests, PLACanPullAZeroValueFromTheStackIntoTheARegister )
+{
+    // Given:
+    cpu.Reset( 0xFF00, mem );
+    cpu.Flag.Z = false;
+    cpu.Flag.N = true;
+    cpu.A = 0x42;
+    cpu.SP = 0xFE;
+    mem[0x01FF] = 0x00; 
+    mem[0xFF00] = CPU::INS_PLA;
+    constexpr s32 EXPECTED_CYCLES = 4;
+    CPU CPUCopy = cpu;
+
+    // When:
+    const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem);
+
+    // Then:
+    EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+    EXPECT_EQ( cpu.A, 0x00 );
+    EXPECT_TRUE( cpu.Flag.Z );
+    EXPECT_FALSE( cpu.Flag.N );
+}
+
+TEST_F( M6502StackOperationsTests, PLACanPullANegativeValueFromTheStackIntoTheARegister )
+{
+    // Given:
+    cpu.Reset( 0xFF00, mem );
+    cpu.Flag.N = false;
+    cpu.Flag.Z = true;
+    cpu.A = 0x42;
+    cpu.SP = 0xFE;
+    mem[0x01FF] = 0b10000001; 
+    mem[0xFF00] = CPU::INS_PLA;
+    constexpr s32 EXPECTED_CYCLES = 4;
+    CPU CPUCopy = cpu;
+
+    // When:
+    const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem);
+
+    // Then:
+    EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+    EXPECT_EQ( cpu.A, 0b10000001 );
+    EXPECT_TRUE( cpu.Flag.N );
+    EXPECT_FALSE( cpu.Flag.Z );
+}
