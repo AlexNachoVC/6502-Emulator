@@ -18,6 +18,7 @@ set  (M6502_SOURCES
     "src/6502StoreRegisterTests.cpp"
     "src/6502JumpsAndCallsTests.cpp"
     "src/6502StackOperationsTests.cpp")
+    
 source_group("src" FILES ${M6502_SOURCES})
 
 add_executable( M6502Test ${M6502_SOURCES} )

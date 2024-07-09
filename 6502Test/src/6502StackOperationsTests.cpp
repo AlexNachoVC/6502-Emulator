@@ -19,17 +19,15 @@ protected:
 
 };
 
-TEST_F( M6502StackOperationsTests, test)
+TEST_F( M6502StackOperationsTests, TSXCanTransferTheStackPointerToXRegister )
 {
     // Given:
     cpu.Reset( 0xFF00, mem );
-    mem[0xFF00] = CPU::INS_JSR;
-    mem[0xFF01] = 0x00;
-    mem[0xFF02] = 0x80;
-    mem[0x8000] = CPU::INS_RTS;
-    mem[0xFF03] = CPU::INS_LDA_IM;
-    mem[0xFF04] = 0x42;
-    constexpr s32 EXPECTED_CYCLES = 6 + 6 + 2;
+    cpu.Flag.Z = cpu.Flag.N = true;
+    cpu.X = 0x00;
+    cpu.SP = 0x01;
+    mem[0xFF00] = CPU::INS_TSX;
+    constexpr s32 EXPECTED_CYCLES = 2;
     CPU CPUCopy = cpu;
 
     // When:
@@ -37,6 +35,51 @@ TEST_F( M6502StackOperationsTests, test)
 
     // Then:
     EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-    EXPECT_EQ( cpu.A, 0x42 );
-    EXPECT_EQ( cpu.SP, CPUCopy.SP );
+    EXPECT_EQ( cpu.X, 0x01 );
+    EXPECT_FALSE( cpu.Flag.Z );
+    EXPECT_FALSE( cpu.Flag.N );
+}
+
+
+TEST_F( M6502StackOperationsTests, TSXCanTransferAZeroStackPointerToXRegister )
+{
+    // Given:
+    cpu.Reset( 0xFF00, mem );
+    cpu.Flag.Z = cpu.Flag.N = true;
+    cpu.X = 0x00;
+    cpu.SP = 0x00;
+    mem[0xFF00] = CPU::INS_TSX;
+    constexpr s32 EXPECTED_CYCLES = 2;
+    CPU CPUCopy = cpu;
+
+    // When:
+    const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem);
+
+    // Then:
+    EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+    EXPECT_EQ( cpu.X, 0x00 );
+    EXPECT_TRUE( cpu.Flag.Z );
+    EXPECT_FALSE( cpu.Flag.N );
+}
+
+
+TEST_F( M6502StackOperationsTests, TSXCanTransferANegativeStackPointerToXRegister )
+{
+    // Given:
+    cpu.Reset( 0xFF00, mem );
+    cpu.Flag.Z = cpu.Flag.N = false;
+    cpu.X = 0x00;
+    cpu.SP = 0b10000000;
+    mem[0xFF00] = CPU::INS_TSX;
+    constexpr s32 EXPECTED_CYCLES = 2;
+    CPU CPUCopy = cpu;
+
+    // When:
+    const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem);
+
+    // Then:
+    EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+    EXPECT_EQ( cpu.X, 0b10000000 );
+    EXPECT_FALSE( cpu.Flag.Z );
+    EXPECT_TRUE( cpu.Flag.N );
 }

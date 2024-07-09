@@ -183,6 +183,9 @@ struct m6502::CPU {
         INS_STY_ABS = 0x8C,
         INS_STY_ZPX = 0x94,
         //
+
+        INS_TSX = 0xBA,
+
         INS_JMP_ABS = 0x4C,
         INS_JMP_IND = 0x6C,
         INS_JSR = 0x20,
