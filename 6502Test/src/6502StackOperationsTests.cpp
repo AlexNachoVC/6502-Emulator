@@ -205,3 +205,22 @@ TEST_F( M6502StackOperationsTests, PLACanPullANegativeValueFromTheStackIntoTheAR
     EXPECT_TRUE( cpu.Flag.N );
     EXPECT_FALSE( cpu.Flag.Z );
 }
+
+TEST_F( M6502StackOperationsTests, PLPCanPullAValueFromTheStackIntoTheProcessorStatus )
+{
+    // Given:
+    cpu.Reset( 0xFF00, mem );
+    cpu.SP = 0xFE;
+    cpu.PS = 0;
+    mem[0x01FF] = 0x42; 
+    mem[0xFF00] = CPU::INS_PLP;
+    constexpr s32 EXPECTED_CYCLES = 4;
+    CPU CPUCopy = cpu;
+
+    // When:
+    const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem);
+
+    // Then:
+    EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+    EXPECT_EQ( cpu.PS, 0x42 );
+}

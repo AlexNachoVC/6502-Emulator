@@ -204,6 +204,7 @@ struct m6502::CPU {
         INS_PHA = 0x48,
         INS_PHP = 0x08,
         INS_PLA = 0x68,
+        INS_PLP = 0x28,
 
         INS_JMP_ABS = 0x4C,
         INS_JMP_IND = 0x6C,
