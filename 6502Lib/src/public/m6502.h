@@ -210,7 +210,18 @@ struct m6502::CPU {
         INS_JMP_ABS = 0x4C,
         INS_JMP_IND = 0x6C,
         INS_JSR = 0x20,
-        INS_RTS = 0x60;
+        INS_RTS = 0x60,
+
+        // Logical Ops
+
+        // AND 
+        INS_AND_IM = 0x29,
+
+        // OR
+        INS_ORA_IM = 0x09,
+
+        // EOR
+        INS_EOR_IM = 0x49;
 
     /* Sets the correct Process status after a load register instruction
     *  - LDA, LDX, LDY

@@ -17,7 +17,7 @@ protected:
     virtual void TearDown(){
     }
 
-    static void VerifyUnmodifiedFlagsFromLoadRegister( const CPU& cpu, const CPU& CPUCopy) { 
+    static void VerifyUnmodifiedFlagsFromLogicalOpInstructions( const CPU& cpu, const CPU& CPUCopy) { 
     EXPECT_EQ( cpu.Flag.C, CPUCopy.Flag.C);
     EXPECT_EQ( cpu.Flag.I, CPUCopy.Flag.I);
     EXPECT_EQ( cpu.Flag.D, CPUCopy.Flag.D);
@@ -25,11 +25,45 @@ protected:
     EXPECT_EQ( cpu.Flag.V, CPUCopy.Flag.V);
     }  
 
+    enum class ELogicalOp
+    {
+        And, Eor, Or
+    };
 
-    void TestLoadRegisterImmediate( Byte OpcodeToTest, Byte CPU::*RegisterToTest ) 
+    Byte DoLogicalOp( Byte A, Byte B, ELogicalOp LogicalOp )
+    {
+        switch ( LogicalOp )
+        {
+        case ELogicalOp::And:
+            return A & B;
+            break;
+        case ELogicalOp::Or:
+            return A | B;
+            break;
+        case ELogicalOp::Eor:
+            return A ^ B;
+            break;
+        }    
+
+        throw -1; // Invalid Logical Op
+    }
+
+    void TestLogicalOpImmediate( ELogicalOp LogicalOp ) 
     {
     // Given: 
-    mem[0xFFFC] = OpcodeToTest;
+    cpu.A = 0xCC;
+    switch ( LogicalOp )
+    {
+    case ELogicalOp::And:
+        mem[0xFFFC] = CPU::INS_AND_IM;
+        break;
+    case ELogicalOp::Or:
+        mem[0xFFFC] = CPU::INS_ORA_IM;
+        break;
+    case ELogicalOp::Eor:
+        mem[0xFFFC] = CPU::INS_EOR_IM;
+        break;
+    }    
     mem[0xFFFD] = 0x84;
 
     // When:
@@ -37,11 +71,12 @@ protected:
     s32 CyclesUsed = cpu.Execute( 2, mem );
 
     // Then: 
-    EXPECT_EQ( cpu.*RegisterToTest, 0x84 );
+    
+    EXPECT_EQ( cpu.A, DoLogicalOp( 0xCC, 0x84, LogicalOp) );
     EXPECT_EQ( CyclesUsed, 2 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_TRUE( cpu.Flag.N );
-    VerifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
+    VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
     }
 
     void TestLoadRegisterZeroPage( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
@@ -56,9 +91,19 @@ protected:
 
 
 
-TEST_F( M6502AndEorOraTests, LDAImmediateCanLoadAValueIntoTheARegister ) 
+TEST_F( M6502AndEorOraTests, TestLogicalOpANDOnARegisterImmediate ) 
 {
-    TestLoadRegisterImmediate( CPU::INS_LDA_IM, &CPU::A );
+    TestLogicalOpImmediate( ELogicalOp::And );
+}
+
+TEST_F( M6502AndEorOraTests, TestLogicalOpOROnARegisterImmediate ) 
+{
+    TestLogicalOpImmediate( ELogicalOp::Or );
+}
+
+TEST_F( M6502AndEorOraTests, TestLogicalOpAEOROnARegisterImmediate ) 
+{
+    TestLogicalOpImmediate( ELogicalOp::Eor );
 }
 
 TEST_F( M6502AndEorOraTests, LDAImmediateCanAffectTheZeroFlag ) 
@@ -75,7 +120,7 @@ TEST_F( M6502AndEorOraTests, LDAImmediateCanAffectTheZeroFlag )
     // Then: 
     EXPECT_TRUE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    VerifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
+    VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
 
 void M6502AndEorOraTests::TestLoadRegisterZeroPage( Byte OpcodeToTest, Byte CPU::*RegisterToTest )
@@ -94,7 +139,7 @@ void M6502AndEorOraTests::TestLoadRegisterZeroPage( Byte OpcodeToTest, Byte CPU:
     EXPECT_EQ( CyclesUsed, 3 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    VerifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
+    VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
 
 TEST_F( M6502AndEorOraTests, LDAZeroPageCanLoadAValueIntoTheARegister ) 
@@ -119,7 +164,7 @@ void M6502AndEorOraTests::TestLoadRegisterZeroPageX( Byte OpcodeToTest, Byte CPU
     EXPECT_EQ( CyclesUsed, 4 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    VerifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
+    VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
 
 void M6502AndEorOraTests::TestLoadRegisterZeroPageY( Byte OpcodeToTest, Byte CPU::*RegisterToTest )
@@ -139,7 +184,7 @@ void M6502AndEorOraTests::TestLoadRegisterZeroPageY( Byte OpcodeToTest, Byte CPU
     EXPECT_EQ( CyclesUsed, 4 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    VerifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
+    VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
 
 TEST_F( M6502AndEorOraTests, LDAZeroPageXCanLoadAValueIntoTheARegister ) 
@@ -166,7 +211,7 @@ TEST_F( M6502AndEorOraTests, LDAZeroPageXCanLoadAValueIntoTheARegisterWhenItWrap
     EXPECT_EQ( CyclesUsed, 4 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    VerifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
+    VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
 
 void M6502AndEorOraTests::TestLoadRegisterAbsolute( Byte OpcodeToTest, Byte CPU::*RegisterToTest )
@@ -188,7 +233,7 @@ void M6502AndEorOraTests::TestLoadRegisterAbsolute( Byte OpcodeToTest, Byte CPU:
     EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    VerifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
+    VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
 
 TEST_F( M6502AndEorOraTests, LDAAbsoluteCanLoadAValueIntoTheARegister ) 
@@ -216,7 +261,7 @@ void M6502AndEorOraTests::TestLoadRegisterAbsoluteX( Byte OpcodeToTest, Byte CPU
     EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    VerifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
+    VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
 
 void M6502AndEorOraTests::TestLoadRegisterAbsoluteY( Byte OpcodeToTest, Byte CPU::*RegisterToTest )
@@ -239,7 +284,7 @@ void M6502AndEorOraTests::TestLoadRegisterAbsoluteY( Byte OpcodeToTest, Byte CPU
     EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    VerifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
+    VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
 
 TEST_F( M6502AndEorOraTests, LDAAbsoluteXCanLoadAValueIntoTheARegister ) 
@@ -266,7 +311,7 @@ void M6502AndEorOraTests::TestLoadRegisterAbsoluteXWhenCrossingPageBoundary( Byt
     EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    VerifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
+    VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
 
 void M6502AndEorOraTests::TestLoadRegisterAbsoluteYWhenCrossingPageBoundary( Byte OpcodeToTest, Byte CPU::*RegisterToTest )
@@ -288,7 +333,7 @@ void M6502AndEorOraTests::TestLoadRegisterAbsoluteYWhenCrossingPageBoundary( Byt
     EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    VerifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
+    VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
 
 TEST_F( M6502AndEorOraTests, LDAAbsoluteXCanLoadAValueIntoTheARegisterWhenItCrossesAPageBoundary ) 
@@ -327,7 +372,7 @@ TEST_F( M6502AndEorOraTests, LDAIndirectXCanLoadAValueIntoTheARegister )
     EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    VerifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
+    VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
 
 TEST_F( M6502AndEorOraTests, LDAIndirectYCanLoadAValueIntoTheARegister ) 
@@ -351,7 +396,7 @@ TEST_F( M6502AndEorOraTests, LDAIndirectYCanLoadAValueIntoTheARegister )
     EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    VerifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
+    VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
 
 TEST_F( M6502AndEorOraTests, LDAIndirectYCanLoadAValueIntoTheARegisterWhenItCrossesAPageBoundary ) 
@@ -374,5 +419,5 @@ TEST_F( M6502AndEorOraTests, LDAIndirectYCanLoadAValueIntoTheARegisterWhenItCros
     EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    VerifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
+    VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
