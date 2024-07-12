@@ -313,7 +313,40 @@ protected:
     EXPECT_FALSE( cpu.Flag.N );
     VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
-    void TestLoadRegisterAbsoluteYWhenCrossingPageBoundary( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
+    
+    void TestLogicalOpAbsoluteYWhenCrossingPageBoundary( ELogicalOp LogicalOp  )
+    {
+    // Given: ;
+    cpu.A = 0xCC;
+    cpu.Y = 0xFF;
+    switch ( LogicalOp )
+    {
+    case ELogicalOp::And:
+        mem[0xFFFC] = CPU::INS_AND_ABSY;
+        break;
+    case ELogicalOp::Or:
+        mem[0xFFFC] = CPU::INS_ORA_ABSY;
+        break;
+    case ELogicalOp::Eor:
+        mem[0xFFFC] = CPU::INS_EOR_ABSY;
+        break;
+    }
+    mem[0xFFFD] = 0x02;
+    mem[0xFFFE] = 0x44; // 0x4480
+    mem[0x4501] = 0x37; // 0x4402 + 0xFF crosses page boundary!
+    constexpr s32 EXPECTED_CYCLES = 5;
+    CPU CPUCopy = cpu;
+
+    // When:
+    s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
+
+    // Then: 
+    EXPECT_EQ( cpu.A, DoLogicalOp( 0xCC, 0x37, LogicalOp ) );
+    EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
+    EXPECT_FALSE( cpu.Flag.Z );
+    EXPECT_FALSE( cpu.Flag.N );
+    VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
+}
 };
 
 
@@ -425,29 +458,6 @@ TEST_F( M6502AndEorOraTests, TestLogicalOpEorOnARegisterAbsoluteX )
 	TestLogicalOpAbsoluteX( ELogicalOp::Eor );
 }
 
-
-void M6502AndEorOraTests::TestLoadRegisterAbsoluteYWhenCrossingPageBoundary( Byte OpcodeToTest, Byte CPU::*RegisterToTest )
-{
-    // Given: ;
-    cpu.Y = 0xFF;
-    mem[0xFFFC] = OpcodeToTest;
-    mem[0xFFFD] = 0x02;
-    mem[0xFFFE] = 0x44; // 0x4480
-    mem[0x4501] = 0x37; // 0x4402 + 0xFF crosses page boundary!
-    constexpr s32 EXPECTED_CYCLES = 5;
-    CPU CPUCopy = cpu;
-
-    // When:
-    s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
-
-    // Then: 
-    EXPECT_EQ( cpu.*RegisterToTest, 0x37 );
-    EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-    EXPECT_FALSE( cpu.Flag.Z );
-    EXPECT_FALSE( cpu.Flag.N );
-    VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
-}
-
 TEST_F( M6502AndEorOraTests, TestLogicalOpAndWhenItCrossesAPageBoundaryAbsoluteX )
 {
 	TestLogicalOpAbsoluteXWhenCrossingPageBoundary( ELogicalOp::And );
@@ -462,6 +472,7 @@ TEST_F( M6502AndEorOraTests, TestLogicalOpEorWhenItCrossesAPageBoundaryAbsoluteX
 {
 	TestLogicalOpAbsoluteXWhenCrossingPageBoundary( ELogicalOp::Eor );
 }
+
 TEST_F( M6502AndEorOraTests, TestLogicalOpAndAbsoluteY )
 {
 	TestLogicalOpAbsoluteY( ELogicalOp::And );
@@ -477,9 +488,19 @@ TEST_F( M6502AndEorOraTests, TestLogicalOpEorAbsoluteY )
 	TestLogicalOpAbsoluteY( ELogicalOp::Eor );
 }
 
-TEST_F( M6502AndEorOraTests, LDAAbsoluteYCanLoadAValueIntoTheARegisterWhenItCrossesAPageBoundary ) 
+TEST_F( M6502AndEorOraTests, TestLogicalOpAndWhenItCrossesAPageBoundaryAbsoluteY )
 {
-    TestLoadRegisterAbsoluteYWhenCrossingPageBoundary( CPU::INS_LDA_ABSY, &CPU::A );
+	TestLogicalOpAbsoluteYWhenCrossingPageBoundary( ELogicalOp::And );
+}
+
+TEST_F( M6502AndEorOraTests, TestLogicalOpOrWhenItCrossesAPageBoundaryAbsoluteY )
+{
+	TestLogicalOpAbsoluteYWhenCrossingPageBoundary( ELogicalOp::Or );
+}
+
+TEST_F( M6502AndEorOraTests, TestLogicalOpEorWhenItCrossesAPageBoundaryAbsoluteY )
+{
+	TestLogicalOpAbsoluteYWhenCrossingPageBoundary( ELogicalOp::Eor );
 }
 
 TEST_F( M6502AndEorOraTests, LDAIndirectXCanLoadAValueIntoTheARegister ) 
