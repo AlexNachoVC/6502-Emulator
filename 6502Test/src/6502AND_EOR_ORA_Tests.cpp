@@ -383,6 +383,42 @@ protected:
     EXPECT_FALSE( cpu.Flag.N );
     VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
+
+    void TestLogicalOpIndirectY( ELogicalOp LogicalOp) 
+    {
+    // Given: ;
+    cpu.A = 0xCC;
+    cpu.Flag.Z = cpu.Flag.N = true;
+    cpu.Y = 0x04;
+    switch ( LogicalOp )
+    {
+    case ELogicalOp::And:
+        mem[0xFFFC] = CPU::INS_AND_INDY;
+        break;
+    case ELogicalOp::Or:
+        mem[0xFFFC] = CPU::INS_ORA_INDY;
+        break;
+    case ELogicalOp::Eor:
+        mem[0xFFFC] = CPU::INS_EOR_INDY;
+        break;
+    }
+    mem[0xFFFD] = 0x02;
+    mem[0x0002] = 0x00; 
+    mem[0x0003] = 0x80; 
+    mem[0x8004] = 0x37; // 0x8000 + 0x4
+    constexpr s32 EXPECTED_CYCLES = 5;
+    CPU CPUCopy = cpu;
+
+    // When:
+    s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
+
+    // Then: 
+    EXPECT_EQ( cpu.A, DoLogicalOp( 0xCC, 0x37, LogicalOp ) );
+    EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
+    EXPECT_FALSE( cpu.Flag.Z );
+    EXPECT_FALSE( cpu.Flag.N );
+    VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
+}
 };
 
 
@@ -554,28 +590,19 @@ TEST_F( M6502AndEorOraTests, TestLogicalOpOrIndirectX )
 	TestLogicalOpIndirectX( ELogicalOp::Or );
 }
 
-TEST_F( M6502AndEorOraTests, LDAIndirectYCanLoadAValueIntoTheARegister ) 
+TEST_F( M6502AndEorOraTests, TestLogicalOpAndIndirectY )
 {
-    // Given: ;
-    cpu.Flag.Z = cpu.Flag.N = true;
-    cpu.Y = 0x04;
-    mem[0xFFFC] = CPU::INS_LDA_INDY;
-    mem[0xFFFD] = 0x02;
-    mem[0x0002] = 0x00; 
-    mem[0x0003] = 0x80; 
-    mem[0x8004] = 0x37; // 0x8000 + 0x4
-    constexpr s32 EXPECTED_CYCLES = 5;
-    CPU CPUCopy = cpu;
+	TestLogicalOpIndirectY( ELogicalOp::And );
+}
 
-    // When:
-    s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
+TEST_F( M6502AndEorOraTests, TestLogicalOpOrIndirectY )
+{
+	TestLogicalOpIndirectY( ELogicalOp::Or );
+}
 
-    // Then: 
-    EXPECT_EQ( cpu.A, 0x37 );
-    EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
-    EXPECT_FALSE( cpu.Flag.Z );
-    EXPECT_FALSE( cpu.Flag.N );
-    VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
+TEST_F( M6502AndEorOraTests, TestLogicalOpEorIndirectY )
+{
+	TestLogicalOpIndirectY( ELogicalOp::Eor );
 }
 
 TEST_F( M6502AndEorOraTests, LDAIndirectYCanLoadAValueIntoTheARegisterWhenItCrossesAPageBoundary ) 
