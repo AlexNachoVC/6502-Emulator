@@ -17,27 +17,17 @@ protected:
     virtual void TearDown(){
     }
 
-    void TestLoadRegisterImmediate( Byte Opcode, Byte CPU::*Register );
-    void TestLoadRegisterZeroPage( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
-    void TestLoadRegisterZeroPageX( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
-    void TestLoadRegisterZeroPageY( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
-    void TestLoadRegisterAbsolute( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
-    void TestLoadRegisterAbsoluteX( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
-    void TestLoadRegisterAbsoluteY( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
-    void TestLoadRegisterAbsoluteXWhenCrossingPageBoundary( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
-    void TestLoadRegisterAbsoluteYWhenCrossingPageBoundary( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
-};
-
-static void VerifyUnmodifiedFlagsFromLoadRegister( const CPU& cpu, const CPU& CPUCopy) { 
+    static void VerifyUnmodifiedFlagsFromLoadRegister( const CPU& cpu, const CPU& CPUCopy) { 
     EXPECT_EQ( cpu.Flag.C, CPUCopy.Flag.C);
     EXPECT_EQ( cpu.Flag.I, CPUCopy.Flag.I);
     EXPECT_EQ( cpu.Flag.D, CPUCopy.Flag.D);
     EXPECT_EQ( cpu.Flag.B, CPUCopy.Flag.B);
     EXPECT_EQ( cpu.Flag.V, CPUCopy.Flag.V);
-}
+    }  
 
-void M6502AndEorOraTests::TestLoadRegisterImmediate( Byte OpcodeToTest, Byte CPU::*RegisterToTest )
-{
+
+    void TestLoadRegisterImmediate( Byte OpcodeToTest, Byte CPU::*RegisterToTest ) 
+    {
     // Given: 
     mem[0xFFFC] = OpcodeToTest;
     mem[0xFFFD] = 0x84;
@@ -52,7 +42,19 @@ void M6502AndEorOraTests::TestLoadRegisterImmediate( Byte OpcodeToTest, Byte CPU
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_TRUE( cpu.Flag.N );
     VerifyUnmodifiedFlagsFromLoadRegister( cpu, CPUCopy );
-}
+    }
+
+    void TestLoadRegisterZeroPage( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
+    void TestLoadRegisterZeroPageX( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
+    void TestLoadRegisterZeroPageY( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
+    void TestLoadRegisterAbsolute( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
+    void TestLoadRegisterAbsoluteX( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
+    void TestLoadRegisterAbsoluteY( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
+    void TestLoadRegisterAbsoluteXWhenCrossingPageBoundary( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
+    void TestLoadRegisterAbsoluteYWhenCrossingPageBoundary( Byte OpcodeToTest, Byte CPU::*RegisterToTest );
+};
+
+
 
 TEST_F( M6502AndEorOraTests, LDAImmediateCanLoadAValueIntoTheARegister ) 
 {
