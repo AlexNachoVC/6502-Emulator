@@ -71,11 +71,12 @@ protected:
     s32 CyclesUsed = cpu.Execute( 2, mem );
 
     // Then: 
-    
-    EXPECT_EQ( cpu.A, DoLogicalOp( 0xCC, 0x84, LogicalOp) );
+    const Byte ExpectedResult  = DoLogicalOp( 0xCC, 0x84, LogicalOp );
+    const bool ExpectedNegative = (ExpectedResult & 0b10000000 ) > 0;
+    EXPECT_EQ( cpu.A, ExpectedResult );
     EXPECT_EQ( CyclesUsed, 2 );
     EXPECT_FALSE( cpu.Flag.Z );
-    EXPECT_TRUE( cpu.Flag.N );
+    EXPECT_EQ( cpu.Flag.N, ExpectedNegative );
     VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
     }
 
@@ -103,10 +104,12 @@ protected:
     s32 CyclesUsed = cpu.Execute( 3, mem );
 
     // Then: 
-    EXPECT_EQ( cpu.A, DoLogicalOp( 0xCC, 0x37, LogicalOp) );
+    const Byte ExpectedResult  = DoLogicalOp( 0xCC, 0x37, LogicalOp );
+    const bool ExpectedNegative = (ExpectedResult & 0b10000000 ) > 0;
+    EXPECT_EQ( cpu.A, ExpectedResult );
     EXPECT_EQ( CyclesUsed, 3 );
     EXPECT_FALSE( cpu.Flag.Z );
-    EXPECT_FALSE( cpu.Flag.N );
+    EXPECT_EQ( cpu.Flag.N, ExpectedNegative );
     VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
 
