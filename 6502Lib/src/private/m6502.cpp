@@ -20,6 +20,24 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
         LoadRegisterSetStatus( A );
     };
 
+    /* Or the A Register with the value from the memory address */
+    auto Ora = 
+        [&Cycles, &memory, this]  
+        ( Word Address ) 
+    {
+        A |= ReadByte( Cycles, Address, memory );
+        LoadRegisterSetStatus( A );
+    };
+
+    /* Eor the A Register with the value from the memory address */
+    auto Eor = 
+        [&Cycles, &memory, this]  
+        ( Word Address ) 
+    {
+        A ^= ReadByte( Cycles, Address, memory );
+        LoadRegisterSetStatus( A );
+    };
+
     const s32 CyclesRequested = Cycles;
     while (Cycles > 0) {
         Byte Ins = FetchByte(Cycles, memory);
@@ -28,11 +46,6 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
             {
                 A &= FetchByte( Cycles, memory );
                 LoadRegisterSetStatus( A );
-            } break;
-            case INS_AND_ZP:
-            {
-                Word Address = AddressZeroPage( Cycles, memory );
-                And( Address );
             } break;
             case INS_ORA_IM:
             {
@@ -43,6 +56,21 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
             {
                 A ^= FetchByte( Cycles, memory );
                 LoadRegisterSetStatus( A );  
+            } break;
+            case INS_AND_ZP:
+            {
+                Word Address = AddressZeroPage( Cycles, memory );
+                And( Address );
+            } break;
+            case INS_ORA_ZP:
+            {
+                Word Address = AddressZeroPage( Cycles, memory );
+                Ora( Address );
+            } break;
+            case INS_EOR_ZP:
+            {
+                Word Address = AddressZeroPage( Cycles, memory );
+                Eor( Address );
             } break;
             case INS_LDA_IM:
             {
