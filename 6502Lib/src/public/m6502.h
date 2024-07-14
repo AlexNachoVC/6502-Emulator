@@ -230,7 +230,7 @@ struct m6502::CPU {
 		INS_ORA_ZPX = 0x15,
 		INS_ORA_ABS = 0x0D,
 		INS_ORA_ABSX = 0x1D,
-		INS_ORA_ABSY = 0x39,
+		INS_ORA_ABSY = 0x19,
 		INS_ORA_INDX = 0x01,
 		INS_ORA_INDY = 0x11,
 
