@@ -121,13 +121,13 @@ protected:
     switch ( LogicalOp )
     {
     case ELogicalOp::And:
-        mem[0xFFFC] = CPU::INS_AND_ZP;
+        mem[0xFFFC] = CPU::INS_AND_ZPX;
         break;
     case ELogicalOp::Or:
-        mem[0xFFFC] = CPU::INS_ORA_ZP;
+        mem[0xFFFC] = CPU::INS_ORA_ZPX;
         break;
     case ELogicalOp::Eor:
-        mem[0xFFFC] = CPU::INS_EOR_ZP;
+        mem[0xFFFC] = CPU::INS_EOR_ZPX;
         break;
     }    
     mem[0xFFFD] = 0x42;
@@ -138,10 +138,12 @@ protected:
     s32 CyclesUsed = cpu.Execute( 4, mem );
 
     // Then: 
-    EXPECT_EQ( cpu.A, DoLogicalOp( 0xCC, 0x37, LogicalOp ) );
+    const Byte ExpectedResult  = DoLogicalOp( 0xCC, 0x37, LogicalOp );
+    const bool ExpectedNegative = (ExpectedResult & 0b10000000 ) > 0;
+    EXPECT_EQ( cpu.A, ExpectedResult );
     EXPECT_EQ( CyclesUsed, 4 );
     EXPECT_FALSE( cpu.Flag.Z );
-    EXPECT_FALSE( cpu.Flag.N );
+    EXPECT_EQ( cpu.Flag.N, ExpectedNegative );
     VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
 
@@ -172,10 +174,12 @@ protected:
     s32 CyclesUsed = cpu.Execute( 4, mem );
 
     // Then: 
-    EXPECT_EQ( cpu.A, DoLogicalOp( 0xCC, 0x37, LogicalOp ) );
+    const Byte ExpectedResult  = DoLogicalOp( 0xCC, 0x37, LogicalOp );
+    const bool ExpectedNegative = (ExpectedResult & 0b10000000 ) > 0;
+    EXPECT_EQ( cpu.A, ExpectedResult );
     EXPECT_EQ( CyclesUsed, 4 );
     EXPECT_FALSE( cpu.Flag.Z );
-    EXPECT_FALSE( cpu.Flag.N );
+    EXPECT_EQ( cpu.Flag.N, ExpectedNegative );
     VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
     
