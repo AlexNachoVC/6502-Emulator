@@ -20,6 +20,16 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
                 A &= FetchByte( Cycles, memory );
                 LoadRegisterSetStatus( A );
             } break;
+            case INS_ORA_IM:
+            {
+                A |= FetchByte( Cycles, memory );
+                LoadRegisterSetStatus( A );
+            } break;
+            case INS_EOR_IM: 
+            {
+                A ^= FetchByte( Cycles, memory );
+                LoadRegisterSetStatus( A );  
+            } break;
             case INS_LDA_IM:
             {
                 A = FetchByte(Cycles, memory);
