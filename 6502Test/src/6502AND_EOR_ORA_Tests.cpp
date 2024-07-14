@@ -394,10 +394,12 @@ protected:
     s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
     // Then: 
-    EXPECT_EQ( cpu.A, DoLogicalOp( 0xCC, 0x37, LogicalOp ) );
+    const Byte ExpectedResult  = DoLogicalOp( 0xCC, 0x37, LogicalOp );
+    const bool ExpectedNegative = (ExpectedResult & 0b10000000 ) > 0;
+    EXPECT_EQ( cpu.A, ExpectedResult );
     EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
     EXPECT_FALSE( cpu.Flag.Z );
-    EXPECT_FALSE( cpu.Flag.N );
+    EXPECT_EQ( cpu.Flag.N, ExpectedNegative );
     VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
 
