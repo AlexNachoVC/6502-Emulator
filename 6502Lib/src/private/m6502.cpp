@@ -147,6 +147,21 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
                 Word Address = AddressIndirectX( Cycles, memory );
                 Eor( Address );
             } break;
+            case INS_AND_INDY:
+            {
+                Word Address = AddressIndirectY( Cycles, memory );
+                And( Address );
+            } break;
+            case INS_ORA_INDY:
+            {
+                Word Address = AddressIndirectY( Cycles, memory );
+                Ora( Address );
+            } break;
+            case INS_EOR_INDY:
+            {
+                Word Address = AddressIndirectY( Cycles, memory );
+                Eor( Address );
+            } break;
             case INS_LDA_IM:
             {
                 A = FetchByte(Cycles, memory);
