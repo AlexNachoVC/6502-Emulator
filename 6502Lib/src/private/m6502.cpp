@@ -15,6 +15,11 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
     while (Cycles > 0) {
         Byte Ins = FetchByte(Cycles, memory);
         switch ( Ins ) {
+            case INS_AND_IM:
+            {
+                A &= FetchByte( Cycles, memory );
+                LoadRegisterSetStatus( A );
+            } break;
             case INS_LDA_IM:
             {
                 A = FetchByte(Cycles, memory);

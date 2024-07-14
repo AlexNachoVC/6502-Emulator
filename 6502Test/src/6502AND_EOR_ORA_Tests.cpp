@@ -457,8 +457,6 @@ protected:
 
 };
 
-
-
 TEST_F( M6502AndEorOraTests, TestLogicalOpAndOnARegisterImmediate ) 
 {
     TestLogicalOpImmediate( ELogicalOp::And );
