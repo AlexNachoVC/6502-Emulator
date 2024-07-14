@@ -11,6 +11,15 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
         LoadRegisterSetStatus( Register );
     };
 
+    /* And the A Register with the value from the memory address */
+    auto And = 
+        [&Cycles, &memory, this]  
+        ( Word Address ) 
+    {
+        A &= ReadByte( Cycles, Address, memory );
+        LoadRegisterSetStatus( A );
+    };
+
     const s32 CyclesRequested = Cycles;
     while (Cycles > 0) {
         Byte Ins = FetchByte(Cycles, memory);
@@ -19,6 +28,11 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
             {
                 A &= FetchByte( Cycles, memory );
                 LoadRegisterSetStatus( A );
+            } break;
+            case INS_AND_ZP:
+            {
+                Word Address = AddressZeroPage( Cycles, memory );
+                And( Address );
             } break;
             case INS_ORA_IM:
             {
