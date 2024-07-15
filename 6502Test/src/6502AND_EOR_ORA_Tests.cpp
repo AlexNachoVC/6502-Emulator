@@ -676,3 +676,138 @@ TEST_F( M6502AndEorOraTests, TestLogicalOpEorWhenItCrossesAPageIndirectY )
 {
 	TestLogicalOpIndirectYWhenItCrossesAPage( ELogicalOp::Eor );
 }
+
+TEST_F( M6502AndEorOraTests, TestBitZeroPage )
+{
+    // Given:  
+    cpu.A = 0xCC;
+    mem[0xFFFC] = CPU::INS_BIT_ZP; 
+    mem[0xFFFD] = 0x42;
+    mem[0x0042] = 0xCC;
+
+    // When:
+    CPU CPUCopy = cpu;
+    constexpr u32 EXPECTED_CYCLES = 3;
+    s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
+
+    // Then: 
+    //EXPECT_EQ( cpu.A, ExpectedResult );
+    EXPECT_EQ( CyclesUsed, 3 );
+    EXPECT_EQ( cpu.A, 0xCC );
+    EXPECT_FALSE( cpu.Flag.Z );
+    EXPECT_TRUE( cpu.Flag.V );
+    EXPECT_TRUE( cpu.Flag.N );
+}
+
+TEST_F( M6502AndEorOraTests, TestBitZeroPageResultZero )
+{
+    // Given:  
+    cpu.A = 0xCC;
+    mem[0xFFFC] = CPU::INS_BIT_ZP; 
+    mem[0xFFFD] = 0x42;
+    mem[0x0042] = 0x33;
+
+    // When:
+    CPU CPUCopy = cpu;
+    constexpr u32 EXPECTED_CYCLES = 3;
+    s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
+
+    // Then: 
+    //EXPECT_EQ( cpu.A, ExpectedResult );
+    EXPECT_EQ( CyclesUsed, 3 );
+    EXPECT_EQ( cpu.A, 0xCC );
+    EXPECT_TRUE( cpu.Flag.Z );
+    EXPECT_TRUE( cpu.Flag.V );
+    EXPECT_TRUE( cpu.Flag.N );
+}
+
+TEST_F( M6502AndEorOraTests, TestBitZeroPageResultZeroBit6And7Zero )
+{
+    // Given:  
+    cpu.A = 0x33;
+    mem[0xFFFC] = CPU::INS_BIT_ZP; 
+    mem[0xFFFD] = 0x42;
+    mem[0x0042] = 0xCC;
+
+    // When:
+    CPU CPUCopy = cpu;
+    constexpr u32 EXPECTED_CYCLES = 3;
+    s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
+
+    // Then: 
+    //EXPECT_EQ( cpu.A, ExpectedResult );
+    EXPECT_EQ( CyclesUsed, 3 );
+    EXPECT_EQ( cpu.A, 0x33 );
+    EXPECT_TRUE( cpu.Flag.Z );
+    EXPECT_FALSE( cpu.Flag.V );
+    EXPECT_FALSE( cpu.Flag.N );
+}
+
+TEST_F( M6502AndEorOraTests, TestBitAbsolute )
+{
+    // Given:  
+    cpu.A = 0xCC;
+    mem[0xFFFC] = CPU::INS_BIT_ABS; 
+    mem[0xFFFD] = 0x00;
+    mem[0xFFFE] = 0x80;
+    mem[0x8000] = 0xCC;
+
+    // When:
+    CPU CPUCopy = cpu;
+    constexpr u32 EXPECTED_CYCLES = 4;
+    s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
+
+    // Then: 
+    //EXPECT_EQ( cpu.A, ExpectedResult );
+    EXPECT_EQ( CyclesUsed, 3 );
+    EXPECT_EQ( cpu.A, 0xCC );
+    EXPECT_FALSE( cpu.Flag.Z );
+    EXPECT_TRUE( cpu.Flag.V );
+    EXPECT_TRUE( cpu.Flag.N );
+}
+
+TEST_F( M6502AndEorOraTests, TestBitAbsoluteResultZero )
+{
+    // Given:  
+    cpu.A = 0xCC;
+    mem[0xFFFC] = CPU::INS_BIT_ABS; 
+    mem[0xFFFD] = 0x00;
+    mem[0xFFFE] = 0x80;
+    mem[0x8000] = 0x33;
+
+    // When:
+    CPU CPUCopy = cpu;
+    constexpr u32 EXPECTED_CYCLES = 4;
+    s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
+
+    // Then: 
+    //EXPECT_EQ( cpu.A, ExpectedResult );
+    EXPECT_EQ( CyclesUsed, 3 );
+    EXPECT_EQ( cpu.A, 0xCC );
+    EXPECT_TRUE( cpu.Flag.Z );
+    EXPECT_TRUE( cpu.Flag.V );
+    EXPECT_TRUE( cpu.Flag.N );
+}
+
+TEST_F( M6502AndEorOraTests, TestBitAbsoluteResultZeroBits6And7Zero )
+{
+    // Given:  
+    cpu.A = 0x33;
+    mem[0xFFFC] = CPU::INS_BIT_ABS; 
+    mem[0xFFFD] = 0x00;
+    mem[0xFFFE] = 0x80;
+    mem[0x8000] = 0xCC;
+
+    // When:
+    CPU CPUCopy = cpu;
+    constexpr u32 EXPECTED_CYCLES = 4;
+    s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
+
+    // Then: 
+    //EXPECT_EQ( cpu.A, ExpectedResult );
+    EXPECT_EQ( CyclesUsed, 3 );
+    EXPECT_EQ( cpu.A, 0x33 );
+    EXPECT_TRUE( cpu.Flag.Z );
+    EXPECT_FALSE( cpu.Flag.V );
+    EXPECT_FALSE( cpu.Flag.N );
+}
