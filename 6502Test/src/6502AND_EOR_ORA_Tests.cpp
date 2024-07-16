@@ -785,8 +785,8 @@ TEST_F( M6502AndEorOraTests, TestBitAbsoluteResultZero )
     EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
     EXPECT_EQ( cpu.A, 0xCC );
     EXPECT_TRUE( cpu.Flag.Z );
-    EXPECT_TRUE( cpu.Flag.V );
-    EXPECT_TRUE( cpu.Flag.N );
+    EXPECT_FALSE( cpu.Flag.V );
+    EXPECT_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502AndEorOraTests, TestBitAbsoluteResultZeroBits6And7Zero )
@@ -808,6 +808,6 @@ TEST_F( M6502AndEorOraTests, TestBitAbsoluteResultZeroBits6And7Zero )
     EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
     EXPECT_EQ( cpu.A, 0x33 );
     EXPECT_TRUE( cpu.Flag.Z );
-    EXPECT_FALSE( cpu.Flag.V );
-    EXPECT_FALSE( cpu.Flag.N );
+    EXPECT_TRUE( cpu.Flag.V );
+    EXPECT_TRUE( cpu.Flag.N );
 }
