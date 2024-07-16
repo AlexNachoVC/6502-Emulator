@@ -680,6 +680,7 @@ TEST_F( M6502LogicalOpTests, TestLogicalOpEorWhenItCrossesAPageIndirectY )
 TEST_F( M6502LogicalOpTests, TestBitZeroPage )
 {
     // Given:  
+    cpu.Flag.V = cpu.Flag.N = false;
     cpu.A = 0xCC;
     mem[0xFFFC] = CPU::INS_BIT_ZP; 
     mem[0xFFFD] = 0x42;
@@ -702,6 +703,7 @@ TEST_F( M6502LogicalOpTests, TestBitZeroPage )
 TEST_F( M6502LogicalOpTests, TestBitZeroPageResultZero )
 {
     // Given:  
+    cpu.Flag.V = cpu.Flag.N = true;
     cpu.A = 0xCC;
     mem[0xFFFC] = CPU::INS_BIT_ZP; 
     mem[0xFFFD] = 0x42;
@@ -724,6 +726,7 @@ TEST_F( M6502LogicalOpTests, TestBitZeroPageResultZero )
 TEST_F( M6502LogicalOpTests, TestBitZeroPageResultZeroBit6And7Zero )
 {
     // Given:  
+    cpu.Flag.V = cpu.Flag.N = false;
     cpu.A = 0x33;
     mem[0xFFFC] = CPU::INS_BIT_ZP; 
     mem[0xFFFD] = 0x42;
@@ -746,6 +749,8 @@ TEST_F( M6502LogicalOpTests, TestBitZeroPageResultZeroBit6And7Zero )
 TEST_F( M6502LogicalOpTests, TestBitZeroPageResultZeroBits6And7Mixed )
 {
     // Given:  
+    cpu.Flag.V = false;
+    cpu.Flag.N = true;
     mem[0xFFFC] = CPU::INS_BIT_ZP; 
     mem[0xFFFD] = 0x42;
     mem[0x0042] = 0b01000000;
@@ -764,6 +769,7 @@ TEST_F( M6502LogicalOpTests, TestBitZeroPageResultZeroBits6And7Mixed )
 TEST_F( M6502LogicalOpTests, TestBitAbsolute )
 {
     // Given:  
+    cpu.Flag.V = cpu.Flag.N = false;
     cpu.A = 0xCC;
     mem[0xFFFC] = CPU::INS_BIT_ABS; 
     mem[0xFFFD] = 0x00;
@@ -787,6 +793,7 @@ TEST_F( M6502LogicalOpTests, TestBitAbsolute )
 TEST_F( M6502LogicalOpTests, TestBitAbsoluteResultZero )
 {
     // Given:  
+    cpu.Flag.V = cpu.Flag.N = true;
     cpu.A = 0xCC;
     mem[0xFFFC] = CPU::INS_BIT_ABS; 
     mem[0xFFFD] = 0x00;
@@ -810,6 +817,7 @@ TEST_F( M6502LogicalOpTests, TestBitAbsoluteResultZero )
 TEST_F( M6502LogicalOpTests, TestBitAbsoluteResultZeroBits6And7Zero )
 {
     // Given:  
+    cpu.Flag.V = cpu.Flag.N = false;
     cpu.A = 0x33;
     mem[0xFFFC] = CPU::INS_BIT_ABS; 
     mem[0xFFFD] = 0x00;
@@ -833,6 +841,8 @@ TEST_F( M6502LogicalOpTests, TestBitAbsoluteResultZeroBits6And7Zero )
 TEST_F( M6502LogicalOpTests, TestBitAbsoluteResultZeroBits6And7Mixed )
 {
     // Given:  
+    cpu.Flag.V = true;
+    cpu.Flag.N = false;
     mem[0xFFFC] = CPU::INS_BIT_ABS; 
     mem[0xFFFD] = 0x00;
     mem[0xFFFE] = 0x80;

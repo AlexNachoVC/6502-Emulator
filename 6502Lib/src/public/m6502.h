@@ -159,6 +159,11 @@ struct m6502::CPU {
         return ValueFromStack;
     }
 
+    // Process status bits
+    static constexpr Byte
+        NegativeFlagBit = 0b10000000,
+        OverflowFlagBit = 0b01000000;
+
     // Opcodes
     static constexpr Byte 
         // LDA
