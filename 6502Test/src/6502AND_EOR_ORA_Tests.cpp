@@ -687,12 +687,12 @@ TEST_F( M6502AndEorOraTests, TestBitZeroPage )
 
     // When:
     CPU CPUCopy = cpu;
-    constexpr u32 EXPECTED_CYCLES = 3;
+    constexpr s32 EXPECTED_CYCLES = 3;
     s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
     // Then: 
     //EXPECT_EQ( cpu.A, ExpectedResult );
-    EXPECT_EQ( CyclesUsed, 3 );
+    EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
     EXPECT_EQ( cpu.A, 0xCC );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_TRUE( cpu.Flag.V );
@@ -709,16 +709,16 @@ TEST_F( M6502AndEorOraTests, TestBitZeroPageResultZero )
 
     // When:
     CPU CPUCopy = cpu;
-    constexpr u32 EXPECTED_CYCLES = 3;
+    constexpr s32 EXPECTED_CYCLES = 3;
     s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
     // Then: 
     //EXPECT_EQ( cpu.A, ExpectedResult );
-    EXPECT_EQ( CyclesUsed, 3 );
+    EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
     EXPECT_EQ( cpu.A, 0xCC );
     EXPECT_TRUE( cpu.Flag.Z );
-    EXPECT_TRUE( cpu.Flag.V );
-    EXPECT_TRUE( cpu.Flag.N );
+    EXPECT_FALSE( cpu.Flag.V );
+    EXPECT_FALSE( cpu.Flag.N );
 }
 
 TEST_F( M6502AndEorOraTests, TestBitZeroPageResultZeroBit6And7Zero )
@@ -731,16 +731,16 @@ TEST_F( M6502AndEorOraTests, TestBitZeroPageResultZeroBit6And7Zero )
 
     // When:
     CPU CPUCopy = cpu;
-    constexpr u32 EXPECTED_CYCLES = 3;
+    constexpr s32 EXPECTED_CYCLES = 3;
     s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
     // Then: 
     //EXPECT_EQ( cpu.A, ExpectedResult );
-    EXPECT_EQ( CyclesUsed, 3 );
+    EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
     EXPECT_EQ( cpu.A, 0x33 );
     EXPECT_TRUE( cpu.Flag.Z );
-    EXPECT_FALSE( cpu.Flag.V );
-    EXPECT_FALSE( cpu.Flag.N );
+    EXPECT_TRUE( cpu.Flag.V );
+    EXPECT_TRUE( cpu.Flag.N );
 }
 
 TEST_F( M6502AndEorOraTests, TestBitAbsolute )
@@ -754,12 +754,12 @@ TEST_F( M6502AndEorOraTests, TestBitAbsolute )
 
     // When:
     CPU CPUCopy = cpu;
-    constexpr u32 EXPECTED_CYCLES = 4;
+    constexpr s32 EXPECTED_CYCLES = 4;
     s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
     // Then: 
     //EXPECT_EQ( cpu.A, ExpectedResult );
-    EXPECT_EQ( CyclesUsed, 3 );
+    EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
     EXPECT_EQ( cpu.A, 0xCC );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_TRUE( cpu.Flag.V );
@@ -777,12 +777,12 @@ TEST_F( M6502AndEorOraTests, TestBitAbsoluteResultZero )
 
     // When:
     CPU CPUCopy = cpu;
-    constexpr u32 EXPECTED_CYCLES = 4;
+    constexpr s32 EXPECTED_CYCLES = 4;
     s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
     // Then: 
     //EXPECT_EQ( cpu.A, ExpectedResult );
-    EXPECT_EQ( CyclesUsed, 3 );
+    EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
     EXPECT_EQ( cpu.A, 0xCC );
     EXPECT_TRUE( cpu.Flag.Z );
     EXPECT_TRUE( cpu.Flag.V );
@@ -800,12 +800,12 @@ TEST_F( M6502AndEorOraTests, TestBitAbsoluteResultZeroBits6And7Zero )
 
     // When:
     CPU CPUCopy = cpu;
-    constexpr u32 EXPECTED_CYCLES = 4;
+    constexpr s32 EXPECTED_CYCLES = 4;
     s32 CyclesUsed = cpu.Execute( EXPECTED_CYCLES, mem );
 
     // Then: 
     //EXPECT_EQ( cpu.A, ExpectedResult );
-    EXPECT_EQ( CyclesUsed, 3 );
+    EXPECT_EQ( CyclesUsed, EXPECTED_CYCLES );
     EXPECT_EQ( cpu.A, 0x33 );
     EXPECT_TRUE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.V );

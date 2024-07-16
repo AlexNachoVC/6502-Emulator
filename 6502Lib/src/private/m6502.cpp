@@ -162,6 +162,13 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
                 Word Address = AddressIndirectY( Cycles, memory );
                 Eor( Address );
             } break;
+            case INS_BIT_ZP:
+            {
+                Word Address = AddressZeroPage( Cycles, memory );
+                Byte Value =  ReadByte( Cycles, Address, memory );
+                Flag.Z = !(A & Value);
+                PS |= (Value & 0b11000000);
+            } break;
             case INS_LDA_IM:
             {
                 A = FetchByte(Cycles, memory);
