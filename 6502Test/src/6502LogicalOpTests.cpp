@@ -4,7 +4,7 @@
 using namespace m6502;
 
 
-class M6502AndEorOraTests : public testing::Test {
+class M6502LogicalOpTests : public testing::Test {
 protected:
     
     Mem mem;
@@ -480,37 +480,37 @@ protected:
 
 };
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpAndOnARegisterImmediate ) 
+TEST_F( M6502LogicalOpTests, TestLogicalOpAndOnARegisterImmediate ) 
 {
     TestLogicalOpImmediate( ELogicalOp::And );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpOrOnARegisterImmediate ) 
+TEST_F( M6502LogicalOpTests, TestLogicalOpOrOnARegisterImmediate ) 
 {
     TestLogicalOpImmediate( ELogicalOp::Or );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpEorROnARegisterImmediate ) 
+TEST_F( M6502LogicalOpTests, TestLogicalOpEorROnARegisterImmediate ) 
 {
     TestLogicalOpImmediate( ELogicalOp::Eor );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpAndOnARegisterZeroPage ) 
+TEST_F( M6502LogicalOpTests, TestLogicalOpAndOnARegisterZeroPage ) 
 {
     TestLogicalOpZeroPage( ELogicalOp::And );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpOrOnARegisterZeroPage ) 
+TEST_F( M6502LogicalOpTests, TestLogicalOpOrOnARegisterZeroPage ) 
 {
     TestLogicalOpZeroPage( ELogicalOp::Or );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpEorOnARegisterZeroPage ) 
+TEST_F( M6502LogicalOpTests, TestLogicalOpEorOnARegisterZeroPage ) 
 {
     TestLogicalOpZeroPage( ELogicalOp::Eor );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpEorImmediateCanAffectZeroFlag )
+TEST_F( M6502LogicalOpTests, TestLogicalOpEorImmediateCanAffectZeroFlag )
 {
 	// given:
 	using namespace m6502;
@@ -528,156 +528,156 @@ TEST_F( M6502AndEorOraTests, TestLogicalOpEorImmediateCanAffectZeroFlag )
 	VerifyUnmodifiedFlagsFromLogicalOpInstructions( cpu, CPUCopy );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpAndOnARegisterZeroPageX ) 
+TEST_F( M6502LogicalOpTests, TestLogicalOpAndOnARegisterZeroPageX ) 
 {
     TestLogicalOpZeroPageX( ELogicalOp::And );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpOrOnARegisterZeroPageX ) 
+TEST_F( M6502LogicalOpTests, TestLogicalOpOrOnARegisterZeroPageX ) 
 {
     TestLogicalOpZeroPageX( ELogicalOp::Or );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpEorOnARegisterZeroPageX ) 
+TEST_F( M6502LogicalOpTests, TestLogicalOpEorOnARegisterZeroPageX ) 
 {
     TestLogicalOpZeroPageX( ELogicalOp::Eor );
 }
 
-TEST_F( M6502AndEorOraTests, LogicalOpAndCanLoadAValueIntoTheARegisterWhenItWrapsZeroPageX )
+TEST_F( M6502LogicalOpTests, LogicalOpAndCanLoadAValueIntoTheARegisterWhenItWrapsZeroPageX )
 {
 	TestLogicalOpZeroPageXWhenItWraps( ELogicalOp::And );
 }
 
-TEST_F( M6502AndEorOraTests, LogicalOpOrCanLoadAValueIntoTheARegisterWhenItWrapsZeroPageX )
+TEST_F( M6502LogicalOpTests, LogicalOpOrCanLoadAValueIntoTheARegisterWhenItWrapsZeroPageX )
 {
 	TestLogicalOpZeroPageXWhenItWraps( ELogicalOp::Or );
 }
-TEST_F( M6502AndEorOraTests, LogicalOpEorCanLoadAValueIntoTheARegisterWhenItWrapsZeroPageX )
+TEST_F( M6502LogicalOpTests, LogicalOpEorCanLoadAValueIntoTheARegisterWhenItWrapsZeroPageX )
 {
 	TestLogicalOpZeroPageXWhenItWraps( ELogicalOp::Eor );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpAndOnARegisterAbsolute ) 
+TEST_F( M6502LogicalOpTests, TestLogicalOpAndOnARegisterAbsolute ) 
 {
     TestLogicalOpAbsolute( ELogicalOp::And );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpOrOnARegisterAbsolute ) 
+TEST_F( M6502LogicalOpTests, TestLogicalOpOrOnARegisterAbsolute ) 
 {
     TestLogicalOpAbsolute( ELogicalOp::Or );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpEorOnARegisterAbsolute ) 
+TEST_F( M6502LogicalOpTests, TestLogicalOpEorOnARegisterAbsolute ) 
 {
     TestLogicalOpAbsolute( ELogicalOp::Eor );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpAndOnARegisterAbsoluteX )
+TEST_F( M6502LogicalOpTests, TestLogicalOpAndOnARegisterAbsoluteX )
 {
 	TestLogicalOpAbsoluteX( ELogicalOp::And );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpOrOnARegisterAbsoluteX )
+TEST_F( M6502LogicalOpTests, TestLogicalOpOrOnARegisterAbsoluteX )
 {
 	TestLogicalOpAbsoluteX( ELogicalOp::Or );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpEorOnARegisterAbsoluteX )
+TEST_F( M6502LogicalOpTests, TestLogicalOpEorOnARegisterAbsoluteX )
 {
 	TestLogicalOpAbsoluteX( ELogicalOp::Eor );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpAndWhenItCrossesAPageBoundaryAbsoluteX )
+TEST_F( M6502LogicalOpTests, TestLogicalOpAndWhenItCrossesAPageBoundaryAbsoluteX )
 {
 	TestLogicalOpAbsoluteXWhenCrossingPageBoundary( ELogicalOp::And );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpOrWhenItCrossesAPageBoundaryAbsoluteX )
+TEST_F( M6502LogicalOpTests, TestLogicalOpOrWhenItCrossesAPageBoundaryAbsoluteX )
 {
 	TestLogicalOpAbsoluteXWhenCrossingPageBoundary( ELogicalOp::Or );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpEorWhenItCrossesAPageBoundaryAbsoluteX )
+TEST_F( M6502LogicalOpTests, TestLogicalOpEorWhenItCrossesAPageBoundaryAbsoluteX )
 {
 	TestLogicalOpAbsoluteXWhenCrossingPageBoundary( ELogicalOp::Eor );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpAndAbsoluteY )
+TEST_F( M6502LogicalOpTests, TestLogicalOpAndAbsoluteY )
 {
 	TestLogicalOpAbsoluteY( ELogicalOp::And );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpOrAbsoluteY )
+TEST_F( M6502LogicalOpTests, TestLogicalOpOrAbsoluteY )
 {
 	TestLogicalOpAbsoluteY( ELogicalOp::Or );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpEorAbsoluteY )
+TEST_F( M6502LogicalOpTests, TestLogicalOpEorAbsoluteY )
 {
 	TestLogicalOpAbsoluteY( ELogicalOp::Eor );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpAndWhenItCrossesAPageBoundaryAbsoluteY )
+TEST_F( M6502LogicalOpTests, TestLogicalOpAndWhenItCrossesAPageBoundaryAbsoluteY )
 {
 	TestLogicalOpAbsoluteYWhenCrossingPageBoundary( ELogicalOp::And );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpOrWhenItCrossesAPageBoundaryAbsoluteY )
+TEST_F( M6502LogicalOpTests, TestLogicalOpOrWhenItCrossesAPageBoundaryAbsoluteY )
 {
 	TestLogicalOpAbsoluteYWhenCrossingPageBoundary( ELogicalOp::Or );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpEorWhenItCrossesAPageBoundaryAbsoluteY )
+TEST_F( M6502LogicalOpTests, TestLogicalOpEorWhenItCrossesAPageBoundaryAbsoluteY )
 {
 	TestLogicalOpAbsoluteYWhenCrossingPageBoundary( ELogicalOp::Eor );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpAndIndirectX )
+TEST_F( M6502LogicalOpTests, TestLogicalOpAndIndirectX )
 {
 	TestLogicalOpIndirectX( ELogicalOp::And );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpEorIndirectX )
+TEST_F( M6502LogicalOpTests, TestLogicalOpEorIndirectX )
 {
 	TestLogicalOpIndirectX( ELogicalOp::Eor );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpOrIndirectX )
+TEST_F( M6502LogicalOpTests, TestLogicalOpOrIndirectX )
 {
 	TestLogicalOpIndirectX( ELogicalOp::Or );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpAndIndirectY )
+TEST_F( M6502LogicalOpTests, TestLogicalOpAndIndirectY )
 {
 	TestLogicalOpIndirectY( ELogicalOp::And );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpOrIndirectY )
+TEST_F( M6502LogicalOpTests, TestLogicalOpOrIndirectY )
 {
 	TestLogicalOpIndirectY( ELogicalOp::Or );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpEorIndirectY )
+TEST_F( M6502LogicalOpTests, TestLogicalOpEorIndirectY )
 {
 	TestLogicalOpIndirectY( ELogicalOp::Eor );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpAndWhenItCrossesAPageIndirectY )
+TEST_F( M6502LogicalOpTests, TestLogicalOpAndWhenItCrossesAPageIndirectY )
 {
 	TestLogicalOpIndirectYWhenItCrossesAPage( ELogicalOp::And );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpOrWhenItCrossesAPageIndirectY )
+TEST_F( M6502LogicalOpTests, TestLogicalOpOrWhenItCrossesAPageIndirectY )
 {
 	TestLogicalOpIndirectYWhenItCrossesAPage( ELogicalOp::Or );
 }
 
-TEST_F( M6502AndEorOraTests, TestLogicalOpEorWhenItCrossesAPageIndirectY )
+TEST_F( M6502LogicalOpTests, TestLogicalOpEorWhenItCrossesAPageIndirectY )
 {
 	TestLogicalOpIndirectYWhenItCrossesAPage( ELogicalOp::Eor );
 }
 
-TEST_F( M6502AndEorOraTests, TestBitZeroPage )
+TEST_F( M6502LogicalOpTests, TestBitZeroPage )
 {
     // Given:  
     cpu.A = 0xCC;
@@ -699,7 +699,7 @@ TEST_F( M6502AndEorOraTests, TestBitZeroPage )
     EXPECT_TRUE( cpu.Flag.N );
 }
 
-TEST_F( M6502AndEorOraTests, TestBitZeroPageResultZero )
+TEST_F( M6502LogicalOpTests, TestBitZeroPageResultZero )
 {
     // Given:  
     cpu.A = 0xCC;
@@ -721,7 +721,7 @@ TEST_F( M6502AndEorOraTests, TestBitZeroPageResultZero )
     EXPECT_FALSE( cpu.Flag.N );
 }
 
-TEST_F( M6502AndEorOraTests, TestBitZeroPageResultZeroBit6And7Zero )
+TEST_F( M6502LogicalOpTests, TestBitZeroPageResultZeroBit6And7Zero )
 {
     // Given:  
     cpu.A = 0x33;
@@ -743,7 +743,25 @@ TEST_F( M6502AndEorOraTests, TestBitZeroPageResultZeroBit6And7Zero )
     EXPECT_TRUE( cpu.Flag.N );
 }
 
-TEST_F( M6502AndEorOraTests, TestBitAbsolute )
+TEST_F( M6502LogicalOpTests, TestBitZeroPageResultZeroBits6And7Mixed )
+{
+    // Given:  
+    mem[0xFFFC] = CPU::INS_BIT_ZP; 
+    mem[0xFFFD] = 0x42;
+    mem[0x0042] = 0b01000000;
+
+    // When:
+    CPU CPUCopy = cpu;
+    constexpr s32 EXPECTED_CYCLES = 3;
+    cpu.Execute( EXPECTED_CYCLES, mem );
+
+    // Then: 
+    //EXPECT_EQ( cpu.A, ExpectedResult );
+    EXPECT_TRUE( cpu.Flag.V );
+    EXPECT_FALSE( cpu.Flag.N );
+}
+
+TEST_F( M6502LogicalOpTests, TestBitAbsolute )
 {
     // Given:  
     cpu.A = 0xCC;
@@ -766,7 +784,7 @@ TEST_F( M6502AndEorOraTests, TestBitAbsolute )
     EXPECT_TRUE( cpu.Flag.N );
 }
 
-TEST_F( M6502AndEorOraTests, TestBitAbsoluteResultZero )
+TEST_F( M6502LogicalOpTests, TestBitAbsoluteResultZero )
 {
     // Given:  
     cpu.A = 0xCC;
@@ -789,7 +807,7 @@ TEST_F( M6502AndEorOraTests, TestBitAbsoluteResultZero )
     EXPECT_FALSE( cpu.Flag.N );
 }
 
-TEST_F( M6502AndEorOraTests, TestBitAbsoluteResultZeroBits6And7Zero )
+TEST_F( M6502LogicalOpTests, TestBitAbsoluteResultZeroBits6And7Zero )
 {
     // Given:  
     cpu.A = 0x33;
@@ -809,5 +827,24 @@ TEST_F( M6502AndEorOraTests, TestBitAbsoluteResultZeroBits6And7Zero )
     EXPECT_EQ( cpu.A, 0x33 );
     EXPECT_TRUE( cpu.Flag.Z );
     EXPECT_TRUE( cpu.Flag.V );
+    EXPECT_TRUE( cpu.Flag.N );
+}
+
+TEST_F( M6502LogicalOpTests, TestBitAbsoluteResultZeroBits6And7Mixed )
+{
+    // Given:  
+    mem[0xFFFC] = CPU::INS_BIT_ABS; 
+    mem[0xFFFD] = 0x00;
+    mem[0xFFFE] = 0x80;
+    mem[0x8000] = 0b10000000;
+
+    // When:
+    CPU CPUCopy = cpu;
+    constexpr s32 EXPECTED_CYCLES = 4;
+    cpu.Execute( EXPECTED_CYCLES, mem );
+
+    // Then: 
+    //EXPECT_EQ( cpu.A, ExpectedResult );
+    EXPECT_FALSE( cpu.Flag.V );
     EXPECT_TRUE( cpu.Flag.N );
 }
