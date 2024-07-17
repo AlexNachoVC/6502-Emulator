@@ -1,6 +1,7 @@
 #include "m6502.h"
 
-m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
+m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
+{
 
     /* Load a Register with the value from the memory address */
     auto LoadRegister = 
@@ -404,7 +405,6 @@ m6502::s32 m6502::CPU::Execute ( s32 Cycles, Mem& memory ) {
     return NumCyclesUsed;
 }
 
-
 m6502::Word m6502::CPU::AddressZeroPage( s32& Cycles, const Mem& memory ) {
     Byte ZeroPaggeAddress = FetchByte( Cycles, memory );
     return ZeroPaggeAddress;
@@ -490,4 +490,19 @@ m6502::Word m6502::CPU::AddressIndirectY_5( s32& Cycles, const Mem& memory ) {
     Cycles--;
 
     return EffectiveAddressY;
+}
+
+void m6502::CPU::LoadPrg( Byte* Program, u32 NumBytes, Mem& memory ) {
+    if ( Program )
+    {
+        u32 At = 0;
+        const Word Lo = Program[At++];
+        const Word Hi = Program[At++] << 8;
+        Word LoadAddress = Lo | Hi;
+        for ( Word i = LoadAddress; i < LoadAddress+NumBytes-2; i++ )
+        {
+            // TODO : mem copy?
+            memory[i] = Program[At++];
+        }
+    }
 }

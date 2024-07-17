@@ -262,6 +262,8 @@ struct m6502::CPU {
         Flag.N = (Register & 0b10000000) > 0;
     }
 
+    void LoadPrg( Byte* Program, u32 NumBytes, Mem& memory );
+
     /* @return the number of cycles that were used */
     s32 Execute ( s32 Cycles, Mem& memory );
     
