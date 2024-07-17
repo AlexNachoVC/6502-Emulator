@@ -58,24 +58,17 @@ TEST_F( M6502LoadPrgTests, TestLoadProgramIntoTheCorrectAreaOfMemory )
     EXPECT_EQ( mem[0x100C], 0x0 );
 }
 
-#if 0
-TEST_F( M6502LoadPrgTests, TestLoadProgramIntoTheCorrectAreaOfMemory )
+TEST_F( M6502LoadPrgTests, TestLoadProgramAndExecuteIt )
 {
     // Given:
-    Byte Prg[] = {
-        0x00, 0x10, 0xA9, 0xFF, 0x85, 0x90,
-        0x8D, 0x00, 0x80, 0x49, 0xCC, 0x4C, 0x02, 0x10 };
-    
-
-    // Verify program is in memory correctly!
 
     // When: 
-    cpu.LoadPrg( Prg, 14, mem );
+    Word StartAddress = cpu.LoadPrg( TestPrg, NumBytesInPrg, mem );
+    cpu.PC = StartAddress;
 
     // Then:
-    for( u32 Clock = 10000; Clock > 0; )
+    for( s32 Clock = 10000; Clock > 0; )
     {
         Clock -= cpu.Execute( 20, mem );
     }
 }
-#endif

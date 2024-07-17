@@ -492,17 +492,26 @@ m6502::Word m6502::CPU::AddressIndirectY_5( s32& Cycles, const Mem& memory ) {
     return EffectiveAddressY;
 }
 
-void m6502::CPU::LoadPrg( Byte* Program, u32 NumBytes, Mem& memory ) {
-    if ( Program )
+m6502::Word m6502::CPU::LoadPrg( const Byte* Program, u32 NumBytes, Mem& memory ) const {
+    Word LoadAddress = 0;
+    if ( Program && NumBytes > 2 )
     {
         u32 At = 0;
         const Word Lo = Program[At++];
         const Word Hi = Program[At++] << 8;
-        Word LoadAddress = Lo | Hi;
+        LoadAddress = Lo | Hi;
         for ( Word i = LoadAddress; i < LoadAddress+NumBytes-2; i++ )
         {
             // TODO : mem copy?
             memory[i] = Program[At++];
         }
     }
+
+    return LoadAddress;
+}
+
+void m6502::CPU::PrintStatus() const {
+    printf( "A: %d X: %d Y: %d\n", A, X, Y );
+    printf( "PC: %d SP: %d\n", PC, SP);
+    printf( "PS: %d\n", PS);
 }
