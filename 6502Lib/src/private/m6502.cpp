@@ -405,6 +405,12 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 Cycles--;
                 LoadRegisterSetStatus( Y );
             } break;
+            case INS_TXA:
+            {
+                A = X;
+                Cycles--;
+                LoadRegisterSetStatus( A );
+            } break;
             default:
             {
                 printf("Instruction %d not handled\n", Ins);
