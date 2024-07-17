@@ -251,7 +251,7 @@ TEST_F( M6502TransferRegisterTests, TYACanTransferANonNegativeNonZeroValue )
     cpu.A = 0x32;
     cpu.Flag.Z = true;
     cpu.Flag.N = true;
-    mem[0xFF00] = CPU::INS_TAX;
+    mem[0xFF00] = CPU::INS_TYA;
     constexpr s32 EXPECTED_CYCLES = 2;
     CPU CPUCopy = cpu;
 
@@ -275,7 +275,7 @@ TEST_F( M6502TransferRegisterTests, TYACanTransferANonNegativeZeroValue )
     cpu.A = 0x32;
     cpu.Flag.Z = false;
     cpu.Flag.N = true;
-    mem[0xFF00] = CPU::INS_TAX;
+    mem[0xFF00] = CPU::INS_TYA;
     constexpr s32 EXPECTED_CYCLES = 2;
     CPU CPUCopy = cpu;
 
@@ -299,7 +299,7 @@ TEST_F( M6502TransferRegisterTests, TYACanTransferANegativeValue )
     cpu.A = 0x32;
     cpu.Flag.Z = true;
     cpu.Flag.N = false;
-    mem[0xFF00] = CPU::INS_TAX;
+    mem[0xFF00] = CPU::INS_TYA;
     constexpr s32 EXPECTED_CYCLES = 2;
     CPU CPUCopy = cpu;
 
