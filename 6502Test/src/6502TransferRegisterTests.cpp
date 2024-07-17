@@ -98,3 +98,75 @@ TEST_F( M6502TransferRegisterTests, TAXCanTransferANegativeValue )
     EXPECT_TRUE( cpu.Flag.N );
     ExpectUnaffectedRegisters( CPUCopy );
 }
+
+TEST_F( M6502TransferRegisterTests, TAYCanTransferANonNegativeNonZeroValue )
+{
+    // Given:
+    cpu.Reset( 0xFF00, mem );
+    cpu.A = 0x42;
+    cpu.Y = 0x32;
+    cpu.Flag.Z = true;
+    cpu.Flag.N = true;
+    mem[0xFF00] = CPU::INS_TAY;
+    constexpr s32 EXPECTED_CYCLES = 2;
+    CPU CPUCopy = cpu;
+
+    // When:
+    const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem);
+
+    // Then:
+    EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+    EXPECT_EQ( cpu.A, 0x42 );
+    EXPECT_EQ( cpu.Y, 0x42 );
+    EXPECT_FALSE( cpu.Flag.Z );
+    EXPECT_FALSE( cpu.Flag.N );
+    ExpectUnaffectedRegisters( CPUCopy );
+}
+
+TEST_F( M6502TransferRegisterTests, TAYCanTransferANonNegativeZeroValue )
+{
+    // Given:
+    cpu.Reset( 0xFF00, mem );
+    cpu.A = 0x0;
+    cpu.Y = 0x32;
+    cpu.Flag.Z = false;
+    cpu.Flag.N = true;
+    mem[0xFF00] = CPU::INS_TAY;
+    constexpr s32 EXPECTED_CYCLES = 2;
+    CPU CPUCopy = cpu;
+
+    // When:
+    const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem);
+
+    // Then:
+    EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+    EXPECT_EQ( cpu.A, 0x0 );
+    EXPECT_EQ( cpu.Y, 0x0 );
+    EXPECT_TRUE( cpu.Flag.Z );
+    EXPECT_FALSE( cpu.Flag.N );
+    ExpectUnaffectedRegisters( CPUCopy );
+}
+
+TEST_F( M6502TransferRegisterTests, TAYCanTransferANegativeValue )
+{
+    // Given:
+    cpu.Reset( 0xFF00, mem );
+    cpu.A = 0b10001011;
+    cpu.Y = 0x32;
+    cpu.Flag.Z = true;
+    cpu.Flag.N = false;
+    mem[0xFF00] = CPU::INS_TAY;
+    constexpr s32 EXPECTED_CYCLES = 2;
+    CPU CPUCopy = cpu;
+
+    // When:
+    const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem);
+
+    // Then:
+    EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+    EXPECT_EQ( cpu.A, 0b10001011 );
+    EXPECT_EQ( cpu.Y, 0b10001011 );
+    EXPECT_FALSE( cpu.Flag.Z );
+    EXPECT_TRUE( cpu.Flag.N );
+    ExpectUnaffectedRegisters( CPUCopy );
+}
