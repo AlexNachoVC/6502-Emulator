@@ -260,7 +260,8 @@ struct m6502::CPU {
         INS_TYA = 0x98,
 
         // Increment & Decrement Registers
-        INS_INX = 0xE8
+        INS_INX = 0xE8,
+        INS_INY = 0xC8
         ;
 
     /* Sets the correct Process status after a load register instruction
