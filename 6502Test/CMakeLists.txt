@@ -20,7 +20,8 @@ set  (M6502_SOURCES
     "src/6502StackOperationsTests.cpp"
     "src/6502LogicalOpTests.cpp"
     "src/6502LoadPrgTests.cpp"
-    "src/6502TransferRegisterTests.cpp")
+    "src/6502TransferRegisterTests.cpp"
+    "src/6502IncrementDecrementTests.cpp")
     
 source_group("src" FILES ${M6502_SOURCES})
 
