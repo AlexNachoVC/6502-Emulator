@@ -297,7 +297,7 @@ TEST_F( M6502IncrementDecrementTests, DECCanDecrementAValueInTheZeroPage )
     cpu.Flag.Z = true;
     cpu.Flag.N = true;
     mem[0xFF00] = CPU::INS_DEC_ZP;
-    mem[0xFF01] = 0xf42;
+    mem[0xFF01] = 0x42;
     mem[0x0042] = 0x57;
     constexpr s32 EXPECTED_CYCLES = 5;
     CPU CPUCopy = cpu;

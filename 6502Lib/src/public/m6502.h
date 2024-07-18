@@ -270,7 +270,7 @@ struct m6502::CPU {
     /* Sets the correct Process status after a load register instruction
     *  - LDA, LDX, LDY
     *  @Register The A,X or Y Register */
-    void LoadRegisterSetStatus( Byte Register ) {
+    void SetZeroAndNegativeFlags( Byte Register ) {
         Flag.Z = (Register == 0);
         Flag.N = (Register & 0b10000000) > 0;
     }
