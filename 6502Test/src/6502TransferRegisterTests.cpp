@@ -17,7 +17,7 @@ protected:
     virtual void TearDown(){
     }
 
-    void ExpectUnaffectedRegisters( CPU CPUBefore ) {
+    void ExpectUnaffectedFlags( CPU CPUBefore ) {
         EXPECT_EQ( CPUBefore.Flag.C, cpu.Flag.C);
         EXPECT_EQ( CPUBefore.Flag.I, cpu.Flag.I);
         EXPECT_EQ( CPUBefore.Flag.D, cpu.Flag.D);
@@ -48,7 +48,7 @@ TEST_F( M6502TransferRegisterTests, TAXCanTransferANonNegativeNonZeroValue )
     EXPECT_EQ( cpu.X, 0x42 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502TransferRegisterTests, TAXCanTransferANonNegativeZeroValue )
@@ -72,7 +72,7 @@ TEST_F( M6502TransferRegisterTests, TAXCanTransferANonNegativeZeroValue )
     EXPECT_EQ( cpu.X, 0x0 );
     EXPECT_TRUE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502TransferRegisterTests, TAXCanTransferANegativeValue )
@@ -96,7 +96,7 @@ TEST_F( M6502TransferRegisterTests, TAXCanTransferANegativeValue )
     EXPECT_EQ( cpu.X, 0b10001011 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_TRUE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502TransferRegisterTests, TAYCanTransferANonNegativeNonZeroValue )
@@ -120,7 +120,7 @@ TEST_F( M6502TransferRegisterTests, TAYCanTransferANonNegativeNonZeroValue )
     EXPECT_EQ( cpu.Y, 0x42 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502TransferRegisterTests, TAYCanTransferANonNegativeZeroValue )
@@ -144,7 +144,7 @@ TEST_F( M6502TransferRegisterTests, TAYCanTransferANonNegativeZeroValue )
     EXPECT_EQ( cpu.Y, 0x0 );
     EXPECT_TRUE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502TransferRegisterTests, TAYCanTransferANegativeValue )
@@ -168,7 +168,7 @@ TEST_F( M6502TransferRegisterTests, TAYCanTransferANegativeValue )
     EXPECT_EQ( cpu.Y, 0b10001011 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_TRUE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502TransferRegisterTests, TXACanTransferANonNegativeNonZeroValue )
@@ -192,7 +192,7 @@ TEST_F( M6502TransferRegisterTests, TXACanTransferANonNegativeNonZeroValue )
     EXPECT_EQ( cpu.A, 0x42 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502TransferRegisterTests, TXACanTransferANonNegativeZeroValue )
@@ -216,7 +216,7 @@ TEST_F( M6502TransferRegisterTests, TXACanTransferANonNegativeZeroValue )
     EXPECT_EQ( cpu.A, 0x0 );
     EXPECT_TRUE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502TransferRegisterTests, TXAanTransferANegativeValue )
@@ -240,7 +240,7 @@ TEST_F( M6502TransferRegisterTests, TXAanTransferANegativeValue )
     EXPECT_EQ( cpu.A, 0b10001011 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_TRUE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502TransferRegisterTests, TYACanTransferANonNegativeNonZeroValue )
@@ -264,7 +264,7 @@ TEST_F( M6502TransferRegisterTests, TYACanTransferANonNegativeNonZeroValue )
     EXPECT_EQ( cpu.A, 0x42 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502TransferRegisterTests, TYACanTransferANonNegativeZeroValue )
@@ -288,7 +288,7 @@ TEST_F( M6502TransferRegisterTests, TYACanTransferANonNegativeZeroValue )
     EXPECT_EQ( cpu.A, 0x0 );
     EXPECT_TRUE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502TransferRegisterTests, TYACanTransferANegativeValue )
@@ -312,5 +312,5 @@ TEST_F( M6502TransferRegisterTests, TYACanTransferANegativeValue )
     EXPECT_EQ( cpu.A, 0b10001011 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_TRUE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }

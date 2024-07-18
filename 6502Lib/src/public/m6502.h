@@ -263,7 +263,8 @@ struct m6502::CPU {
         INS_INX = 0xE8,
         INS_INY = 0xC8,
         INS_DEX = 0xCA,
-        INS_DEY = 0X88;
+        INS_DEY = 0X88,
+        INS_DEC_ZP = 0xC6
         ;
 
     /* Sets the correct Process status after a load register instruction

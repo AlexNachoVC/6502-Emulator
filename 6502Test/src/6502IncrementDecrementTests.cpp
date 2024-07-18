@@ -17,7 +17,7 @@ protected:
     virtual void TearDown(){
     }
 
-    void ExpectUnaffectedRegisters( CPU CPUBefore ) {
+    void ExpectUnaffectedFlags( CPU CPUBefore ) {
         EXPECT_EQ( CPUBefore.Flag.C, cpu.Flag.C);
         EXPECT_EQ( CPUBefore.Flag.I, cpu.Flag.I);
         EXPECT_EQ( CPUBefore.Flag.D, cpu.Flag.D);
@@ -45,7 +45,7 @@ TEST_F( M6502IncrementDecrementTests, INXCanIncrementAZeroValue )
     EXPECT_EQ( cpu.X, 0x01 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, INXCanIncrement255 )
@@ -67,7 +67,7 @@ TEST_F( M6502IncrementDecrementTests, INXCanIncrement255 )
     EXPECT_EQ( cpu.X, 0x0 );    // NOTE: does this instruction actualy wrap?
     EXPECT_TRUE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, INXCanIncrementANegativeValue )
@@ -89,7 +89,7 @@ TEST_F( M6502IncrementDecrementTests, INXCanIncrementANegativeValue )
     EXPECT_EQ( cpu.X, 0b10001001 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_TRUE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, INYCanIncrementAZeroValue )
@@ -111,7 +111,7 @@ TEST_F( M6502IncrementDecrementTests, INYCanIncrementAZeroValue )
     EXPECT_EQ( cpu.Y, 0x01 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, INYCanIncrement255 )
@@ -133,7 +133,7 @@ TEST_F( M6502IncrementDecrementTests, INYCanIncrement255 )
     EXPECT_EQ( cpu.Y, 0x0 );    // NOTE: does this instruction actualy wrap?
     EXPECT_TRUE( cpu.Flag.Z );
     EXPECT_FALSE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, INYCanIncrementANegativeValue )
@@ -155,7 +155,7 @@ TEST_F( M6502IncrementDecrementTests, INYCanIncrementANegativeValue )
     EXPECT_EQ( cpu.Y, 0b10001001 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_TRUE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, DEXCanDecrementAZeroValue )
@@ -177,7 +177,7 @@ TEST_F( M6502IncrementDecrementTests, DEXCanDecrementAZeroValue )
     EXPECT_EQ( cpu.X, 0xFF );   // NOTE: Does this wrap?
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_TRUE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, DEXCanDecrement255 )
@@ -199,7 +199,7 @@ TEST_F( M6502IncrementDecrementTests, DEXCanDecrement255 )
     EXPECT_EQ( cpu.X, 0xFE );    
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_TRUE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, DEXCanDecrementANegativeValue )
@@ -221,7 +221,7 @@ TEST_F( M6502IncrementDecrementTests, DEXCanDecrementANegativeValue )
     EXPECT_EQ( cpu.X, 0b10001000 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_TRUE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, DEYCanDecrementAZeroValue )
@@ -243,7 +243,7 @@ TEST_F( M6502IncrementDecrementTests, DEYCanDecrementAZeroValue )
     EXPECT_EQ( cpu.Y, 0xFF );   // NOTE: Does this wrap?
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_TRUE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, DEYCanDecrement255 )
@@ -265,7 +265,7 @@ TEST_F( M6502IncrementDecrementTests, DEYCanDecrement255 )
     EXPECT_EQ( cpu.Y, 0xFE );    
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_TRUE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
 
 TEST_F( M6502IncrementDecrementTests, DEYCanDecrementANegativeValue )
@@ -287,5 +287,29 @@ TEST_F( M6502IncrementDecrementTests, DEYCanDecrementANegativeValue )
     EXPECT_EQ( cpu.Y, 0b10001000 );
     EXPECT_FALSE( cpu.Flag.Z );
     EXPECT_TRUE( cpu.Flag.N );
-    ExpectUnaffectedRegisters( CPUCopy );
+    ExpectUnaffectedFlags( CPUCopy );
 }
+
+TEST_F( M6502IncrementDecrementTests, DECCanDecrementAValueInTheZeroPage )
+{
+    // Given:
+    cpu.Reset( 0xFF00, mem );
+    cpu.Flag.Z = true;
+    cpu.Flag.N = true;
+    mem[0xFF00] = CPU::INS_DEC_ZP;
+    mem[0xFF01] = 0xf42;
+    mem[0x0042] = 0x57;
+    constexpr s32 EXPECTED_CYCLES = 5;
+    CPU CPUCopy = cpu;
+
+    // When:
+    const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem);
+
+    // Then:
+    EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+    EXPECT_EQ( mem[0x0042], 0x56 );
+    EXPECT_FALSE( cpu.Flag.Z );
+    EXPECT_FALSE( cpu.Flag.N );
+    ExpectUnaffectedFlags( CPUCopy );
+}
+
