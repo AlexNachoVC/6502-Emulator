@@ -372,7 +372,7 @@ TEST_F( M6502IncrementDecrementTests, DECCanDecrementAValueAbsoluteX )
     mem[0xFF01] = 0x00;
     mem[0xFF02] = 0x80;
     mem[0x8000 + 0x10] = 0x57;
-    constexpr s32 EXPECTED_CYCLES = 6;
+    constexpr s32 EXPECTED_CYCLES = 7;
     CPU CPUCopy = cpu;
 
     // When:
