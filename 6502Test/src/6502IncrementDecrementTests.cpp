@@ -481,3 +481,32 @@ TEST_F( M6502IncrementDecrementTests, INCCanIncrementAValueAbsoluteX )
     EXPECT_FALSE( cpu.Flag.N );
     ExpectUnaffectedFlags( CPUCopy );
 }
+
+TEST_F( M6502IncrementDecrementTests, TestLoadAProgramThatCanIncMemory )
+{
+
+	// When:
+	/*
+	* = $1000
+	lda #00
+	sta $42
+	start
+	inc $42
+	ldx $42
+	inx
+	jmp start
+	*/
+
+	Byte TestPrg[] = 
+		{ 0x0,0x10,0xA9,0x00,0x85,0x42,0xE6,0x42,
+		0xA6,0x42,0xE8,0x4C,0x04,0x10 };
+
+	Word StartAddress = cpu.LoadPrg( TestPrg, sizeof(TestPrg), mem );
+	cpu.PC = StartAddress;
+
+	// Then:
+	for ( m6502::s32 Clock = 1000; Clock > 0; )
+	{
+		Clock -= cpu.Execute( 1, mem );
+	}
+}
