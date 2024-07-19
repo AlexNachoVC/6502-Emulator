@@ -459,6 +459,15 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 WriteByte( Value, Cycles, Address, memory );
                 SetZeroAndNegativeFlags( Value );
             } break;
+            case INS_DEC_ABS:
+            {
+                Word Address = AddressAbsolute( Cycles, memory );
+                Byte Value = ReadByte( Cycles, Address, memory );
+                Value--;
+                Cycles--;
+                WriteByte( Value, Cycles, Address, memory );
+                SetZeroAndNegativeFlags( Value );
+            } break;
             default:
             {
                 printf("Instruction %d not handled\n", Ins);
