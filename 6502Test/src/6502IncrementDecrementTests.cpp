@@ -343,7 +343,6 @@ TEST_F( M6502IncrementDecrementTests, DECCanDecrementAValueAbsolute )
     cpu.Reset( 0xFF00, mem );
     cpu.Flag.Z = true;
     cpu.Flag.N = true;
-    cpu.X = 0x10;
     mem[0xFF00] = CPU::INS_DEC_ABS;
     mem[0xFF01] = 0x00;
     mem[0xFF02] = 0x80;
@@ -362,3 +361,27 @@ TEST_F( M6502IncrementDecrementTests, DECCanDecrementAValueAbsolute )
     ExpectUnaffectedFlags( CPUCopy );
 }
 
+TEST_F( M6502IncrementDecrementTests, DECCanDecrementAValueAbsoluteX )
+{
+    // Given:
+    cpu.Reset( 0xFF00, mem );
+    cpu.Flag.Z = true;
+    cpu.Flag.N = true;
+    cpu.X = 0x10;
+    mem[0xFF00] = CPU::INS_DEC_ABSX;
+    mem[0xFF01] = 0x00;
+    mem[0xFF02] = 0x80;
+    mem[0x8000 + 0x10] = 0x57;
+    constexpr s32 EXPECTED_CYCLES = 6;
+    CPU CPUCopy = cpu;
+
+    // When:
+    const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+    // Then:
+    EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+    EXPECT_EQ( mem[0x8000 + 0x10], 0x56 );
+    EXPECT_FALSE( cpu.Flag.Z );
+    EXPECT_FALSE( cpu.Flag.N );
+    ExpectUnaffectedFlags( CPUCopy );
+}
