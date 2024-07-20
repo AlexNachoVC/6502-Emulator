@@ -516,8 +516,10 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             case INS_BEQ: 
             {
                 Byte Offset = FetchByte( Cycles, memory );
-                PC += Offset;
-                Cycles--;
+                if ( Flag.Z ) {
+                    PC += Offset;
+                    Cycles--;
+                }
             } break;
             default:
             {
