@@ -38,3 +38,22 @@ TEST_F( M6502BranchTests, BEQCanBranchForwardsWhenZeroIsSet )
     EXPECT_EQ( cpu.PC, 0xFF03 );
     EXPECT_EQ( cpu.PS, CPUCopy.PS );
 }
+
+TEST_F( M6502BranchTests, BEQDoesNotBranchForwardsWhenZeroIsNotSet )
+{
+    // Given:
+    cpu.Reset( 0xFF00, mem );
+    cpu.Flag.Z = false;
+    mem[0xFF00] = CPU::INS_BEQ;
+    mem[0xFF01] = 0x1;
+    constexpr s32 EXPECTED_CYCLES = 2;  
+    CPU CPUCopy = cpu;
+
+    // When:
+    const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+    // Then:
+    EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+    EXPECT_EQ( cpu.PC, 0xFF02 );
+    EXPECT_EQ( cpu.PS, CPUCopy.PS );
+}
