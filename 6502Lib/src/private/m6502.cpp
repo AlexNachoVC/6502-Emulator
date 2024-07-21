@@ -516,9 +516,17 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             case INS_BEQ: 
             {
                 Byte Offset = FetchByte( Cycles, memory );
-                if ( Flag.Z ) {
+                if ( Flag.Z ) 
+                {
+                    const Word PCOld = PC;
                     PC += Offset;
                     Cycles--;
+
+                    const bool PageChanged = ( PC >> 8) != (PCOld >> 8);
+                    if ( PageChanged )
+                    {
+                        Cycles -= 2;
+                    }
                 }
             } break;
             default:
