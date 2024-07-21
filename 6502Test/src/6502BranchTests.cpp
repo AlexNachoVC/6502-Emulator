@@ -95,3 +95,29 @@ TEST_F( M6502BranchTests, BEQCanBranchBackwardsWhenZeroIsSet )
     EXPECT_EQ( cpu.PC, 0xFFCC );
     EXPECT_EQ( cpu.PS, CPUCopy.PS );
 }
+
+TEST_F( M6502BranchTests, BEQCanBranchBackwardsWhenZeroIsSetFromAssemblyCode )
+{
+    // Given:
+    cpu.Reset( 0xFFCC, mem );
+    cpu.Flag.Z = true;
+    /*
+    loop
+    lda #0
+    beq loop
+    */
+    mem[0xFFCC] = 0xA9;
+    mem[0xFFCC+1] = 0x00;
+    mem[0xFFCC+2] = 0xF0;
+    mem[0xFFCC+3] = 0xFC;
+    constexpr s32 EXPECTED_CYCLES = 2 + 3;  
+    CPU CPUCopy = cpu;
+
+    // When:
+    const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+    // Then:
+    EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+    EXPECT_EQ( cpu.PC, 0xFFCC );
+    EXPECT_EQ( cpu.PS, CPUCopy.PS );
+}
