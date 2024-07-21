@@ -4,7 +4,7 @@
 
 namespace m6502 
 {
-    using SByte = char;
+    using SByte = signed char;
     using Byte = unsigned char;
     using Word = unsigned short;
 
