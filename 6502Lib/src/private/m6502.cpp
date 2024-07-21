@@ -519,7 +519,7 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 if ( Flag.Z ) 
                 {
                     const Word PCOld = PC;
-                    PC += Offset;
+                    PC += static_cast<SByte>( Offset );
                     Cycles--;
 
                     const bool PageChanged = ( PC >> 8) != (PCOld >> 8);

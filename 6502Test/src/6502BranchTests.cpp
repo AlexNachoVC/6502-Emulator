@@ -80,7 +80,7 @@ TEST_F( M6502BranchTests, BEQCanBranchForwardsIntoANewPageWhenZeroIsSet )
 TEST_F( M6502BranchTests, BEQCanBranchBackwardsWhenZeroIsSet )
 {
     // Given:
-    cpu.Reset( 0xFF00, mem );
+    cpu.Reset( 0xFFCC, mem );
     cpu.Flag.Z = true;
     mem[0xFFCC] = CPU::INS_BEQ;
     mem[0xFFCD] = static_cast<Byte>( -0x2 );
