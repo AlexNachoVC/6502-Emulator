@@ -87,6 +87,10 @@ struct m6502::CPU {
         return Data;
     }
 
+    SByte FetchSByte( s32& Cycles, const Mem& memory ) {
+        return FetchByte( Cycles, memory );
+    }
+
     Word FetchWord( s32& Cycles, const Mem& memory ) {
         // 6502 is little endian
         Word Data = memory[PC];

@@ -39,13 +39,14 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
         SetZeroAndNegativeFlags( A );
     };
 
+    /* Conditional Branch */
     auto BranchIf = [&Cycles, &memory, this] ( bool Test, bool Expected )
     {
-        Byte Offset = FetchByte( Cycles, memory );
+        SByte Offset = FetchSByte( Cycles, memory );
         if ( Test == Expected ) 
         {
             const Word PCOld = PC;
-            PC += static_cast<SByte>( Offset );
+            PC += Offset;
             Cycles--;
 
             const bool PageChanged = ( PC >> 8) != (PCOld >> 8);
