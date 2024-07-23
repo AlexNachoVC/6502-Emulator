@@ -39,6 +39,8 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
         SetZeroAndNegativeFlags( A );
     };
 
+    
+
     const s32 CyclesRequested = Cycles;
     while (Cycles > 0) {
         Byte Ins = FetchByte(Cycles, memory);
@@ -517,6 +519,22 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             {
                 Byte Offset = FetchByte( Cycles, memory );
                 if ( Flag.Z ) 
+                {
+                    const Word PCOld = PC;
+                    PC += static_cast<SByte>( Offset );
+                    Cycles--;
+
+                    const bool PageChanged = ( PC >> 8) != (PCOld >> 8);
+                    if ( PageChanged )
+                    {
+                        Cycles -= 2;
+                    }
+                }
+            } break;
+            case INS_BNE: 
+            {
+                Byte Offset = FetchByte( Cycles, memory );
+                if ( !Flag.Z ) 
                 {
                     const Word PCOld = PC;
                     PC += static_cast<SByte>( Offset );
