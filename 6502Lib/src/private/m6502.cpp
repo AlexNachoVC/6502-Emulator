@@ -563,6 +563,11 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             {
                 BranchIf( Flag.V, false );
             } break;
+            case INS_CLC: 
+            {
+                Flag.C = false;
+                Cycles--;
+            } break;
             default:
             {
                 printf("Instruction %d not handled\n", Ins);
