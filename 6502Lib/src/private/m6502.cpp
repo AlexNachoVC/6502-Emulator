@@ -583,6 +583,11 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 Flag.D = true;
                 Cycles--;
             } break;
+            case INS_CLI:
+            {
+                Flag.I = false;
+                Cycles--;
+            } break;
             default:
             {
                 printf("Instruction %d not handled\n", Ins);
