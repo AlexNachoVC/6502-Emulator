@@ -159,3 +159,22 @@ TEST_F( M6502BranchTests, BCSCanBranchForwardsWhenCarryFlagIsSet )
     EXPECT_EQ( cpu.PC, 0xFF03 );
     EXPECT_EQ( cpu.PS, CPUCopy.PS );
 }
+
+TEST_F( M6502BranchTests, BCCCanBranchForwardsWhenCarryFlagIsNotSet )
+{
+    // Given:
+    cpu.Reset( 0xFF00, mem );
+    cpu.Flag.C = false;
+    mem[0xFF00] = CPU::INS_BCC;
+    mem[0xFF01] = 0x1;
+    constexpr s32 EXPECTED_CYCLES = 3;  
+    CPU CPUCopy = cpu;
+
+    // When:
+    const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+    // Then:
+    EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+    EXPECT_EQ( cpu.PC, 0xFF03 );
+    EXPECT_EQ( cpu.PS, CPUCopy.PS );
+}

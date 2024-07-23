@@ -277,7 +277,8 @@ struct m6502::CPU {
         // Branching
         INS_BEQ = 0xF0,
         INS_BNE = 0xD0,
-        INS_BCS = 0xB0
+        INS_BCS = 0xB0,
+        INS_BCC = 0x90
         ;
 
     /* Sets the correct Process status after a load register instruction
