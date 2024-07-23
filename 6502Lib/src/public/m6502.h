@@ -289,7 +289,8 @@ struct m6502::CPU {
         INS_BVC = 0x50,
 
         // Status Flags Changes
-        INS_CLC = 0x18
+        INS_CLC = 0x18,
+        INS_SEC = 0x38
         ;
 
     /* Sets the correct Process status after a load register instruction
