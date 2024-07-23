@@ -280,7 +280,9 @@ struct m6502::CPU {
         INS_BCS = 0xB0,
         INS_BCC = 0x90,
         INS_BMI = 0x30,
-        INS_BPL = 0x10
+        INS_BPL = 0x10,
+        INS_BVS = 0x70
+
         ;
 
     /* Sets the correct Process status after a load register instruction
