@@ -295,7 +295,10 @@ struct m6502::CPU {
 		INS_SED = 0xF8,
 		INS_CLI = 0x58,
 		INS_SEI = 0x78,
-		INS_CLV = 0xB8
+		INS_CLV = 0xB8,
+
+        // System Functions
+        INS_NOP = 0xEA
         ;
 
     /* Sets the correct Process status after a load register instruction
