@@ -65,3 +65,26 @@ TEST_F( M6502StatusFlagChangeTests, SECWillSetTheCarryFlag )
     EXPECT_EQ( cpu.Flag.V, CPUCopy.Flag.V );
     EXPECT_EQ( cpu.Flag.N, CPUCopy.Flag.N );
 }
+
+TEST_F( M6502StatusFlagChangeTests, CLDWillClearTheDecimalModeFlag )
+{
+    // Given:
+    cpu.Reset( 0xFF00, mem );
+    cpu.Flag.D = true;
+    mem[0xFF00] = CPU::INS_CLD;
+    constexpr s32 EXPECTED_CYCLES = 2;  
+    CPU CPUCopy = cpu;
+
+    // When:
+    const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+    // Then:
+    EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+    EXPECT_FALSE( cpu.Flag.D );
+    EXPECT_EQ( cpu.Flag.Z, CPUCopy.Flag.Z );
+    EXPECT_EQ( cpu.Flag.I, CPUCopy.Flag.I );
+    EXPECT_EQ( cpu.Flag.C, CPUCopy.Flag.C );
+    EXPECT_EQ( cpu.Flag.B, CPUCopy.Flag.B );
+    EXPECT_EQ( cpu.Flag.V, CPUCopy.Flag.V );
+    EXPECT_EQ( cpu.Flag.N, CPUCopy.Flag.N );
+}
