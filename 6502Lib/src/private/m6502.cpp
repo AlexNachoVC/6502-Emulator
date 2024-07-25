@@ -611,7 +611,7 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 Sum += Flag.C;
                 A = (Sum & 0xFF); 
                 Flag.Z = (A == 0);
-                Flag.N = false;
+                Flag.N = (A & NegativeFlagBit) > 0;
                 Flag.C = (Sum & 0xFF00) > 0;
                 Flag.V = false;
             } break;
