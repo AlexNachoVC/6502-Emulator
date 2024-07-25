@@ -125,19 +125,37 @@ TEST_F( M6502AddWithCarryTests, ADCWillSetTheNegativeWhenTheResultIsNegative )
 	TestAbsolute( Test );
 }
 
-TEST_F( M6502AddWithCarryTests, ADCWillSetTheOverflowWhenSignedAdditionFails )
+TEST_F( M6502AddWithCarryTests, ADCWillSetTheOverflowWhenSignedNegativeAdditionFails )
 {
     // A: 10000000  -128
     // O: 11111111  -1
     // =: 01111111  127
-    // C:1 N:0 V:1 
+    // C:1 N:0 V:1 Z:0
     ADCTestData Test;
     Test.Carry = false;
-    Test.A = BYTE( -128) ;;              
+    Test.A = BYTE( -128);              
     Test.Operand = BYTE(-1);           
     Test.Answer = 127;
     Test.ExpectC = true;
     Test.ExpectN = false;
+    Test.ExpectV = true;
+    Test.ExpectZ = false;
+	TestAbsolute( Test );
+}
+
+TEST_F( M6502AddWithCarryTests, ADCWillSetTheOverflowWhenSignedPositiveAdditionFails )
+{
+    // A: 01111111  127
+    // O: 00000001  1
+    // =: 10000000  128  
+    // C:0 N:1 V:1 Z:0
+    ADCTestData Test;
+    Test.Carry = false;
+    Test.A = 127;              
+    Test.Operand = 1;           
+    Test.Answer = 128;
+    Test.ExpectC = false;
+    Test.ExpectN = true;
     Test.ExpectV = true;
     Test.ExpectZ = false;
 	TestAbsolute( Test );
