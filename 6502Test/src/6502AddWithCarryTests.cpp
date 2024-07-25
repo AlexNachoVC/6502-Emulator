@@ -67,6 +67,8 @@ public:
 
 };
 
+#define BYTE( A ) ( (m6502::Byte)A )
+
 TEST_F( M6502AddWithCarryTests, ADCCanAddZeroWithZeroAndGetZero )
 {
     ADCTestData Test;
@@ -106,5 +108,19 @@ TEST_F( M6502AddWithCarryTests, ADCCanAddOneToFFAndItWillCauseACarry )
     Test.ExpectN = false;
     Test.ExpectV = false;
     Test.ExpectZ = true;
+	TestAbsolute( Test );
+}
+
+TEST_F( M6502AddWithCarryTests, ADCWillSetTheNegativeWhenTheResultIsNegative )
+{
+    ADCTestData Test;
+    Test.Carry = false;
+    Test.A = 0;              
+    Test.Operand = BYTE(-1);           
+    Test.Answer = BYTE(-1);
+    Test.ExpectC = false;
+    Test.ExpectN = true;
+    Test.ExpectV = false;
+    Test.ExpectZ = false;
 	TestAbsolute( Test );
 }
