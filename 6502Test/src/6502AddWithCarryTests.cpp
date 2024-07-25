@@ -72,11 +72,25 @@ TEST_F( M6502AddWithCarryTests, ADCCanAddZeroWithZeroAndGetZero )
     ADCTestData Test;
     Test.Carry = false;
     Test.A = 0;
-    Test.Answer = 0;
     Test.Operand = 0;
+    Test.Answer = 0;    
     Test.ExpectC = false;
     Test.ExpectN = false;
     Test.ExpectV = false;
     Test.ExpectZ = true;
+	TestAbsolute( Test );
+}
+
+TEST_F( M6502AddWithCarryTests, ADCCanAddCarryAndZeroToZeroAndGetZero )
+{
+    ADCTestData Test;
+    Test.Carry = true;
+    Test.A = 0;
+    Test.Operand = 0;
+    Test.Answer = 1;
+    Test.ExpectC = false;
+    Test.ExpectN = false;
+    Test.ExpectV = false;
+    Test.ExpectZ = false;
 	TestAbsolute( Test );
 }
