@@ -606,11 +606,13 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             {
                 Word Address = AddressAbsolute( Cycles, memory );
                 Byte Operand = ReadByte( Cycles, Address, memory );
-                A += Operand;
-                A += Flag.C;
+                Word Sum = A;
+                Sum += Operand;
+                Sum += Flag.C;
+                A = (Sum & 0xFF); 
                 Flag.Z = (A == 0);
                 Flag.N = false;
-                Flag.C = false;
+                Flag.C = (Sum & 0xFF00) > 0;
                 Flag.V = false;
             } break;
             default:
