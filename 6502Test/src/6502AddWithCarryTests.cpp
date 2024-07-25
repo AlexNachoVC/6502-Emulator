@@ -124,3 +124,21 @@ TEST_F( M6502AddWithCarryTests, ADCWillSetTheNegativeWhenTheResultIsNegative )
     Test.ExpectZ = false;
 	TestAbsolute( Test );
 }
+
+TEST_F( M6502AddWithCarryTests, ADCWillSetTheOverflowWhenSignedAdditionFails )
+{
+    // A: 10000000  -128
+    // O: 11111111  -1
+    // =: 01111111  127
+    // C:1 N:0 V:1 
+    ADCTestData Test;
+    Test.Carry = false;
+    Test.A = BYTE( -128) ;;              
+    Test.Operand = BYTE(-1);           
+    Test.Answer = 127;
+    Test.ExpectC = true;
+    Test.ExpectN = false;
+    Test.ExpectV = true;
+    Test.ExpectZ = false;
+	TestAbsolute( Test );
+}
