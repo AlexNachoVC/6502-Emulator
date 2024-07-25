@@ -298,7 +298,10 @@ struct m6502::CPU {
 		INS_CLV = 0xB8,
 
         // System Functions
-        INS_NOP = 0xEA
+        INS_NOP = 0xEA,
+
+        // Arithmetic
+        INS_ADC_ABS = 0x6D
         ;
 
     /* Sets the correct Process status after a load register instruction
