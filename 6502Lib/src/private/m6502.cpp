@@ -607,7 +607,8 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 Word Address = AddressAbsolute( Cycles, memory );
                 Byte Operand = ReadByte( Cycles, Address, memory );
                 A += Operand;
-                Flag.Z = true;
+                A += Flag.C;
+                Flag.Z = (A == 0);
                 Flag.N = false;
                 Flag.C = false;
                 Flag.V = false;
