@@ -32,8 +32,9 @@ TEST_F( M6502AddWithCarryTests, ADCCanAddZeroWithZeroAndGetZero )
 	cpu.Reset( 0xFF00, mem );
     cpu.A = 0x0;
     cpu.Flag.C = false;
-    cpu.Flag.Z = true;
+    cpu.Flag.Z = false;
     cpu.Flag.N = true;
+    cpu.Flag.V = true;
 	mem[0xFF00] = CPU::INS_ADC_ABS;
     mem[0xFF01] = 0x00;
     mem[0xFF02] = 0x80;
