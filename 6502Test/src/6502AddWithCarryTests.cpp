@@ -83,7 +83,7 @@ TEST_F( M6502AddWithCarryTests, ADCCanAddZeroWithZeroAndGetZero )
 	TestAbsolute( Test );
 }
 
-TEST_F( M6502AddWithCarryTests, ADCCanAddCarryAndZeroToZeroAndGetZero )
+TEST_F( M6502AddWithCarryTests, ADCCanAddCarryAndZeroToZeroAndGeTOne )
 {
     ADCTestData Test;
     Test.Carry = true;
@@ -91,6 +91,38 @@ TEST_F( M6502AddWithCarryTests, ADCCanAddCarryAndZeroToZeroAndGetZero )
     Test.Operand = 0;
     Test.Answer = 1;
     Test.ExpectC = false;
+    Test.ExpectN = false;
+    Test.ExpectV = false;
+    Test.ExpectZ = false;
+	TestAbsolute( Test );
+}
+
+TEST_F( M6502AddWithCarryTests, ADCCanAddTwoUnsignedNumbers )
+{
+    ADCTestData Test;
+    Test.Carry = true;
+    Test.A = 20;
+    Test.Operand = 17;
+    Test.Answer = 38;
+    Test.ExpectC = false;
+    Test.ExpectN = false;
+    Test.ExpectV = false;
+    Test.ExpectZ = false;
+	TestAbsolute( Test );
+}
+
+TEST_F( M6502AddWithCarryTests, ADCCanAddAPositiveAndNegativedNumber )
+{
+    // A: 00010100 20
+    // O: 11101111 -17
+    // =: 00000011
+    // C:1 N:0 V:0 Z:0
+    ADCTestData Test;
+    Test.Carry = true;
+    Test.A = 20;
+    Test.Operand = BYTE(-17);
+    Test.Answer = 4;
+    Test.ExpectC = true;
     Test.ExpectN = false;
     Test.ExpectV = false;
     Test.ExpectZ = false;
@@ -139,6 +171,25 @@ TEST_F( M6502AddWithCarryTests, ADCWillSetTheOverflowWhenSignedNegativeAdditionF
     Test.ExpectC = true;
     Test.ExpectN = false;
     Test.ExpectV = true;
+    Test.ExpectZ = false;
+	TestAbsolute( Test );
+}
+
+TEST_F( M6502AddWithCarryTests, ADCWillSetTheOverflowWhenSignedNegativeAdditionPassesDueToInitialCarryFlag )
+{
+    // C: 00000001  
+    // A: 10000000  -128
+    // O: 11111111  -1
+    // =: 10000000  -128
+    // C:1 N:1 V:0 Z:0
+    ADCTestData Test;
+    Test.Carry = true;
+    Test.A = BYTE( -128);              
+    Test.Operand = BYTE(-1);           
+    Test.Answer = BYTE(-128);
+    Test.ExpectC = true;
+    Test.ExpectN = true;
+    Test.ExpectV = false;
     Test.ExpectZ = false;
 	TestAbsolute( Test );
 }
