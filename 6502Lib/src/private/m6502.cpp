@@ -606,6 +606,7 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             {
                 Word Address = AddressAbsolute( Cycles, memory );
                 Byte Operand = ReadByte( Cycles, Address, memory );
+                const Byte AOld = A;
                 Word Sum = A;
                 Sum += Operand;
                 Sum += Flag.C;
@@ -614,6 +615,10 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 Flag.N = (A & NegativeFlagBit) > 0;
                 Flag.C = (Sum & 0xFF00) > 0;
                 Flag.V = false;
+                if ( ((AOld & NegativeFlagBit) ^ (Operand & NegativeFlagBit)) == 0)
+                {
+                    Flag.V = (A & NegativeFlagBit) != (AOld & NegativeFlagBit);
+                }
             } break;
             default:
             {
