@@ -94,3 +94,17 @@ TEST_F( M6502AddWithCarryTests, ADCCanAddCarryAndZeroToZeroAndGetZero )
     Test.ExpectZ = false;
 	TestAbsolute( Test );
 }
+
+TEST_F( M6502AddWithCarryTests, ADCCanAddOneToFFAndItWillCauseACarry )
+{
+    ADCTestData Test;
+    Test.Carry = false;
+    Test.A = 0xFF;              
+    Test.Operand = 1;           
+    Test.Answer = 0;
+    Test.ExpectC = true;
+    Test.ExpectN = false;
+    Test.ExpectV = false;
+    Test.ExpectZ = true;
+	TestAbsolute( Test );
+}
