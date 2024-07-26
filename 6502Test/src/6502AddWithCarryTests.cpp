@@ -36,7 +36,7 @@ public:
         bool ExpectV;
     };
 
-    void TestAbsolute( ADCTestData Test ) {
+    void TestADCAbsolute( ADCTestData Test ) {
         // given:
         using namespace m6502;
         cpu.Reset( 0xFF00, mem );
@@ -69,7 +69,7 @@ public:
 
 #define BYTE( A ) ( (m6502::Byte)A )
 
-TEST_F( M6502AddWithCarryTests, ADCCanAddZeroWithZeroAndGetZero )
+TEST_F( M6502AddWithCarryTests, ADCAbsCanAddZeroWithZeroAndGetZero )
 {
     ADCTestData Test;
     Test.Carry = false;
@@ -80,10 +80,10 @@ TEST_F( M6502AddWithCarryTests, ADCCanAddZeroWithZeroAndGetZero )
     Test.ExpectN = false;
     Test.ExpectV = false;
     Test.ExpectZ = true;
-	TestAbsolute( Test );
+	TestADCAbsolute( Test );
 }
 
-TEST_F( M6502AddWithCarryTests, ADCCanAddCarryAndZeroToZeroAndGeTOne )
+TEST_F( M6502AddWithCarryTests, ADCAbsCanAddCarryAndZeroToZeroAndGeTOne )
 {
     ADCTestData Test;
     Test.Carry = true;
@@ -94,10 +94,10 @@ TEST_F( M6502AddWithCarryTests, ADCCanAddCarryAndZeroToZeroAndGeTOne )
     Test.ExpectN = false;
     Test.ExpectV = false;
     Test.ExpectZ = false;
-	TestAbsolute( Test );
+	TestADCAbsolute( Test );
 }
 
-TEST_F( M6502AddWithCarryTests, ADCCanAddTwoUnsignedNumbers )
+TEST_F( M6502AddWithCarryTests, ADCAbsCanAddTwoUnsignedNumbers )
 {
     ADCTestData Test;
     Test.Carry = true;
@@ -108,10 +108,10 @@ TEST_F( M6502AddWithCarryTests, ADCCanAddTwoUnsignedNumbers )
     Test.ExpectN = false;
     Test.ExpectV = false;
     Test.ExpectZ = false;
-	TestAbsolute( Test );
+	TestADCAbsolute( Test );
 }
 
-TEST_F( M6502AddWithCarryTests, ADCCanAddAPositiveAndNegativedNumber )
+TEST_F( M6502AddWithCarryTests, ADCAbsCanAddAPositiveAndNegativedNumber )
 {
     // A: 00010100 20
     // O: 11101111 -17
@@ -126,10 +126,10 @@ TEST_F( M6502AddWithCarryTests, ADCCanAddAPositiveAndNegativedNumber )
     Test.ExpectN = false;
     Test.ExpectV = false;
     Test.ExpectZ = false;
-	TestAbsolute( Test );
+	TestADCAbsolute( Test );
 }
 
-TEST_F( M6502AddWithCarryTests, ADCCanAddOneToFFAndItWillCauseACarry )
+TEST_F( M6502AddWithCarryTests, ADCAbsCanAddOneToFFAndItWillCauseACarry )
 {
     ADCTestData Test;
     Test.Carry = false;
@@ -140,10 +140,10 @@ TEST_F( M6502AddWithCarryTests, ADCCanAddOneToFFAndItWillCauseACarry )
     Test.ExpectN = false;
     Test.ExpectV = false;
     Test.ExpectZ = true;
-	TestAbsolute( Test );
+	TestADCAbsolute( Test );
 }
 
-TEST_F( M6502AddWithCarryTests, ADCWillSetTheNegativeWhenTheResultIsNegative )
+TEST_F( M6502AddWithCarryTests, ADCAbsWillSetTheNegativeWhenTheResultIsNegative )
 {
     ADCTestData Test;
     Test.Carry = false;
@@ -154,10 +154,10 @@ TEST_F( M6502AddWithCarryTests, ADCWillSetTheNegativeWhenTheResultIsNegative )
     Test.ExpectN = true;
     Test.ExpectV = false;
     Test.ExpectZ = false;
-	TestAbsolute( Test );
+	TestADCAbsolute( Test );
 }
 
-TEST_F( M6502AddWithCarryTests, ADCWillSetTheOverflowWhenSignedNegativeAdditionFails )
+TEST_F( M6502AddWithCarryTests, ADCAbsWillSetTheOverflowWhenSignedNegativeAdditionFails )
 {
     // A: 10000000  -128
     // O: 11111111  -1
@@ -172,10 +172,10 @@ TEST_F( M6502AddWithCarryTests, ADCWillSetTheOverflowWhenSignedNegativeAdditionF
     Test.ExpectN = false;
     Test.ExpectV = true;
     Test.ExpectZ = false;
-	TestAbsolute( Test );
+	TestADCAbsolute( Test );
 }
 
-TEST_F( M6502AddWithCarryTests, ADCWillSetTheOverflowWhenSignedNegativeAdditionPassesDueToInitialCarryFlag )
+TEST_F( M6502AddWithCarryTests, ADCAbsWillSetTheOverflowWhenSignedNegativeAdditionPassesDueToInitialCarryFlag )
 {
     // C: 00000001  
     // A: 10000000  -128
@@ -191,10 +191,10 @@ TEST_F( M6502AddWithCarryTests, ADCWillSetTheOverflowWhenSignedNegativeAdditionP
     Test.ExpectN = true;
     Test.ExpectV = false;
     Test.ExpectZ = false;
-	TestAbsolute( Test );
+	TestADCAbsolute( Test );
 }
 
-TEST_F( M6502AddWithCarryTests, ADCWillSetTheOverflowWhenSignedPositiveAdditionFails )
+TEST_F( M6502AddWithCarryTests, ADCAbsWillSetTheOverflowWhenSignedPositiveAdditionFails )
 {
     // A: 01111111  127
     // O: 00000001  1
@@ -209,5 +209,6 @@ TEST_F( M6502AddWithCarryTests, ADCWillSetTheOverflowWhenSignedPositiveAdditionF
     Test.ExpectN = true;
     Test.ExpectV = true;
     Test.ExpectZ = false;
-	TestAbsolute( Test );
+	TestADCAbsolute( Test );
 }
+

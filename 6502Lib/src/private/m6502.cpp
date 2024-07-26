@@ -1,5 +1,7 @@
 #include "m6502.h"
 
+#define ASSERT( Condition, Text ) { if ( !Condition ) { throw -1;}}
+
 m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
 {
 
@@ -55,6 +57,21 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 Cycles -= 2;
             }
         }
+    };
+
+    /* Do add with carry given the address in memory of the operand */
+    auto ADC = [&Cycles, &memory, this] ( Word OperandAddress )
+    {
+        ASSERT( Flag.D == false, "havent handled decimal mode!" );
+        Byte Operand = ReadByte( Cycles, OperandAddress, memory );
+        const bool AreSignBitsTheSame = !((A ^ Operand) & NegativeFlagBit);
+        Word Sum = A;
+        Sum += Operand;
+        Sum += Flag.C;
+        A = (Sum & 0xFF); 
+        SetZeroAndNegativeFlags( A );
+        Flag.C = Sum > 0xFF;
+        Flag.V = AreSignBitsTheSame && ((A ^ Operand) & NegativeFlagBit);
     };
 
     const s32 CyclesRequested = Cycles;
@@ -605,20 +622,7 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             case INS_ADC_ABS:
             {
                 Word Address = AddressAbsolute( Cycles, memory );
-                Byte Operand = ReadByte( Cycles, Address, memory );
-                const Byte AOld = A;
-                Word Sum = A;
-                Sum += Operand;
-                Sum += Flag.C;
-                A = (Sum & 0xFF); 
-                Flag.Z = (A == 0);
-                Flag.N = (A & NegativeFlagBit) > 0;
-                Flag.C = (Sum & 0xFF00) > 0;
-                Flag.V = false;
-                if ( ((AOld & NegativeFlagBit) ^ (Operand & NegativeFlagBit)) == 0)
-                {
-                    Flag.V = (A & NegativeFlagBit) != (AOld & NegativeFlagBit);
-                }
+                ADC( Address );
             } break;
             default:
             {
