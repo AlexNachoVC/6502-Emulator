@@ -641,6 +641,12 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 Byte Operand = ReadByte( Cycles, Address, memory );
                 ADC( Operand );
             } break;
+            case INS_ADC_ABSX:
+            {
+                Word Address = AddressAbsoluteX( Cycles, memory );
+                Byte Operand = ReadByte( Cycles, Address, memory );
+                ADC( Operand );
+            } break;
             default:
             {
                 printf("Instruction %d not handled\n", Ins);
