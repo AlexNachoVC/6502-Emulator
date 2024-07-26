@@ -119,6 +119,35 @@ public:
         EXPECT_EQ( cpu.Flag.V, Test.ExpectV );
         ExpectUnaffectedRegisters( CPUCopy );
     }
+
+    void TestADCZeroPageX( ADCTestData Test ) {
+        // given:
+        using namespace m6502;
+        cpu.Reset( 0xFF00, mem );
+        cpu.A = Test.A;
+        cpu.X = 0x10;
+        cpu.Flag.C = Test.Carry;
+        cpu.Flag.Z = !Test.ExpectZ;
+        cpu.Flag.N = !Test.ExpectN;
+        cpu.Flag.V = !Test.ExpectV;
+        mem[0xFF00] = CPU::INS_ADC_ZPX;
+        mem[0xFF01] = 0x42;
+        mem[0x0042+0x10] = Test.Operand;
+        constexpr s32 EXPECTED_CYCLES = 4;
+        CPU CPUCopy = cpu;
+
+        // when:
+        const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+        // then:
+        EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+        EXPECT_EQ( cpu.A, Test.Answer );
+        EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
+        EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
+        EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
+        EXPECT_EQ( cpu.Flag.V, Test.ExpectV );
+        ExpectUnaffectedRegisters( CPUCopy );
+    }
 };
 
 #define BYTE( A ) ( (m6502::Byte)A )
@@ -328,4 +357,36 @@ TEST_F( M6502AddWithCarryTests, ADCZeroPageCanAddAPositiveAndNegativedNumber )
     Test.ExpectV = false;
     Test.ExpectZ = false;
 	TestADCZeroPage( Test );
+}
+
+TEST_F( M6502AddWithCarryTests, ADCZeroPageZCanAddTwoUnsignedNumbers )
+{
+    ADCTestData Test;
+    Test.Carry = true;
+    Test.A = 20;
+    Test.Operand = 17;
+    Test.Answer = 38;
+    Test.ExpectC = false;
+    Test.ExpectN = false;
+    Test.ExpectV = false;
+    Test.ExpectZ = false;
+	TestADCZeroPageX( Test );
+}
+
+TEST_F( M6502AddWithCarryTests, ADCZeroPageXCanAddAPositiveAndNegativedNumber )
+{
+    // A: 00010100 20
+    // O: 11101111 -17
+    // =: 00000011
+    // C:1 N:0 V:0 Z:0
+    ADCTestData Test;
+    Test.Carry = true;
+    Test.A = 20;
+    Test.Operand = BYTE(-17);
+    Test.Answer = 4;
+    Test.ExpectC = true;
+    Test.ExpectN = false;
+    Test.ExpectV = false;
+    Test.ExpectZ = false;
+	TestADCZeroPageX( Test );
 }
