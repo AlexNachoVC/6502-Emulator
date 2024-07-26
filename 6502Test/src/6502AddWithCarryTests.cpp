@@ -178,6 +178,36 @@ public:
         EXPECT_EQ( cpu.Flag.V, Test.ExpectV );
         ExpectUnaffectedRegisters( CPUCopy );
     }
+
+    void TestADCAbsoluteY( ADCTestData Test ) {
+        // given:
+        using namespace m6502;
+        cpu.Reset( 0xFF00, mem );
+        cpu.A = Test.A;
+        cpu.Y = 0x10;
+        cpu.Flag.C = Test.Carry;
+        cpu.Flag.Z = !Test.ExpectZ;
+        cpu.Flag.N = !Test.ExpectN;
+        cpu.Flag.V = !Test.ExpectV;
+        mem[0xFF00] = CPU::INS_ADC_ABSY;
+        mem[0xFF01] = 0x00;
+        mem[0xFF02] = 0x80;
+        mem[0x8000+0x10] = Test.Operand;
+        constexpr s32 EXPECTED_CYCLES = 4;
+        CPU CPUCopy = cpu;
+
+        // when:
+        const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+        // then:
+        EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+        EXPECT_EQ( cpu.A, Test.Answer );
+        EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
+        EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
+        EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
+        EXPECT_EQ( cpu.Flag.V, Test.ExpectV );
+        ExpectUnaffectedRegisters( CPUCopy );
+    }
 };
 
 #define BYTE( A ) ( (m6502::Byte)A )
@@ -451,4 +481,36 @@ TEST_F( M6502AddWithCarryTests, ADCAbsoluteXCanAddAPositiveAndNegativedNumber )
     Test.ExpectV = false;
     Test.ExpectZ = false;
 	TestADCAbsoluteX( Test );
+}
+
+TEST_F( M6502AddWithCarryTests, ADCAbsoluteYCanAddTwoUnsignedNumbers )
+{
+    ADCTestData Test;
+    Test.Carry = true;
+    Test.A = 20;
+    Test.Operand = 17;
+    Test.Answer = 38;
+    Test.ExpectC = false;
+    Test.ExpectN = false;
+    Test.ExpectV = false;
+    Test.ExpectZ = false;
+	TestADCAbsoluteY( Test );
+}
+
+TEST_F( M6502AddWithCarryTests, ADCAbsoluteYCanAddAPositiveAndNegativedNumber )
+{
+    // A: 00010100 20
+    // O: 11101111 -17
+    // =: 00000011
+    // C:1 N:0 V:0 Z:0
+    ADCTestData Test;
+    Test.Carry = true;
+    Test.A = 20;
+    Test.Operand = BYTE(-17);
+    Test.Answer = 4;
+    Test.ExpectC = true;
+    Test.ExpectN = false;
+    Test.ExpectV = false;
+    Test.ExpectZ = false;
+	TestADCAbsoluteY( Test );
 }
