@@ -302,7 +302,8 @@ struct m6502::CPU {
 
         // Arithmetic
         INS_ADC_ABS = 0x6D,
-        INS_ADC_IM = 0x69
+        INS_ADC_IM = 0x69,
+        INS_ADC_ZP = 0x65
         ;
 
     /* Sets the correct Process status after a load register instruction
