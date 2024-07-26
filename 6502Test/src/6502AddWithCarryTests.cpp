@@ -239,6 +239,37 @@ public:
         EXPECT_EQ( cpu.Flag.V, Test.ExpectV );
         ExpectUnaffectedRegisters( CPUCopy );
     }
+
+    void TestADCIndirectY( ADCTestData Test ) {
+        // given:
+        using namespace m6502;
+        cpu.Reset( 0xFF00, mem );
+        cpu.A = Test.A;
+        cpu.Y = 0x04;
+        cpu.Flag.C = Test.Carry;
+        cpu.Flag.Z = !Test.ExpectZ;
+        cpu.Flag.N = !Test.ExpectN;
+        cpu.Flag.V = !Test.ExpectV;
+        mem[0xFF00] = CPU::INS_ADC_INDY;
+        mem[0xFF01] = 0x02;
+        mem[0x0002] = 0x00; 
+        mem[0x0003] = 0x80;
+        mem[0x8000 + 0x04] = Test.Operand;
+        constexpr s32 EXPECTED_CYCLES = 5;
+        CPU CPUCopy = cpu;
+
+        // when:
+        const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+        // then:
+        EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+        EXPECT_EQ( cpu.A, Test.Answer );
+        EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
+        EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
+        EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
+        EXPECT_EQ( cpu.Flag.V, Test.ExpectV );
+        ExpectUnaffectedRegisters( CPUCopy );
+    }
 };
 
 #define BYTE( A ) ( (m6502::Byte)A )
@@ -576,4 +607,36 @@ TEST_F( M6502AddWithCarryTests, ADCIndirectXCanAddAPositiveAndNegativedNumber )
     Test.ExpectV = false;
     Test.ExpectZ = false;
 	TestADCIndirectX( Test );
+}
+
+TEST_F( M6502AddWithCarryTests, ADCIndirectYanAddTwoUnsignedNumbers )
+{
+    ADCTestData Test;
+    Test.Carry = true;
+    Test.A = 20;
+    Test.Operand = 17;
+    Test.Answer = 38;
+    Test.ExpectC = false;
+    Test.ExpectN = false;
+    Test.ExpectV = false;
+    Test.ExpectZ = false;
+	TestADCIndirectY( Test );
+}
+
+TEST_F( M6502AddWithCarryTests, ADCIndirectYCanAddAPositiveAndNegativedNumber )
+{
+    // A: 00010100 20
+    // O: 11101111 -17
+    // =: 00000011
+    // C:1 N:0 V:0 Z:0
+    ADCTestData Test;
+    Test.Carry = true;
+    Test.A = 20;
+    Test.Operand = BYTE(-17);
+    Test.Answer = 4;
+    Test.ExpectC = true;
+    Test.ExpectN = false;
+    Test.ExpectV = false;
+    Test.ExpectZ = false;
+	TestADCIndirectY( Test );
 }

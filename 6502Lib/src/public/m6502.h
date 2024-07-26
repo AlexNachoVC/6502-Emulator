@@ -307,7 +307,8 @@ struct m6502::CPU {
         INS_ADC_ZPX = 0x75,
         INS_ADC_ABSX = 0x7D,
         INS_ADC_ABSY = 0x79,
-        INS_ADC_INDX = 0x61
+        INS_ADC_INDX = 0x61,
+        INS_ADC_INDY = 0x71
         ;
 
     /* Sets the correct Process status after a load register instruction
