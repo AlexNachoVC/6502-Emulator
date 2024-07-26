@@ -59,11 +59,10 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
         }
     };
 
-    /* Do add with carry given the address in memory of the operand */
-    auto ADC = [&Cycles, &memory, this] ( Word OperandAddress )
+    /* Do add with carry given the operand */
+    auto ADC = [&Cycles, &memory, this] ( Byte Operand )
     {
         ASSERT( Flag.D == false, "havent handled decimal mode!" );
-        Byte Operand = ReadByte( Cycles, OperandAddress, memory );
         const bool AreSignBitsTheSame = !((A ^ Operand) & NegativeFlagBit);
         Word Sum = A;
         Sum += Operand;
@@ -622,7 +621,13 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             case INS_ADC_ABS:
             {
                 Word Address = AddressAbsolute( Cycles, memory );
-                ADC( Address );
+                Byte Operand = ReadByte( Cycles, Address, memory );
+                ADC( Operand );
+            } break;
+            case INS_ADC_IM:
+            {
+                Byte Operand = FetchByte( Cycles, memory );
+                ADC( Operand );
             } break;
             default:
             {
