@@ -35,6 +35,49 @@ protected:
         bool ExpectN;
     };
 
+    CMPTestData CompareTwoIdenticalValues() 
+    {
+        CMPTestData Test;
+        Test.A = 26;    
+        Test.Operand = 26;
+        Test.ExpectZ = true;
+        Test.ExpectN = false;
+        Test.ExpectC = true;
+        return Test;
+    }
+
+    CMPTestData CompareTwoDifferentPositiveValues() 
+    {
+        CMPTestData Test;
+        Test.A = 48;    
+        Test.Operand = 26;
+        Test.ExpectZ = false;
+        Test.ExpectN = false;
+        Test.ExpectC = true;
+        return Test;
+    }
+
+    CMPTestData CompareANegativeNumberToAPositive()
+    {
+        CMPTestData Test;
+        Test.A = 130;    // Negative number!
+        Test.Operand = 26;
+        Test.ExpectZ = false;
+        Test.ExpectN = false;
+        Test.ExpectC = true;
+        return Test;
+    }
+
+    CMPTestData CompareTwoValuesThatResultInANegativeFlagSet() 
+    {
+        CMPTestData Test;
+        Test.A = 8;    
+        Test.Operand = 26;
+        Test.ExpectZ = false;
+        Test.ExpectN = true;
+        Test.ExpectC = false;
+        return Test;
+    }
     void CMPImmediate (CMPTestData Test )
     {
         // given:
@@ -90,90 +133,54 @@ protected:
 
 };
 
+//-- Immediate
+
 TEST_F( M6502CompareRegistersTests, CMPImmediateCanCompareTwoIdenticalValues )
 {
-    CMPTestData Test;
-    Test.A = 26;    
-    Test.Operand = 26;
-    Test.ExpectZ = true;
-    Test.ExpectN = false;
-    Test.ExpectC = true;
+    CMPTestData Test = CompareTwoIdenticalValues();
     CMPImmediate( Test );
 }
 
 TEST_F( M6502CompareRegistersTests, CMPImmediateCanCompareTwoDifferentPositiveValues )
 {
-    CMPTestData Test;
-    Test.A = 48;    
-    Test.Operand = 26;
-    Test.ExpectZ = false;
-    Test.ExpectN = false;
-    Test.ExpectC = true;
+    CMPTestData Test = CompareTwoDifferentPositiveValues();
     CMPImmediate( Test );
 }
 
 TEST_F( M6502CompareRegistersTests, CMPImmediateCanCompareANegativeNumberToAPositive )
 {   
-    CMPTestData Test;
-    Test.A = 130;    // Negative number!
-    Test.Operand = 26;
-    Test.ExpectZ = false;
-    Test.ExpectN = false;
-    Test.ExpectC = true;
+    CMPTestData Test = CompareANegativeNumberToAPositive();
     CMPImmediate( Test );
 }
 
 TEST_F( M6502CompareRegistersTests, CMPImmediateCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
-    CMPTestData Test;
-    Test.A = 8;    
-    Test.Operand = 26;
-    Test.ExpectZ = false;
-    Test.ExpectN = true;
-    Test.ExpectC = false;
+    CMPTestData Test = CompareTwoValuesThatResultInANegativeFlagSet();
     CMPImmediate( Test );
 }
 
+//-- Zero Page
+
 TEST_F( M6502CompareRegistersTests, CMPZeroPageCanCompareTwoIdenticalValues )
 {
-    CMPTestData Test;
-    Test.A = 26;    
-    Test.Operand = 26;
-    Test.ExpectZ = true;
-    Test.ExpectN = false;
-    Test.ExpectC = true;
+    CMPTestData Test = CompareTwoIdenticalValues();
     CMPZeroPage( Test );
 }
 
 TEST_F( M6502CompareRegistersTests, CMPZeroPageCanCompareTwoDifferentPositiveValues )
 {
-    CMPTestData Test;
-    Test.A = 48;    
-    Test.Operand = 26;
-    Test.ExpectZ = false;
-    Test.ExpectN = false;
-    Test.ExpectC = true;
+    CMPTestData Test = CompareTwoDifferentPositiveValues();
     CMPZeroPage( Test );
 }
 
 TEST_F( M6502CompareRegistersTests, CMPZeroPageeCanCompareANegativeNumberToAPositive )
 {   
-    CMPTestData Test;
-    Test.A = 130;    // Negative number!
-    Test.Operand = 26;
-    Test.ExpectZ = false;
-    Test.ExpectN = false;
-    Test.ExpectC = true;
+    CMPTestData Test = CompareANegativeNumberToAPositive();
     CMPZeroPage( Test );
 }
 
 TEST_F( M6502CompareRegistersTests, CMPZeroPageCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
-    CMPTestData Test;
-    Test.A = 8;    
-    Test.Operand = 26;
-    Test.ExpectZ = false;
-    Test.ExpectN = true;
-    Test.ExpectC = false;
+    CMPTestData Test = CompareTwoValuesThatResultInANegativeFlagSet();
     CMPZeroPage( Test );
 }
