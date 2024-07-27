@@ -78,6 +78,7 @@ protected:
         Test.ExpectC = false;
         return Test;
     }
+
     void CMPImmediate (CMPTestData Test )
     {
         // given:
@@ -113,7 +114,7 @@ protected:
         cpu.Flag.N = !Test.ExpectN;
         cpu.Flag.C = !Test.ExpectC;
         cpu.A = Test.A;
-        mem[0xFF00] = CPU::INS_CMP_IM;
+        mem[0xFF00] = CPU::INS_CMP_ZP;
         mem[0xFF01] = 0x42;
         mem[0x0042] = Test.Operand;
         constexpr s32 EXPECTED_CYCLES = 3;

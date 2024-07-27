@@ -73,6 +73,15 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
         Flag.V = AreSignBitsTheSame && ((A ^ Operand) & NegativeFlagBit);
     };
 
+    /* Sets the processor status for a CMP/CPX/CPY instruction */
+    auto CMP = [&Cycles, &memory, this] (Byte Operand )
+    {
+        Byte Temp = A - Operand;
+        Flag.N = (Temp & NegativeFlagBit) > 0;
+        Flag.Z = A == Operand;
+        Flag.C = A >= Operand;
+    };
+
     const s32 CyclesRequested = Cycles;
     while (Cycles > 0) {
         Byte Ins = FetchByte(Cycles, memory);
@@ -668,10 +677,13 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             case INS_CMP_IM:
             {
                 Byte Operand = FetchByte( Cycles, memory );
-                Byte Temp = A - Operand;
-                Flag.N = (Temp & NegativeFlagBit) > 0;
-                Flag.Z = A == Operand;
-                Flag.C = A >= Operand;
+                CMP( Operand );
+            } break;
+            case INS_CMP_ZP:
+            {
+                Word Address = AddressZeroPage(Cycles, memory );
+                Byte Operand = ReadByte( Cycles, Address, memory );
+                CMP( Operand );
             } break;
             default:
             {
