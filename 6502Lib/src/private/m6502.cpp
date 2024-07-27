@@ -665,6 +665,14 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 Byte Operand = ReadByte( Cycles, Address, memory );
                 ADC( Operand );
             } break;
+            case INS_CMP_IM:
+            {
+                Byte Operand = FetchByte( Cycles, memory );
+                Byte Temp = A - Operand;
+                Flag.N = Temp & NegativeFlagBit;
+                Flag.Z = A == Operand;
+                Flag.C = A >= Operand;
+            } break;
             default:
             {
                 printf("Instruction %d not handled\n", Ins);
