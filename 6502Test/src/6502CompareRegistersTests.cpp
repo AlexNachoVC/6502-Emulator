@@ -61,6 +61,33 @@ protected:
         ExpectUnaffectedRegisters( CPUCopy );
     }
 
+    void CMPZeroPage (CMPTestData Test )
+    {
+        // given:
+        using namespace m6502;
+        cpu.Reset( 0xFF00, mem );
+        cpu.Flag.Z = !Test.ExpectZ;
+        cpu.Flag.N = !Test.ExpectN;
+        cpu.Flag.C = !Test.ExpectC;
+        cpu.A = Test.A;
+        mem[0xFF00] = CPU::INS_CMP_IM;
+        mem[0xFF01] = 0x42;
+        mem[0x0042] = Test.Operand;
+        constexpr s32 EXPECTED_CYCLES = 3;
+        CPU CPUCopy = cpu;
+
+        // when:
+        const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+        // then:
+        EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+        EXPECT_EQ( cpu.A, Test.A );
+        EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
+        EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
+        EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
+        ExpectUnaffectedRegisters( CPUCopy );
+    }
+
 };
 
 TEST_F( M6502CompareRegistersTests, CMPImmediateCanCompareTwoIdenticalValues )
@@ -107,3 +134,46 @@ TEST_F( M6502CompareRegistersTests, CMPImmediateCanCompareTwoValuesThatResultInA
     CMPImmediate( Test );
 }
 
+TEST_F( M6502CompareRegistersTests, CMPZeroPageCanCompareTwoIdenticalValues )
+{
+    CMPTestData Test;
+    Test.A = 26;    
+    Test.Operand = 26;
+    Test.ExpectZ = true;
+    Test.ExpectN = false;
+    Test.ExpectC = true;
+    CMPZeroPage( Test );
+}
+
+TEST_F( M6502CompareRegistersTests, CMPZeroPageCanCompareTwoDifferentPositiveValues )
+{
+    CMPTestData Test;
+    Test.A = 48;    
+    Test.Operand = 26;
+    Test.ExpectZ = false;
+    Test.ExpectN = false;
+    Test.ExpectC = true;
+    CMPZeroPage( Test );
+}
+
+TEST_F( M6502CompareRegistersTests, CMPZeroPageeCanCompareANegativeNumberToAPositive )
+{   
+    CMPTestData Test;
+    Test.A = 130;    // Negative number!
+    Test.Operand = 26;
+    Test.ExpectZ = false;
+    Test.ExpectN = false;
+    Test.ExpectC = true;
+    CMPZeroPage( Test );
+}
+
+TEST_F( M6502CompareRegistersTests, CMPZeroPageCanCompareTwoValuesThatResultInANegativeFlagSet )
+{
+    CMPTestData Test;
+    Test.A = 8;    
+    Test.Operand = 26;
+    Test.ExpectZ = false;
+    Test.ExpectN = true;
+    Test.ExpectC = false;
+    CMPZeroPage( Test );
+}

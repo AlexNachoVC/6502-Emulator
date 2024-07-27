@@ -311,7 +311,8 @@ struct m6502::CPU {
         INS_ADC_INDY = 0x71,
         
         // Register Comparison
-        INS_CMP_IM = 0xC9
+        INS_CMP_IM = 0xC9,
+        INS_CMP_ZP = 0xC5
         ;
 
     /* Sets the correct Process status after a load register instruction
