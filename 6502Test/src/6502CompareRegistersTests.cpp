@@ -25,109 +25,85 @@ protected:
         EXPECT_EQ( CPUBefore.Flag.V, cpu.Flag.V );
     }
 
+    struct CMPTestData
+    {
+        Byte A;
+        Byte Operand;
+
+        bool ExpectC;
+        bool ExpectZ;
+        bool ExpectN;
+    };
+
+    void CMPImmediate (CMPTestData Test )
+    {
+        // given:
+        using namespace m6502;
+        cpu.Reset( 0xFF00, mem );
+        cpu.Flag.Z = !Test.ExpectZ;
+        cpu.Flag.N = !Test.ExpectN;
+        cpu.Flag.C = !Test.ExpectC;
+        cpu.A = Test.A;
+        mem[0xFF00] = CPU::INS_CMP_IM;
+        mem[0xFF01] = Test.Operand;
+        constexpr s32 EXPECTED_CYCLES = 2;
+        CPU CPUCopy = cpu;
+
+        // when:
+        const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+        // then:
+        EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+        EXPECT_EQ( cpu.A, Test.A );
+        EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
+        EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
+        EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
+        ExpectUnaffectedRegisters( CPUCopy );
+    }
+
 };
 
 TEST_F( M6502CompareRegistersTests, CMPImmediateCanCompareTwoIdenticalValues )
 {
-    // given:
-        using namespace m6502;
-        cpu.Reset( 0xFF00, mem );
-        cpu.Flag.Z = false;
-        cpu.Flag.N = true;
-        cpu.Flag.C = false;
-        cpu.A = 26;
-        mem[0xFF00] = CPU::INS_CMP_IM;
-        mem[0xFF01] = 26;
-        constexpr s32 EXPECTED_CYCLES = 2;
-        CPU CPUCopy = cpu;
-
-        // when:
-        const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
-
-        // then:
-        EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-        EXPECT_EQ( cpu.A, 26 );
-        EXPECT_TRUE( cpu.Flag.Z );
-        EXPECT_FALSE( cpu.Flag.N );
-        EXPECT_TRUE( cpu.Flag.C );
-        ExpectUnaffectedRegisters( CPUCopy );
+    CMPTestData Test;
+    Test.A = 26;    
+    Test.Operand = 26;
+    Test.ExpectZ = true;
+    Test.ExpectN = false;
+    Test.ExpectC = true;
+    CMPImmediate( Test );
 }
 
 TEST_F( M6502CompareRegistersTests, CMPImmediateCanCompareTwoDifferentPositiveValues )
 {
-    // given:
-        using namespace m6502;
-        cpu.Reset( 0xFF00, mem );
-        cpu.Flag.Z = true;
-        cpu.Flag.N = true;
-        cpu.Flag.C = false;
-        cpu.A = 48;
-        mem[0xFF00] = CPU::INS_CMP_IM;
-        mem[0xFF01] = 26;
-        constexpr s32 EXPECTED_CYCLES = 2;
-        CPU CPUCopy = cpu;
-
-        // when:
-        const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
-
-        // then:
-        EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-        EXPECT_EQ( cpu.A, 48 );
-        EXPECT_FALSE( cpu.Flag.Z );
-        EXPECT_FALSE( cpu.Flag.N );
-        EXPECT_TRUE( cpu.Flag.C );
-        ExpectUnaffectedRegisters( CPUCopy );
+    CMPTestData Test;
+    Test.A = 48;    
+    Test.Operand = 26;
+    Test.ExpectZ = false;
+    Test.ExpectN = false;
+    Test.ExpectC = true;
+    CMPImmediate( Test );
 }
 
 TEST_F( M6502CompareRegistersTests, CMPImmediateCanCompareANegativeNumberToAPositive )
-{
-    // given:
-        using namespace m6502;
-        cpu.Reset( 0xFF00, mem );
-        cpu.Flag.Z = true;
-        cpu.Flag.N = true;
-        cpu.Flag.C = false;
-        cpu.A = 130;    // Negative Number!
-        mem[0xFF00] = CPU::INS_CMP_IM;
-        mem[0xFF01] = 26;
-        constexpr s32 EXPECTED_CYCLES = 2;
-        CPU CPUCopy = cpu;
-
-        // when:
-        const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
-
-        // then:
-        EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-        EXPECT_EQ( cpu.A, 130 );
-        EXPECT_FALSE( cpu.Flag.Z );
-        EXPECT_FALSE( cpu.Flag.N );
-        EXPECT_TRUE( cpu.Flag.C );
-        ExpectUnaffectedRegisters( CPUCopy );
+{   
+    CMPTestData Test;
+    Test.A = 130;    // Negative number!
+    Test.Operand = 26;
+    Test.ExpectZ = false;
+    Test.ExpectN = false;
+    Test.ExpectC = true;
+    CMPImmediate( Test );
 }
 
 TEST_F( M6502CompareRegistersTests, CMPImmediateCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
-    // given:
-        using namespace m6502;
-        cpu.Reset( 0xFF00, mem );
-        cpu.Flag.Z = true;
-        cpu.Flag.N = false;
-        cpu.Flag.C = true;
-        cpu.A = 8;    
-        mem[0xFF00] = CPU::INS_CMP_IM;
-        mem[0xFF01] = 26;
-        constexpr s32 EXPECTED_CYCLES = 2;
-        CPU CPUCopy = cpu;
-
-        // when:
-        const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
-
-        // then:
-        EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-        EXPECT_EQ( cpu.A, 8 );
-        EXPECT_FALSE( cpu.Flag.Z );
-        EXPECT_TRUE( cpu.Flag.N );
-        EXPECT_FALSE( cpu.Flag.C );
-        ExpectUnaffectedRegisters( CPUCopy );
+    CMPTestData Test;
+    Test.A = 8;    
+    Test.Operand = 26;
+    Test.ExpectZ = false;
+    Test.ExpectN = true;
+    Test.ExpectC = false;
+    CMPImmediate( Test );
 }
 
