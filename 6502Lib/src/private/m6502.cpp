@@ -669,7 +669,7 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             {
                 Byte Operand = FetchByte( Cycles, memory );
                 Byte Temp = A - Operand;
-                Flag.N = Temp & NegativeFlagBit;
+                Flag.N = (Temp & NegativeFlagBit) > 0;
                 Flag.Z = A == Operand;
                 Flag.C = A >= Operand;
             } break;

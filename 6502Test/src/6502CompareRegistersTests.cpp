@@ -84,7 +84,7 @@ TEST_F( M6502CompareRegistersTests, CMPImmediateCanCompareANegativeNumberToAPosi
     // given:
         using namespace m6502;
         cpu.Reset( 0xFF00, mem );
-        cpu.Flag.Z = false;
+        cpu.Flag.Z = true;
         cpu.Flag.N = true;
         cpu.Flag.C = false;
         cpu.A = 130;    // Negative Number!
@@ -98,10 +98,36 @@ TEST_F( M6502CompareRegistersTests, CMPImmediateCanCompareANegativeNumberToAPosi
 
         // then:
         EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-        EXPECT_EQ( cpu.A, 26 );
-        EXPECT_TRUE( cpu.Flag.Z );
+        EXPECT_EQ( cpu.A, 130 );
+        EXPECT_FALSE( cpu.Flag.Z );
         EXPECT_FALSE( cpu.Flag.N );
         EXPECT_TRUE( cpu.Flag.C );
+        ExpectUnaffectedRegisters( CPUCopy );
+}
+
+TEST_F( M6502CompareRegistersTests, CMPImmediateCanCompareTwoValuesThatResultInANegativeFlagSet )
+{
+    // given:
+        using namespace m6502;
+        cpu.Reset( 0xFF00, mem );
+        cpu.Flag.Z = true;
+        cpu.Flag.N = false;
+        cpu.Flag.C = true;
+        cpu.A = 8;    
+        mem[0xFF00] = CPU::INS_CMP_IM;
+        mem[0xFF01] = 26;
+        constexpr s32 EXPECTED_CYCLES = 2;
+        CPU CPUCopy = cpu;
+
+        // when:
+        const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+        // then:
+        EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+        EXPECT_EQ( cpu.A, 8 );
+        EXPECT_FALSE( cpu.Flag.Z );
+        EXPECT_TRUE( cpu.Flag.N );
+        EXPECT_FALSE( cpu.Flag.C );
         ExpectUnaffectedRegisters( CPUCopy );
 }
 
