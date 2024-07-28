@@ -249,6 +249,37 @@ protected:
 		ExpectUnaffectedRegisters( CPUCopy );
 	}
 
+    void CMPIndirectX( CMPTestData Test )
+	{
+		// given:
+		using namespace m6502;
+		cpu.Reset( 0xFF00, mem );
+		cpu.Flag.C = !Test.ExpectC;
+		cpu.Flag.Z = !Test.ExpectZ;
+		cpu.Flag.N = !Test.ExpectN;
+		cpu.A = Test.A;
+		cpu.X = 4;
+		mem[0xFF00] = CPU::INS_CMP_INDX;
+		mem[0xFF01] = 0x42;
+		mem[0x42 + 4] = 0x00;
+		mem[0x42 + 5] = 0x80;
+		mem[0x8000] = Test.Operand;
+		constexpr s32 EXPECTED_CYCLES = 6;
+		CPU CPUCopy = cpu;
+
+		// when:
+		const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+		// then:
+		EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+		EXPECT_EQ( cpu.A, Test.A );
+		EXPECT_EQ( cpu.X, 4 );
+		EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
+		EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
+		EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
+		ExpectUnaffectedRegisters( CPUCopy );
+	}
+
 };
 
 //-- Immediate
@@ -311,7 +342,7 @@ TEST_F( M6502CompareRegistersTests, CMPZeroPageXCanCompareTwoIdenticalValues )
 	CMPZeroPageX( Test );
 }
 
-TEST_F( M6502CompareRegistersTests, CMPZeroPageXCanCompareALargePositiveToASmallPositive )
+TEST_F( M6502CompareRegistersTests, CMPZeroPageXCanCompareTwoDifferentPositiveValues )
 {
 	CMPTestData Test = CompareTwoDifferentPositiveValues();
 	CMPZeroPageX( Test );
@@ -337,7 +368,7 @@ TEST_F( M6502CompareRegistersTests, CMPAbsoluteCanCompareTwoIdenticalValues )
 	CMPAbsolute( Test );
 }
 
-TEST_F( M6502CompareRegistersTests, CMPAbsoluteCanCompareALargePositiveToASmallPositive )
+TEST_F( M6502CompareRegistersTests, CMPAbsoluteCanCompareTwoDifferentPositiveValues )
 {
 	CMPTestData Test = CompareTwoDifferentPositiveValues();
 	CMPAbsolute( Test );
@@ -363,7 +394,7 @@ TEST_F( M6502CompareRegistersTests, CMPAbsoluteXCanCompareTwoIdenticalValues )
 	CMPAbsoluteX( Test );
 }
 
-TEST_F( M6502CompareRegistersTests, CMPAbsoluteXCanCompareALargePositiveToASmallPositive )
+TEST_F( M6502CompareRegistersTests, CMPAbsoluteXCanComparTwoDifferentPositiveValues )
 {
 	CMPTestData Test = CompareTwoDifferentPositiveValues();
 	CMPAbsoluteX( Test );
@@ -389,7 +420,7 @@ TEST_F( M6502CompareRegistersTests, CMPAbsoluteYCanCompareTwoIdenticalValues )
 	CMPAbsoluteY( Test );
 }
 
-TEST_F( M6502CompareRegistersTests, CMPAbsoluteYCanCompareALargePositiveToASmallPositive )
+TEST_F( M6502CompareRegistersTests, CMPAbsoluteYCanCompareTwoDifferentPositiveValues )
 {
 	CMPTestData Test = CompareTwoDifferentPositiveValues();
 	CMPAbsoluteY( Test );
@@ -405,4 +436,30 @@ TEST_F( M6502CompareRegistersTests, CMPAbsoluteYCanCompareTwoValuesThatResultInA
 {
 	CMPTestData Test = CompareTwoValuesThatResultInANegativeFlagSet();
 	CMPAbsoluteY( Test );
+}
+
+//-- Indirect X
+
+TEST_F( M6502CompareRegistersTests, CMPIndirectXCanCompareTwoIdenticalValues )
+{
+	CMPTestData Test = CompareTwoIdenticalValues();
+	CMPIndirectX( Test );
+}
+
+TEST_F( M6502CompareRegistersTests, CMPIndirectXCanCompareTwoDifferentPositiveValues )
+{
+	CMPTestData Test = CompareTwoDifferentPositiveValues();
+	CMPIndirectX( Test );
+}
+
+TEST_F( M6502CompareRegistersTests, CMPIndirectXCanCompareANegativeNumberToAPositive )
+{
+	CMPTestData Test = CompareANegativeNumberToAPositive();
+	CMPIndirectX( Test );
+}
+
+TEST_F( M6502CompareRegistersTests, CMPIndirectXCanCompareTwoValuesThatResultInANegativeFlagSet )
+{
+	CMPTestData Test = CompareTwoValuesThatResultInANegativeFlagSet();
+	CMPIndirectX( Test );
 }
