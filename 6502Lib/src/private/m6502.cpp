@@ -74,12 +74,12 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
     };
 
     /* Sets the processor status for a CMP/CPX/CPY instruction */
-    auto CMP = [&Cycles, &memory, this] (Byte Operand )
+    auto RegisterCompare = [&Cycles, &memory, this] (Byte Operand, Byte RegisterValue )
     {
-        Byte Temp = A - Operand;
+        Byte Temp = RegisterValue - Operand;
         Flag.N = (Temp & NegativeFlagBit) > 0;
-        Flag.Z = A == Operand;
-        Flag.C = A >= Operand;
+        Flag.Z = RegisterValue == Operand;
+        Flag.C = RegisterValue >= Operand;
     };
 
     const s32 CyclesRequested = Cycles;
@@ -677,50 +677,61 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             case INS_CMP_IM:
             {
                 Byte Operand = FetchByte( Cycles, memory );
-                CMP( Operand );
+                RegisterCompare( Operand, A );
             } break;
             case INS_CMP_ZP:
             {
                 Word Address = AddressZeroPage( Cycles, memory );
                 Byte Operand = ReadByte( Cycles, Address, memory );
-                CMP( Operand );
+                RegisterCompare( Operand, A );
             } break;
             case INS_CMP_ZPX:
             {
                 Word Address = AddressZeroPageX( Cycles, memory );
                 Byte Operand = ReadByte( Cycles, Address, memory );
-                CMP( Operand );
+                RegisterCompare( Operand, A );
             } break;
             case INS_CMP_ABS:
             {
                 Word Address = AddressAbsolute( Cycles, memory );
                 Byte Operand = ReadByte( Cycles, Address, memory );
-                CMP( Operand );
+                RegisterCompare( Operand, A );
             } break;
             case INS_CMP_ABSX:
             {
                 Word Address = AddressAbsoluteX( Cycles, memory );
                 Byte Operand = ReadByte( Cycles, Address, memory );
-                CMP( Operand );
+                RegisterCompare( Operand, A );
             } break;
             case INS_CMP_ABSY:
             {
                 Word Address = AddressAbsoluteY( Cycles, memory );
                 Byte Operand = ReadByte( Cycles, Address, memory );
-                CMP( Operand );
+                RegisterCompare( Operand, A );
             } break;
             case INS_CMP_INDX:
             {
                 Word Address = AddressIndirectX( Cycles, memory );
                 Byte Operand = ReadByte( Cycles, Address, memory );
-                CMP( Operand );
+                RegisterCompare( Operand, A );
             } break;
             case INS_CMP_INDY:
             {
                 Word Address = AddressIndirectY( Cycles, memory );
                 Byte Operand = ReadByte( Cycles, Address, memory );
-                CMP( Operand );
-		} break;
+                RegisterCompare( Operand, A );
+		    } break;
+            case INS_CPX_IM:
+            {
+                Byte Operand = FetchByte( Cycles, memory );
+                RegisterCompare( Operand, X );
+            } break;
+
+            case INS_CPY_IM:
+            {
+                Byte Operand = FetchByte( Cycles, memory );
+                RegisterCompare( Operand, Y );
+            } break;
             default:
             {
                 printf("Instruction %d not handled\n", Ins);
