@@ -681,7 +681,13 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             } break;
             case INS_CMP_ZP:
             {
-                Word Address = AddressZeroPage(Cycles, memory );
+                Word Address = AddressZeroPage( Cycles, memory );
+                Byte Operand = ReadByte( Cycles, Address, memory );
+                CMP( Operand );
+            } break;
+            case INS_CMP_ZPX:
+            {
+                Word Address = AddressZeroPageX( Cycles, memory );
                 Byte Operand = ReadByte( Cycles, Address, memory );
                 CMP( Operand );
             } break;
