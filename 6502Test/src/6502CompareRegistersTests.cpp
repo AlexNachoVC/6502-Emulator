@@ -27,7 +27,7 @@ protected:
 
     struct CMPTestData
     {
-        Byte A;
+        Byte RegisterValue;
         Byte Operand;
 
         bool ExpectC;
@@ -38,7 +38,7 @@ protected:
     CMPTestData CompareTwoIdenticalValues() 
     {
         CMPTestData Test;
-        Test.A = 26;    
+        Test.RegisterValue = 26;    
         Test.Operand = 26;
         Test.ExpectZ = true;
         Test.ExpectN = false;
@@ -49,7 +49,7 @@ protected:
     CMPTestData CompareTwoDifferentPositiveValues() 
     {
         CMPTestData Test;
-        Test.A = 48;    
+        Test.RegisterValue = 48;    
         Test.Operand = 26;
         Test.ExpectZ = false;
         Test.ExpectN = false;
@@ -60,7 +60,7 @@ protected:
     CMPTestData CompareANegativeNumberToAPositive()
     {
         CMPTestData Test;
-        Test.A = 130;    // Negative number!
+        Test.RegisterValue = 130;    // Negative number!
         Test.Operand = 26;
         Test.ExpectZ = false;
         Test.ExpectN = false;
@@ -71,7 +71,7 @@ protected:
     CMPTestData CompareTwoValuesThatResultInANegativeFlagSet() 
     {
         CMPTestData Test;
-        Test.A = 8;    
+        Test.RegisterValue = 8;    
         Test.Operand = 26;
         Test.ExpectZ = false;
         Test.ExpectN = true;
@@ -105,7 +105,7 @@ protected:
                 Opcode = CPU::INS_CPY_IM;
                 break;
         }
-        *Register = Test.A;
+        *Register = Test.RegisterValue;
 
         mem[0xFF00] = Opcode;
         mem[0xFF01] = Test.Operand;
@@ -117,7 +117,7 @@ protected:
 
         // then:
         EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-        EXPECT_EQ( *Register, Test.A );
+        EXPECT_EQ( *Register, Test.RegisterValue );
         EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
         EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
         EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
@@ -132,7 +132,7 @@ protected:
         cpu.Flag.Z = !Test.ExpectZ;
         cpu.Flag.N = !Test.ExpectN;
         cpu.Flag.C = !Test.ExpectC;
-        cpu.A = Test.A;
+        cpu.A = Test.RegisterValue;
         mem[0xFF00] = CPU::INS_CMP_ZP;
         mem[0xFF01] = 0x42;
         mem[0x0042] = Test.Operand;
@@ -144,7 +144,7 @@ protected:
 
         // then:
         EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-        EXPECT_EQ( cpu.A, Test.A );
+        EXPECT_EQ( cpu.A, Test.RegisterValue );
         EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
         EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
         EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
@@ -159,7 +159,7 @@ protected:
 		cpu.Flag.Z = !Test.ExpectZ;
 		cpu.Flag.N = !Test.ExpectN;
         cpu.Flag.C = !Test.ExpectC;
-		cpu.A = Test.A;
+		cpu.A = Test.RegisterValue;
 		cpu.X = 4;
 		mem[0xFF00] = CPU::INS_CMP_ZPX;
 		mem[0xFF01] = 0x42;
@@ -172,7 +172,7 @@ protected:
 
 		// then:
 		EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-		EXPECT_EQ( cpu.A, Test.A );
+		EXPECT_EQ( cpu.A, Test.RegisterValue );
 		EXPECT_EQ( cpu.X, 4 );
 		EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
 		EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
@@ -188,7 +188,7 @@ protected:
         cpu.Flag.Z = !Test.ExpectZ;
         cpu.Flag.N = !Test.ExpectN;
 		cpu.Flag.C = !Test.ExpectC;
-		cpu.A = Test.A;
+		cpu.A = Test.RegisterValue;
 		mem[0xFF00] = CPU::INS_CMP_ABS;
 		mem[0xFF01] = 0x00;
 		mem[0xFF02] = 0x80;
@@ -201,7 +201,7 @@ protected:
 
 		// then:
 		EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-		EXPECT_EQ( cpu.A, Test.A );
+		EXPECT_EQ( cpu.A, Test.RegisterValue );
 		EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
 		EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
 		EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
@@ -216,7 +216,7 @@ protected:
 		cpu.Flag.Z = !Test.ExpectZ;
 		cpu.Flag.N = !Test.ExpectN;
 		cpu.Flag.C = !Test.ExpectC;
-		cpu.A = Test.A;
+		cpu.A = Test.RegisterValue;
 		cpu.X = 4;
 		mem[0xFF00] = CPU::INS_CMP_ABSX;
 		mem[0xFF01] = 0x00;
@@ -230,7 +230,7 @@ protected:
 
 		// then:
 		EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-		EXPECT_EQ( cpu.A, Test.A );
+		EXPECT_EQ( cpu.A, Test.RegisterValue );
 		EXPECT_EQ( cpu.X, 4 );
 		EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
 		EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
@@ -246,7 +246,7 @@ protected:
 		cpu.Flag.Z = !Test.ExpectZ;
 		cpu.Flag.N = !Test.ExpectN;
 		cpu.Flag.C = !Test.ExpectC;
-		cpu.A = Test.A;
+		cpu.A = Test.RegisterValue;
 		cpu.Y = 4;
 		mem[0xFF00] = CPU::INS_CMP_ABSY;
 		mem[0xFF01] = 0x00;
@@ -260,7 +260,7 @@ protected:
 
 		// then:
 		EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-		EXPECT_EQ( cpu.A, Test.A );
+		EXPECT_EQ( cpu.A, Test.RegisterValue );
 		EXPECT_EQ( cpu.Y, 4 );
 		EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
 		EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
@@ -276,7 +276,7 @@ protected:
 		cpu.Flag.C = !Test.ExpectC;
 		cpu.Flag.Z = !Test.ExpectZ;
 		cpu.Flag.N = !Test.ExpectN;
-		cpu.A = Test.A;
+		cpu.A = Test.RegisterValue;
 		cpu.X = 4;
 		mem[0xFF00] = CPU::INS_CMP_INDX;
 		mem[0xFF01] = 0x42;
@@ -291,7 +291,7 @@ protected:
 
 		// then:
 		EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-		EXPECT_EQ( cpu.A, Test.A );
+		EXPECT_EQ( cpu.A, Test.RegisterValue );
 		EXPECT_EQ( cpu.X, 4 );
 		EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
 		EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
@@ -307,7 +307,7 @@ protected:
 		cpu.Flag.C = !Test.ExpectC;
 		cpu.Flag.Z = !Test.ExpectZ;
 		cpu.Flag.N = !Test.ExpectN;
-		cpu.A = Test.A;
+		cpu.A = Test.RegisterValue;
 		cpu.Y = 4;
 		mem[0xFF00] = CPU::INS_CMP_INDY;
 		mem[0xFF01] = 0x42;
@@ -322,7 +322,7 @@ protected:
 
 		// then:
 		EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-		EXPECT_EQ( cpu.A, Test.A );
+		EXPECT_EQ( cpu.A, Test.RegisterValue );
 		EXPECT_EQ( cpu.Y, 4 );
 		EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
 		EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
