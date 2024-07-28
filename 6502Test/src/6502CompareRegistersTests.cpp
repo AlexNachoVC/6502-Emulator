@@ -161,6 +161,34 @@ protected:
 		ExpectUnaffectedRegisters( CPUCopy );
 	}
 
+    void CMPAbsolute( CMPTestData Test )
+	{
+		// given:
+		using namespace m6502;
+		cpu.Reset( 0xFF00, mem );
+        cpu.Flag.Z = !Test.ExpectZ;
+        cpu.Flag.N = !Test.ExpectN;
+		cpu.Flag.C = !Test.ExpectC;
+		cpu.A = Test.A;
+		mem[0xFF00] = CPU::INS_CMP_ABS;
+		mem[0xFF01] = 0x00;
+		mem[0xFF02] = 0x80;
+		mem[0x8000] = Test.Operand;
+		constexpr s32 EXPECTED_CYCLES = 4;
+		CPU CPUCopy = cpu;
+
+		// when:
+		const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+		// then:
+		EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+		EXPECT_EQ( cpu.A, Test.A );
+		EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
+		EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
+		EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
+		ExpectUnaffectedRegisters( CPUCopy );
+	}
+
 };
 
 //-- Immediate
@@ -239,4 +267,30 @@ TEST_F( M6502CompareRegistersTests, CMPZeroPageXCanCompareTwoValuesThatResultInA
 {
 	CMPTestData Test = CompareTwoValuesThatResultInANegativeFlagSet();
 	CMPZeroPageX( Test );
+}
+
+//-- Absolute
+
+TEST_F( M6502CompareRegistersTests, CMPAbsoluteCanCompareTwoIdenticalValues )
+{
+	CMPTestData Test = CompareTwoIdenticalValues();
+	CMPAbsolute( Test );
+}
+
+TEST_F( M6502CompareRegistersTests, CMPAbsoluteCanCompareALargePositiveToASmallPositive )
+{
+	CMPTestData Test = CompareTwoDifferentPositiveValues();
+	CMPAbsolute( Test );
+}
+
+TEST_F( M6502CompareRegistersTests, CMPAbsoluteCanCompareANegativeNumberToAPositive )
+{
+	CMPTestData Test = CompareANegativeNumberToAPositive();
+	CMPAbsolute( Test );
+}
+
+TEST_F( M6502CompareRegistersTests, CMPAbsoluteCanCompareTwoValuesThatResultInANegativeFlagSet )
+{
+	CMPTestData Test = CompareTwoValuesThatResultInANegativeFlagSet();
+	CMPAbsolute( Test );
 }
