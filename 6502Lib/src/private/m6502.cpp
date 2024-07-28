@@ -732,7 +732,12 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 Byte Operand = ReadByte( Cycles, Address, memory );
                 RegisterCompare( Operand, X );
             } break;
-
+            case INS_CPX_ABS:
+            {
+                Word Address = AddressAbsolute( Cycles, memory );
+                Byte Operand = ReadByte( Cycles, Address, memory );
+                RegisterCompare( Operand, X );
+            } break;
             case INS_CPY_IM:
             {
                 Byte Operand = FetchByte( Cycles, memory );
@@ -741,6 +746,12 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             case INS_CPY_ZP:
             {
                 Word Address = AddressZeroPage( Cycles, memory );
+                Byte Operand = ReadByte( Cycles, Address, memory );
+                RegisterCompare( Operand, Y );
+            } break;
+            case INS_CPY_ABS:
+            {
+                Word Address = AddressAbsolute( Cycles, memory );
                 Byte Operand = ReadByte( Cycles, Address, memory );
                 RegisterCompare( Operand, Y );
             } break;
