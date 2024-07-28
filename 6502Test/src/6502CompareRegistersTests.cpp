@@ -193,7 +193,7 @@ protected:
 		ExpectUnaffectedRegisters( CPUCopy );
 	}
 
-    void CMPAbsolute( CMPTestData Test )
+    void CompareAbsolute( CMPTestData Test, ERegister RegisterToCompare )
 	{
 		// given:
 		using namespace m6502;
@@ -201,8 +201,22 @@ protected:
         cpu.Flag.Z = !Test.ExpectZ;
         cpu.Flag.N = !Test.ExpectN;
 		cpu.Flag.C = !Test.ExpectC;
-		cpu.A = Test.RegisterValue;
-		mem[0xFF00] = CPU::INS_CMP_ABS;
+		Byte* Register = &cpu.A;
+		Byte Opcode = CPU::INS_CMP_ABS;
+		switch ( RegisterToCompare )
+		{
+		case ERegister::X:
+			Register = &cpu.X;
+			Opcode = CPU::INS_CPX_ABS;
+			break;
+		case ERegister::Y:
+			Register = &cpu.Y;
+			Opcode = CPU::INS_CPY_ABS;
+			break;
+		};
+		*Register = Test.RegisterValue;
+
+		mem[0xFF00] = Opcode;
 		mem[0xFF01] = 0x00;
 		mem[0xFF02] = 0x80;
 		mem[0x8000] = Test.Operand;
@@ -429,25 +443,25 @@ TEST_F( M6502CompareRegistersTests, CMPZeroPageXCanCompareTwoValuesThatResultInA
 TEST_F( M6502CompareRegistersTests, CMPAbsoluteCanCompareTwoIdenticalValues )
 {
 	CMPTestData Test = CompareTwoIdenticalValues();
-	CMPAbsolute( Test );
+	CompareAbsolute( Test, ERegister::A );
 }
 
 TEST_F( M6502CompareRegistersTests, CMPAbsoluteCanCompareTwoDifferentPositiveValues )
 {
 	CMPTestData Test = CompareTwoDifferentPositiveValues();
-	CMPAbsolute( Test );
+	CompareAbsolute( Test, ERegister::A );
 }
 
 TEST_F( M6502CompareRegistersTests, CMPAbsoluteCanCompareANegativeNumberToAPositive )
 {
 	CMPTestData Test = CompareANegativeNumberToAPositive();
-	CMPAbsolute( Test );
+	CompareAbsolute( Test, ERegister::A);
 }
 
 TEST_F( M6502CompareRegistersTests, CMPAbsoluteCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
 	CMPTestData Test = CompareTwoValuesThatResultInANegativeFlagSet();
-	CMPAbsolute( Test );
+	CompareAbsolute( Test, ERegister::A );
 }
 
 //-- Absolute X
@@ -607,6 +621,31 @@ TEST_F( M6502CompareRegistersTests, CPXZeroPageCanCompareTwoValuesThatResultInAN
 	CompareZeroPage( Test, ERegister::X );
 }
 
+//-- Absolute
+
+TEST_F( M6502CompareRegistersTests, CPXAbsoluteCanCompareTwoIdenticalValues )
+{
+	CMPTestData Test = CompareTwoIdenticalValues();
+	CompareAbsolute( Test, ERegister::X );
+}
+
+TEST_F( M6502CompareRegistersTests, CPXAbsoluteCanCompareTwoDifferentPositiveValues )
+{
+	CMPTestData Test = CompareTwoDifferentPositiveValues();
+	CompareAbsolute( Test, ERegister::X );
+}
+
+TEST_F( M6502CompareRegistersTests, CPXAbsoluteCanCompareANegativeNumberToAPositive )
+{
+	CMPTestData Test = CompareANegativeNumberToAPositive();
+	CompareAbsolute( Test, ERegister::X );
+}
+
+TEST_F( M6502CompareRegistersTests, CPXAbsoluteCanCompareTwoValuesThatResultInANegativeFlagSet )
+{
+	CMPTestData Test = CompareTwoValuesThatResultInANegativeFlagSet();
+	CompareAbsolute( Test, ERegister::X );
+}
 
 // Compare Y Register
 //-- Immediate
@@ -659,4 +698,30 @@ TEST_F( M6502CompareRegistersTests, CPYZeroPageCanCompareTwoValuesThatResultInAN
 {
 	CMPTestData Test = CompareTwoValuesThatResultInANegativeFlagSet();
 	CompareZeroPage( Test, ERegister::Y );
+}
+
+//-- Absolute
+
+TEST_F( M6502CompareRegistersTests, CPYAbsoluteCanCompareTwoIdenticalValues )
+{
+	CMPTestData Test = CompareTwoIdenticalValues();
+	CompareAbsolute( Test, ERegister::Y );
+}
+
+TEST_F( M6502CompareRegistersTests, CPYAbsoluteCanCompareTwoDifferentPositiveValues )
+{
+	CMPTestData Test = CompareTwoDifferentPositiveValues();
+	CompareAbsolute( Test, ERegister::Y );
+}
+
+TEST_F( M6502CompareRegistersTests, CPYAbsoluteCanCompareANegativeNumberToAPositive )
+{
+	CMPTestData Test = CompareANegativeNumberToAPositive();
+	CompareAbsolute( Test, ERegister::Y );
+}
+
+TEST_F( M6502CompareRegistersTests, CPYAbsoluteCanCompareTwoValuesThatResultInANegativeFlagSet )
+{
+	CMPTestData Test = CompareTwoValuesThatResultInANegativeFlagSet();
+	CompareAbsolute( Test, ERegister::Y );
 }
