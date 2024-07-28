@@ -318,7 +318,11 @@ struct m6502::CPU {
 		INS_CMP_ABSX = 0xDD,
 		INS_CMP_ABSY = 0xD9,
 		INS_CMP_INDX = 0xC1,
-		INS_CMP_INDY = 0xD1
+		INS_CMP_INDY = 0xD1,
+
+        INS_CPX_IM = 0xE0,
+
+        INS_CPY_IM = 0xC0
         ;
 
     /* Sets the correct Process status after a load register instruction

@@ -79,7 +79,12 @@ protected:
         return Test;
     }
 
-    void CMPImmediate (CMPTestData Test )
+    enum class ERegister
+    {
+        A, X, Y
+    };
+
+    void CMPImmediate (CMPTestData Test, ERegister RegisterToCompare )
     {
         // given:
         using namespace m6502;
@@ -87,8 +92,22 @@ protected:
         cpu.Flag.Z = !Test.ExpectZ;
         cpu.Flag.N = !Test.ExpectN;
         cpu.Flag.C = !Test.ExpectC;
-        cpu.A = Test.A;
-        mem[0xFF00] = CPU::INS_CMP_IM;
+        Byte* Register = &cpu.A;
+        Byte Opcode = CPU::INS_CMP_IM;
+        switch ( RegisterToCompare )
+        {
+            case ERegister::X:
+                Register = &cpu.X;
+                Opcode = CPU::INS_CPX_IM;
+                break;
+            case ERegister::Y:
+                Register = &cpu.Y;
+                Opcode = CPU::INS_CPY_IM;
+                break;
+        }
+        *Register = Test.A;
+
+        mem[0xFF00] = Opcode;
         mem[0xFF01] = Test.Operand;
         constexpr s32 EXPECTED_CYCLES = 2;
         CPU CPUCopy = cpu;
@@ -98,7 +117,7 @@ protected:
 
         // then:
         EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-        EXPECT_EQ( cpu.A, Test.A );
+        EXPECT_EQ( *Register, Test.A );
         EXPECT_EQ( cpu.Flag.Z, Test.ExpectZ );
         EXPECT_EQ( cpu.Flag.N, Test.ExpectN );
         EXPECT_EQ( cpu.Flag.C, Test.ExpectC );
@@ -313,30 +332,31 @@ protected:
 
 };
 
+// Compare
 //-- Immediate
 
 TEST_F( M6502CompareRegistersTests, CMPImmediateCanCompareTwoIdenticalValues )
 {
     CMPTestData Test = CompareTwoIdenticalValues();
-    CMPImmediate( Test );
+    CMPImmediate( Test, ERegister::A );
 }
 
 TEST_F( M6502CompareRegistersTests, CMPImmediateCanCompareTwoDifferentPositiveValues )
 {
     CMPTestData Test = CompareTwoDifferentPositiveValues();
-    CMPImmediate( Test );
+    CMPImmediate( Test, ERegister::A );
 }
 
 TEST_F( M6502CompareRegistersTests, CMPImmediateCanCompareANegativeNumberToAPositive )
 {   
     CMPTestData Test = CompareANegativeNumberToAPositive();
-    CMPImmediate( Test );
+    CMPImmediate( Test, ERegister::A );
 }
 
 TEST_F( M6502CompareRegistersTests, CMPImmediateCanCompareTwoValuesThatResultInANegativeFlagSet )
 {
     CMPTestData Test = CompareTwoValuesThatResultInANegativeFlagSet();
-    CMPImmediate( Test );
+    CMPImmediate( Test, ERegister::A );
 }
 
 //-- Zero Page
@@ -519,4 +539,59 @@ TEST_F( M6502CompareRegistersTests, CMPIndirectYCanCompareTwoValuesThatResultInA
 {
 	CMPTestData Test = CompareTwoValuesThatResultInANegativeFlagSet();
 	CMPIndirectY( Test );
+}
+
+// Compare X Register
+//-- Immediate
+
+TEST_F( M6502CompareRegistersTests, CPXImmediateCanCompareTwoIdenticalValues )
+{
+    CMPTestData Test = CompareTwoIdenticalValues();
+    CMPImmediate( Test, ERegister::X );
+}
+
+TEST_F( M6502CompareRegistersTests, CPXImmediateCanCompareTwoDifferentPositiveValues )
+{
+    CMPTestData Test = CompareTwoDifferentPositiveValues();
+    CMPImmediate( Test, ERegister::X );
+}
+
+TEST_F( M6502CompareRegistersTests, CPXImmediateCanCompareANegativeNumberToAPositive )
+{   
+    CMPTestData Test = CompareANegativeNumberToAPositive();
+    CMPImmediate( Test, ERegister::X );
+}
+
+TEST_F( M6502CompareRegistersTests, CPXImmediateCanCompareTwoValuesThatResultInANegativeFlagSet )
+{
+    CMPTestData Test = CompareTwoValuesThatResultInANegativeFlagSet();
+    CMPImmediate( Test, ERegister::X );
+}
+
+
+// Compare Y Register
+//-- Immediate
+
+TEST_F( M6502CompareRegistersTests, CPYImmediateCanCompareTwoIdenticalValues )
+{
+    CMPTestData Test = CompareTwoIdenticalValues();
+    CMPImmediate( Test, ERegister::Y );
+}
+
+TEST_F( M6502CompareRegistersTests, CPYImmediateCanCompareTwoDifferentPositiveValues )
+{
+    CMPTestData Test = CompareTwoDifferentPositiveValues();
+    CMPImmediate( Test, ERegister::Y );
+}
+
+TEST_F( M6502CompareRegistersTests, CPYImmediateCanCompareANegativeNumberToAPositive )
+{   
+    CMPTestData Test = CompareANegativeNumberToAPositive();
+    CMPImmediate( Test, ERegister::Y );
+}
+
+TEST_F( M6502CompareRegistersTests, CPYImmediateCanCompareTwoValuesThatResultInANegativeFlagSet )
+{
+    CMPTestData Test = CompareTwoValuesThatResultInANegativeFlagSet();
+    CMPImmediate( Test, ERegister::Y );
 }
