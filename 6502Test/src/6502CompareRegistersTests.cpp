@@ -725,3 +725,34 @@ TEST_F( M6502CompareRegistersTests, CPYAbsoluteCanCompareTwoValuesThatResultInAN
 	CMPTestData Test = CompareTwoValuesThatResultInANegativeFlagSet();
 	CompareAbsolute( Test, ERegister::Y );
 }
+
+#if 0 // for loop test
+TEST_F( M6502CompareRegisterTests, LoopTest )
+{
+	// given:
+	using namespace m6502;
+	/* 
+	* = $1000
+
+	lda #0
+	clc
+	loop
+	   adc #8
+	   cmp #24
+	   bne loop
+
+	ldx #20
+	*/
+	Byte TestPrg[] = { 0x0,0x10,0xA9,0x00,0x18,0x69,0x08,0xC9,0x18,0xD0,0xFA,0xA2,0x14 };
+
+	// when:
+	Word StartAddress = cpu.LoadPrg( TestPrg, sizeof( TestPrg ), mem );
+	cpu.PC = StartAddress;
+
+	//then:
+	for ( m6502::s32 Clock = 1000; Clock > 0; )
+	{
+		Clock -= cpu.Execute( 1, mem );
+	}
+}
+#endif
