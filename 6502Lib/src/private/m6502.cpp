@@ -726,10 +726,22 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 Byte Operand = FetchByte( Cycles, memory );
                 RegisterCompare( Operand, X );
             } break;
+            case INS_CPX_ZP:
+            {
+                Word Address = AddressZeroPage( Cycles, memory );
+                Byte Operand = ReadByte( Cycles, Address, memory );
+                RegisterCompare( Operand, X );
+            } break;
 
             case INS_CPY_IM:
             {
                 Byte Operand = FetchByte( Cycles, memory );
+                RegisterCompare( Operand, Y );
+            } break;
+            case INS_CPY_ZP:
+            {
+                Word Address = AddressZeroPage( Cycles, memory );
+                Byte Operand = ReadByte( Cycles, Address, memory );
                 RegisterCompare( Operand, Y );
             } break;
             default:
