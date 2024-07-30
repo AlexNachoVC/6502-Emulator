@@ -767,6 +767,13 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 Byte Operand = ReadByte( Cycles, Address, memory );
                 RegisterCompare( Operand, Y );
             } break;
+            case INS_ASL:
+            {
+                Flag.C = ( A & NegativeFlagBit ) > 0;
+                A = A << 1;
+                SetZeroAndNegativeFlags( A );
+                Cycles--;
+            } break;
             default:
             {
                 printf("Instruction %d not handled\n", Ins);
