@@ -774,6 +774,16 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 SetZeroAndNegativeFlags( A );
                 Cycles--;
             } break;
+            case INS_ASL_ZP:
+            {
+                Word Address = AddressZeroPage( Cycles, memory );
+                Byte Operand = ReadByte( Cycles, Address, memory );
+                Flag.C = ( Operand & NegativeFlagBit ) > 0;
+                Byte Temp = Operand << 1;
+                SetZeroAndNegativeFlags( Temp );
+                Cycles--;
+                WriteByte( Temp, Cycles, Address, memory );
+            } break;
             default:
             {
                 printf("Instruction %d not handled\n", Ins);
