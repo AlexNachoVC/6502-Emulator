@@ -665,7 +665,7 @@ TEST_F( M6502Add_SubWithCarryTests, SBCAbsCanSubstractZeroFromZeroAndGetZero )
 	TestSBCAbsolute( Test );
 }
 
-TEST_F( M6502Add_SubWithCarryTests, SBCAbsCanSubstracOneFromZeroAndGetMinusOne )
+TEST_F( M6502Add_SubWithCarryTests, SBCAbsCanSubstractOneFromZeroAndGetMinusOne )
 {
     ADCTestData Test;
     Test.Carry = true;
@@ -679,7 +679,7 @@ TEST_F( M6502Add_SubWithCarryTests, SBCAbsCanSubstracOneFromZeroAndGetMinusOne )
 	TestSBCAbsolute( Test );
 }
 
-TEST_F( M6502Add_SubWithCarryTests, SBCAbsCanSubstracOneFromZeroWithCarryAndGetMinusTwo )
+TEST_F( M6502Add_SubWithCarryTests, SBCAbsCanSubstractOneFromZeroWithCarryAndGetMinusTwo )
 {
     ADCTestData Test;
     Test.Carry = false;
@@ -689,6 +689,20 @@ TEST_F( M6502Add_SubWithCarryTests, SBCAbsCanSubstracOneFromZeroWithCarryAndGetM
     Test.ExpectC = false;
     Test.ExpectN = true;
     Test.ExpectV = false;
+    Test.ExpectZ = false;
+	TestSBCAbsolute( Test );
+}
+
+TEST_F( M6502Add_SubWithCarryTests, SBCAbsCanSubstractTwoNegativeNumbersAndGetSignedOverflow )
+{
+    ADCTestData Test;
+    Test.Carry = true;
+    Test.A = BYTE(-128);
+    Test.Operand = 1;
+    Test.Answer = 127;    
+    Test.ExpectC = true;
+    Test.ExpectN = false;
+    Test.ExpectV = true;
     Test.ExpectZ = false;
 	TestSBCAbsolute( Test );
 }
