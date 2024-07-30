@@ -80,12 +80,22 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
     };
 
     /* Sets the processor status for a CMP/CPX/CPY instruction */
-    auto RegisterCompare = [&Cycles, &memory, this] (Byte Operand, Byte RegisterValue )
+    auto RegisterCompare = [&Cycles, &memory, this] ( Byte Operand, Byte RegisterValue )
     {
         Byte Temp = RegisterValue - Operand;
         Flag.N = (Temp & NegativeFlagBit) > 0;
         Flag.Z = RegisterValue == Operand;
         Flag.C = RegisterValue >= Operand;
+    };
+
+    /* */
+    auto ASL = [&Cycles, &memory, this] ( Byte Operand )
+    {
+        Flag.C = ( Operand & NegativeFlagBit ) > 0;
+        Byte Result = Operand << 1;
+        SetZeroAndNegativeFlags( Result );
+        Cycles--;
+        return Result;
     };
 
     const s32 CyclesRequested = Cycles;
@@ -769,20 +779,14 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             } break;
             case INS_ASL:
             {
-                Flag.C = ( A & NegativeFlagBit ) > 0;
-                A = A << 1;
-                SetZeroAndNegativeFlags( A );
-                Cycles--;
+                A = ASL( A );
             } break;
             case INS_ASL_ZP:
             {
                 Word Address = AddressZeroPage( Cycles, memory );
                 Byte Operand = ReadByte( Cycles, Address, memory );
-                Flag.C = ( Operand & NegativeFlagBit ) > 0;
-                Byte Temp = Operand << 1;
-                SetZeroAndNegativeFlags( Temp );
-                Cycles--;
-                WriteByte( Temp, Cycles, Address, memory );
+                Byte Result = ASL( Operand );
+                WriteByte( Result, Cycles, Address, memory );
             } break;
             default:
             {
