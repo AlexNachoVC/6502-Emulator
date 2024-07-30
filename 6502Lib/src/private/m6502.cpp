@@ -73,6 +73,12 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
         Flag.V = AreSignBitsTheSame && ((A ^ Operand) & NegativeFlagBit);
     };
 
+    /* Do subtract with carry given the operand */
+    auto SBC = [&ADC] ( Byte Operand )
+    {
+        ADC( ~Operand );
+    };
+
     /* Sets the processor status for a CMP/CPX/CPY instruction */
     auto RegisterCompare = [&Cycles, &memory, this] (Byte Operand, Byte RegisterValue )
     {
@@ -673,6 +679,12 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 Word Address = AddressIndirectY( Cycles, memory );
                 Byte Operand = ReadByte( Cycles, Address, memory );
                 ADC( Operand );
+            } break;
+            case INS_SBC_ABS:
+            {
+                Word Address = AddressAbsolute( Cycles, memory );
+                Byte Operand = ReadByte( Cycles, Address, memory );
+                SBC( Operand );
             } break;
             case INS_CMP_IM:
             {
