@@ -706,3 +706,17 @@ TEST_F( M6502Add_SubWithCarryTests, SBCAbsCanSubstractTwoNegativeNumbersAndGetSi
     Test.ExpectZ = false;
 	TestSBCAbsolute( Test );
 }
+
+TEST_F( M6502Add_SubWithCarryTests, SBCAbsCanSubstractAPositiveAndANegativeNumbersAndGetSignedOverflow )
+{
+    ADCTestData Test;
+    Test.Carry = true;
+    Test.A = 127;
+    Test.Operand = BYTE(-1);
+    Test.Answer = 128;    
+    Test.ExpectC = false;
+    Test.ExpectN = true;
+    Test.ExpectV = true;
+    Test.ExpectZ = false;
+	TestSBCAbsolute( Test );
+}
