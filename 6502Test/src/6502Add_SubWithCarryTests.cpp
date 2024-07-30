@@ -45,7 +45,7 @@ public:
     {
         TestADCAbsolute( Test, EOperation::Substract );
     }
-    
+
     void TestADCAbsolute( ADCTestData Test, EOperation Operation = EOperation::Add ) {
         // given:
         using namespace m6502;
@@ -664,3 +664,18 @@ TEST_F( M6502Add_SubWithCarryTests, SBCAbsCanSubstractZeroFromZeroAndGetZero )
     Test.ExpectZ = true;
 	TestSBCAbsolute( Test );
 }
+
+TEST_F( M6502Add_SubWithCarryTests, SBCAbsCanSubstracOneFromZeroAndGetZero )
+{
+    ADCTestData Test;
+    Test.Carry = true;
+    Test.A = 0;
+    Test.Operand = 1;
+    Test.Answer = BYTE(-1);    
+    Test.ExpectC = false;
+    Test.ExpectN = true;
+    Test.ExpectV = false;
+    Test.ExpectZ = false;
+	TestSBCAbsolute( Test );
+}
+
