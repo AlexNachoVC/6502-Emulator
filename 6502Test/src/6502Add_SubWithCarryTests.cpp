@@ -734,3 +734,17 @@ TEST_F( M6502Add_SubWithCarryTests, SBCAbsCanSubstractZeroFromZeroAndCarryAndGet
     Test.ExpectZ = false;
 	TestSBCAbsolute( Test );
 }
+
+TEST_F( M6502Add_SubWithCarryTests, SBCAbsCanSubstractTwoUnsignedNumbers )
+{
+    ADCTestData Test;
+    Test.Carry = true;
+    Test.A = 20;
+    Test.Operand = 17;
+    Test.Answer = 3;    
+    Test.ExpectC = true;
+    Test.ExpectN = false;
+    Test.ExpectV = false;
+    Test.ExpectZ = false;
+	TestSBCAbsolute( Test );
+}
