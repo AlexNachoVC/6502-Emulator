@@ -26,7 +26,8 @@ set  (M6502_SOURCES
     "src/6502StatusFlagChangeTests.cpp"
     "src/6502SystemFunctionsTests.cpp"
     "src/6502Add_SubWithCarryTests.cpp"
-    "src/6502CompareRegistersTests.cpp")
+    "src/6502CompareRegistersTests.cpp"
+    "src/6502ShiftsTests.cpp")
     
 source_group("src" FILES ${M6502_SOURCES})
 

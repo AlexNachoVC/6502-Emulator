@@ -327,7 +327,14 @@ struct m6502::CPU {
 
         INS_CPY_IM = 0xC0,
         INS_CPY_ZP = 0xC4,
-        INS_CPY_ABS = 0xCC
+        INS_CPY_ABS = 0xCC,
+
+        // Shifts
+        INS_ASL = 0x0A,
+        INS_ASL_ZP = 0x06,
+        INS_ASL_ZPX = 0x16,
+        INS_ASL_ABS = 0x0E,
+        INS_ASL_ABSX = 0x1E
         ;
 
     /* Sets the correct Process status after a load register instruction
