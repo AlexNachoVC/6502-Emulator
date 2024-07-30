@@ -165,3 +165,55 @@ TEST_F( M6502ShiftsTests, ASLZeroPageXCanShiftANegativeValue )
 	EXPECT_FALSE( cpu.Flag.Z );
 	EXPECT_TRUE( cpu.Flag.N );
 }
+
+TEST_F( M6502ShiftsTests, ASLAbsCanShiftTheValueOfOne )
+{
+	// given:
+	using namespace m6502;
+	cpu.Reset( 0xFF00, mem );
+	cpu.Flag.C = true;
+	cpu.Flag.Z = true;
+	cpu.Flag.N = true;
+	mem[0xFF00] = CPU::INS_ASL_ABS;
+	mem[0xFF01] = 0x00;
+	mem[0xFF02] = 0x80;
+	mem[0x8000] = 1;
+	constexpr s32 EXPECTED_CYCLES = 6;
+	CPU CPUCopy = cpu;
+
+	// when:
+	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+	// then:
+	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( mem[0x8000], 2 );
+	EXPECT_FALSE( cpu.Flag.C );
+	EXPECT_FALSE( cpu.Flag.Z );
+	EXPECT_FALSE( cpu.Flag.N );
+}
+
+TEST_F( M6502ShiftsTests, ASLAbsCanShiftANegativeValue )
+{
+	// given:
+	using namespace m6502;
+	cpu.Reset( 0xFF00, mem );
+	cpu.Flag.C = false;
+	cpu.Flag.Z = true;
+	cpu.Flag.N = false;
+	mem[0xFF00] = CPU::INS_ASL_ABS;
+	mem[0xFF01] = 0x00;
+	mem[0xFF02] = 0x80;
+	mem[0x8000] = 0b11000010;
+	constexpr s32 EXPECTED_CYCLES = 6;
+	CPU CPUCopy = cpu;
+
+	// when:
+	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+	// then:
+	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( mem[0x8000], 0b10000100 );
+	EXPECT_TRUE( cpu.Flag.C );
+	EXPECT_FALSE( cpu.Flag.Z );
+	EXPECT_TRUE( cpu.Flag.N );
+}
