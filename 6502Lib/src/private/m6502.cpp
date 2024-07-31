@@ -809,6 +809,16 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 Byte Result = ASL( Operand );
                 WriteByte( Result, Cycles, Address, memory );
             } break;
+            case INS_LSR:
+            {
+                Byte Operand = A;
+                constexpr Byte BitZero = 0b00000001;
+                Flag.C = ( Operand & BitZero ) > 0;
+                Byte Result = Operand << 1;
+                SetZeroAndNegativeFlags( Result );
+                Cycles--;
+                A = Result;
+            } break;
             default:
             {
                 printf("Instruction %d not handled\n", Ins);
