@@ -875,6 +875,13 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 Byte Result = ROL( Operand );
                 WriteByte( Result, Cycles, Address, memory );
             } break;
+            case INS_ROL_ZPX:
+            {
+                Word Address = AddressZeroPageX( Cycles, memory );
+                Byte Operand = ReadByte( Cycles, Address, memory );
+                Byte Result = ROL( Operand );
+                WriteByte( Result, Cycles, Address, memory );
+            } break;
             default:
             {
                 printf("Instruction %d not handled\n", Ins);

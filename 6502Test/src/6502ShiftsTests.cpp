@@ -724,3 +724,109 @@ TEST_F( M6502ShiftsTests, ROLZeroPageCanShiftAValueThatResultInANegativeValue )
 	EXPECT_FALSE( cpu.Flag.Z );
 	EXPECT_TRUE( cpu.Flag.N );
 }
+
+// ------------- Zero Page X --------------
+
+TEST_F( M6502ShiftsTests, ROLZeroPageXCanShiftABitOutOfTheCarryFlag )
+{
+	// given:
+	using namespace m6502;
+	cpu.Reset( 0xFF00, mem );
+	cpu.Flag.C = true;
+	cpu.Flag.Z = true;
+	cpu.Flag.N = true;
+	cpu.X = 0x10;
+	mem[0xFF00] = CPU::INS_ROL_ZPX;
+	mem[0xFF01] = 0x42;
+	mem[0x0042 + 0x10] = 0;
+	constexpr s32 EXPECTED_CYCLES = 6;
+	CPU CPUCopy = cpu;
+
+	// when:
+	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+	// then:
+	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( mem[0x0042+0x10], 1 );
+	EXPECT_FALSE( cpu.Flag.C );
+	EXPECT_FALSE( cpu.Flag.Z );
+	EXPECT_FALSE( cpu.Flag.N );
+}
+
+TEST_F( M6502ShiftsTests, ROLZeroPageXCanShiftABitIntoTheCarryFlag )
+{
+	// given:
+	using namespace m6502;
+	cpu.Reset( 0xFF00, mem );
+	cpu.Flag.C = false;
+	cpu.Flag.Z = false;
+	cpu.Flag.N = true;
+	cpu.X = 0x10;
+	mem[0xFF00] = CPU::INS_ROL_ZPX;
+	mem[0xFF01] = 0x42;
+	mem[0x0042+0x10] = 0b10000000;
+	constexpr s32 EXPECTED_CYCLES = 6;
+	CPU CPUCopy = cpu;
+
+	// when:
+	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+	// then:
+	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( mem[0x0042 + 0x10], 0 );
+	EXPECT_TRUE( cpu.Flag.C );
+	EXPECT_TRUE( cpu.Flag.Z );
+	EXPECT_FALSE( cpu.Flag.N );
+}
+
+TEST_F( M6502ShiftsTests, ROLZeroPageXCanShiftZeroWithNoCarry )
+{
+	// given:
+	using namespace m6502;
+	cpu.Reset( 0xFF00, mem );
+	cpu.Flag.C = false;
+	cpu.Flag.Z = false;
+	cpu.Flag.N = true;
+	cpu.X = 0x10;
+	mem[0xFF00] = CPU::INS_ROL_ZPX;
+	mem[0xFF01] = 0x42;
+	mem[0x0042 + 0x10] = 0;
+	constexpr s32 EXPECTED_CYCLES = 6;
+	CPU CPUCopy = cpu;
+
+	// when:
+	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+	// then:
+	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( mem[0x0042 + 0x10], 0 );
+	EXPECT_FALSE( cpu.Flag.C );
+	EXPECT_TRUE( cpu.Flag.Z );
+	EXPECT_FALSE( cpu.Flag.N );
+}
+
+TEST_F( M6502ShiftsTests, ROLZeroPageXCanShiftAValueThatResultInANegativeValue )
+{
+	// given:
+	using namespace m6502;
+	cpu.Reset( 0xFF00, mem );
+	cpu.Flag.C = true;
+	cpu.Flag.Z = false;
+	cpu.Flag.N = false;
+	cpu.X = 0x10;
+	mem[0xFF00] = CPU::INS_ROL_ZPX;
+	mem[0xFF01] = 0x42;
+	mem[0x0042 + 0x10] = 0b01110011;
+	constexpr s32 EXPECTED_CYCLES = 6;
+	CPU CPUCopy = cpu;
+
+	// when:
+	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+	// then:
+	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( mem[0x0042 + 0x10], 0b11100111 );
+	EXPECT_FALSE( cpu.Flag.C );
+	EXPECT_FALSE( cpu.Flag.Z );
+	EXPECT_TRUE( cpu.Flag.N );
+}
