@@ -89,7 +89,7 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
     };
 
     /* Arithmetic Shift Left */
-    auto ASL = [&Cycles, &memory, this] ( Byte Operand )
+    auto ASL = [&Cycles, &memory, this] ( Byte Operand ) -> Byte
     {
         Flag.C = ( Operand & NegativeFlagBit ) > 0;
         Byte Result = Operand << 1;
@@ -99,7 +99,7 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
     };
 
     /* Logical Shift Right */
-    auto LSR = [&Cycles, &memory, this] ( Byte Operand )
+    auto LSR = [&Cycles, &memory, this] ( Byte Operand ) -> Byte 
     {
         constexpr Byte BitZero = 0b00000001;
         Flag.C = ( Operand & BitZero ) > 0;
@@ -110,7 +110,7 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
     };
     
     /* Rotate Left */
-    auto ROL = [&Cycles, &memory, this] ( Byte Operand )
+    auto ROL = [&Cycles, &memory, this] ( Byte Operand ) -> Byte
     {
         Byte NewBit1 = Flag.C ? 0b0000001 : 0;
         Flag.C = ( Operand & NegativeFlagBit ) > 0;
