@@ -108,6 +108,18 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
         Cycles--;
         return Result;
     };
+    
+    /* Rotate Left */
+    auto ROL = [&Cycles, &memory, this] ( Byte Operand )
+    {
+        Byte NewBit1 = Flag.C ? 0b0000001 : 0;
+        Flag.C = ( Operand & NegativeFlagBit ) > 0;
+        Operand = Operand << 1;
+        Operand |= NewBit1;
+        SetZeroAndNegativeFlags( Operand );
+        Cycles--;
+        return Operand;
+    };
 
     const s32 CyclesRequested = Cycles;
     while (Cycles > 0) {
@@ -854,13 +866,14 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             } break;
             case INS_ROL:
             {
-                Byte Bit1 = Flag.C ? 0b0000001 : 0;
-                Flag.C = ( A & NegativeFlagBit ) > 0;
-                A = A << 1;
-                A |= Bit1;
-                SetZeroAndNegativeFlags( A );
-                Cycles--;
-                
+                A = ROL( A );
+            } break;
+            case INS_ROL_ZP:
+            {
+                Word Address = AddressZeroPage( Cycles, memory );
+                Byte Operand = ReadByte( Cycles, Address, memory );
+                Byte Result = ROL( Operand );
+                WriteByte( Result, Cycles, Address, memory );
             } break;
             default:
             {

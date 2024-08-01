@@ -342,7 +342,7 @@ struct m6502::CPU {
         INS_LSR_ABSX = 0x5E,
         INS_ROL = 0x2A,
         INS_ROL_ZP = 0x26,
-        INS_ROl_ZPX = 0x36,
+        INS_ROL_ZPX = 0x36,
         INS_ROL_ABS = 0x2E,
         INS_ROL_ABSX = 0x3E
         ;

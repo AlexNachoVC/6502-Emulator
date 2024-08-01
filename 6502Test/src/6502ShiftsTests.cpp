@@ -635,7 +635,7 @@ TEST_F( M6502ShiftsTests, ROLZeroPageCanShiftABitOutOfTheCarryFlag )
 	cpu.A = 0;
 	mem[0xFF00] = CPU::INS_ROL_ZP;
 	mem[0xFF01] = 0x42;
-	mem[0xFF02] = 1; 
+	mem[0x0042] = 0; 
 	constexpr s32 EXPECTED_CYCLES = 5;
 	CPU CPUCopy = cpu;
 
@@ -644,7 +644,7 @@ TEST_F( M6502ShiftsTests, ROLZeroPageCanShiftABitOutOfTheCarryFlag )
 
 	// then:
 	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( cpu.A,  1 );
+	EXPECT_EQ( mem[0x0042],  1 );
 	EXPECT_FALSE( cpu.Flag.C );
 	EXPECT_FALSE( cpu.Flag.Z );
 	EXPECT_FALSE( cpu.Flag.N );
