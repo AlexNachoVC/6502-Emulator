@@ -339,7 +339,12 @@ struct m6502::CPU {
         INS_LSR_ZP = 0x46,
         INS_LSR_ZPX = 0x56,
         INS_LSR_ABS = 0x4E,
-        INS_LSR_ABSX = 0x5E
+        INS_LSR_ABSX = 0x5E,
+        INS_ROL = 0x2A,
+        INS_ROL_ZP = 0x26,
+        INS_ROl_ZPX = 0x36,
+        INS_ROL_ABS = 0x2E,
+        INS_ROL_ABSX = 0x3E
         ;
 
     /* Sets the correct Process status after a load register instruction
