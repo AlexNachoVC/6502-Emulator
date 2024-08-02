@@ -1276,3 +1276,83 @@ TEST_F( M6502ShiftsTests, RORZeroXPageCanRotateANumber )
 	EXPECT_FALSE( cpu.Flag.Z );
 	EXPECT_TRUE( cpu.Flag.N );
 }
+
+// Absolute
+
+TEST_F( M6502ShiftsTests, RORAbsolutePageCanShiftTheCarryFlagIntoTheOperand )
+{
+	// given:
+	using namespace m6502;
+	cpu.Reset( 0xFF00, mem );
+	cpu.Flag.C = true;
+	cpu.Flag.Z = false;
+	cpu.Flag.N = false;
+	mem[0xFF00] = CPU::INS_ROR_ABS;
+	mem[0xFF01] = 0x00;
+	mem[0xFF02] = 0x80;
+	mem[0x8000] = 0;
+	constexpr s32 EXPECTED_CYCLES = 6;
+	CPU CPUCopy = cpu;
+
+	// when:
+	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+	// then:
+	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( mem[0x8000], 0b10000000 );
+	EXPECT_FALSE( cpu.Flag.C );
+	EXPECT_FALSE( cpu.Flag.Z );
+	EXPECT_TRUE( cpu.Flag.N );
+}
+
+TEST_F( M6502ShiftsTests, RORAbsolutePageCanShiftAValueIntoTheCarryFlag )
+{
+	// given:
+	using namespace m6502;
+	cpu.Reset( 0xFF00, mem );
+	cpu.Flag.C = false;
+	cpu.Flag.Z = false;
+	cpu.Flag.N = false;
+	mem[0xFF00] = CPU::INS_ROR_ABS;
+	mem[0xFF01] = 0x00;
+	mem[0xFF02] = 0x80;
+	mem[0x8000] = 1;
+	constexpr s32 EXPECTED_CYCLES = 6;
+	CPU CPUCopy = cpu;
+
+	// when:
+	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+	// then:
+	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( mem[0x8000], 0 );
+	EXPECT_TRUE( cpu.Flag.C );
+	EXPECT_TRUE( cpu.Flag.Z );
+	EXPECT_FALSE( cpu.Flag.N );
+}
+
+TEST_F( M6502ShiftsTests, RORAbsolutePageCanRotateANumber )
+{
+	// given:
+	using namespace m6502;
+	cpu.Reset( 0xFF00, mem );
+	cpu.Flag.C = true;
+	cpu.Flag.Z = true;
+	cpu.Flag.N = false;
+	mem[0xFF00] = CPU::INS_ROR_ABS;
+	mem[0xFF01] = 0x00;
+	mem[0xFF02] = 0x80;
+	mem[0x8000] = 0b01101101;
+	constexpr s32 EXPECTED_CYCLES = 6;
+	CPU CPUCopy = cpu;
+
+	// when:
+	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+	// then:
+	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( mem[0x8000], 0b10110110 );
+	EXPECT_TRUE( cpu.Flag.C );
+	EXPECT_FALSE( cpu.Flag.Z );
+	EXPECT_TRUE( cpu.Flag.N );
+}
