@@ -1071,3 +1071,27 @@ TEST_F( M6502ShiftsTests, RORCanShiftTheCarryFlagIntoTheOperand )
 	EXPECT_FALSE( cpu.Flag.Z );
 	EXPECT_TRUE( cpu.Flag.N );
 }
+
+TEST_F( M6502ShiftsTests, RORCamShiftAValueIntoTheCarryFlag  )
+{
+	// given:
+	using namespace m6502;
+	cpu.Reset( 0xFF00, mem );
+	cpu.Flag.C = false;
+	cpu.Flag.Z = false;
+	cpu.Flag.N = false;
+	cpu.A = 1;
+	mem[0xFF00] = CPU::INS_ROR;
+	constexpr s32 EXPECTED_CYCLES = 2;
+	CPU CPUCopy = cpu;
+
+	// when:
+	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+	// then:
+	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( cpu.A,  0 );
+	EXPECT_TRUE( cpu.Flag.C );
+	EXPECT_TRUE( cpu.Flag.Z );
+	EXPECT_FALSE( cpu.Flag.N );
+}

@@ -101,8 +101,7 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
     /* Logical Shift Right */
     auto LSR = [&Cycles, &memory, this] ( Byte Operand ) -> Byte 
     {
-        constexpr Byte BitZero = 0b00000001;
-        Flag.C = ( Operand & BitZero ) > 0;
+        Flag.C = ( Operand & ZeroBit ) > 0;
         Byte Result = Operand >> 1;
         SetZeroAndNegativeFlags( Result );
         Cycles--;
@@ -112,10 +111,10 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
     /* Rotate Left */
     auto ROL = [&Cycles, &memory, this] ( Byte Operand ) -> Byte
     {
-        Byte NewBit1 = Flag.C ? 0b0000001 : 0;
+        Byte NewBit0 = Flag.C ? ZeroBit : 0;
         Flag.C = ( Operand & NegativeFlagBit ) > 0;
         Operand = Operand << 1;
-        Operand |= NewBit1;
+        Operand |= NewBit0;
         SetZeroAndNegativeFlags( Operand );
         Cycles--;
         return Operand;
@@ -898,13 +897,14 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             } break;
             case INS_ROR:
             {
+                bool OldBit0 = (A & ZeroBit) > 0;
                 A = A >> 1;
                 if ( Flag.C ) 
                 {
-                    A &= NegativeFlagBit;
+                    A |= NegativeFlagBit;
                 }
                 Cycles--;
-                Flag.C = false;
+                Flag.C = OldBit0;
                 SetZeroAndNegativeFlags( A );
             } break;
             default:

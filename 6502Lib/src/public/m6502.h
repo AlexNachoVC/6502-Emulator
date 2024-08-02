@@ -167,7 +167,8 @@ struct m6502::CPU {
     // Process status bits
     static constexpr Byte
         NegativeFlagBit = 0b10000000,
-        OverflowFlagBit = 0b01000000;
+        OverflowFlagBit = 0b01000000,
+        ZeroBit = 0b00000001;
 
     // Opcodes
     static constexpr Byte 
