@@ -1356,3 +1356,86 @@ TEST_F( M6502ShiftsTests, RORAbsolutePageCanRotateANumber )
 	EXPECT_FALSE( cpu.Flag.Z );
 	EXPECT_TRUE( cpu.Flag.N );
 }
+
+// Absolute X
+
+TEST_F( M6502ShiftsTests, RORAbsoluteXPageCanShiftTheCarryFlagIntoTheOperand )
+{
+	// given:
+	using namespace m6502;
+	cpu.Reset( 0xFF00, mem );
+	cpu.Flag.C = true;
+	cpu.Flag.Z = false;
+	cpu.Flag.N = false;
+	cpu.X = 0x10;
+	mem[0xFF00] = CPU::INS_ROR_ABSX;
+	mem[0xFF01] = 0x00;
+	mem[0xFF02] = 0x80;
+	mem[0x8000 + 0x10] = 0;
+	constexpr s32 EXPECTED_CYCLES = 7;
+	CPU CPUCopy = cpu;
+
+	// when:
+	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+	// then:
+	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( mem[0x8000 + 0x10], 0b10000000 );
+	EXPECT_FALSE( cpu.Flag.C );
+	EXPECT_FALSE( cpu.Flag.Z );
+	EXPECT_TRUE( cpu.Flag.N );
+}
+
+TEST_F( M6502ShiftsTests, RORAbsoluteXPageCanShiftAValueIntoTheCarryFlag )
+{
+	// given:
+	using namespace m6502;
+	cpu.Reset( 0xFF00, mem );
+	cpu.Flag.C = false;
+	cpu.Flag.Z = false;
+	cpu.Flag.N = false;
+	cpu.X = 0x10;
+	mem[0xFF00] = CPU::INS_ROR_ABSX;
+	mem[0xFF01] = 0x00;
+	mem[0xFF02] = 0x80;
+	mem[0x8000+0x10] = 1;
+	constexpr s32 EXPECTED_CYCLES = 7;
+	CPU CPUCopy = cpu;
+
+	// when:
+	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+	// then:
+	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( mem[0x8000 + 0x10], 0 );
+	EXPECT_TRUE( cpu.Flag.C );
+	EXPECT_TRUE( cpu.Flag.Z );
+	EXPECT_FALSE( cpu.Flag.N );
+}
+
+TEST_F( M6502ShiftsTests, RORAbsoluteXPageCanRotateANumber )
+{
+	// given:
+	using namespace m6502;
+	cpu.Reset( 0xFF00, mem );
+	cpu.Flag.C = true;
+	cpu.Flag.Z = true;
+	cpu.Flag.N = false;
+	cpu.X = 0x10;
+	mem[0xFF00] = CPU::INS_ROR_ABSX;
+	mem[0xFF01] = 0x00;
+	mem[0xFF02] = 0x80;
+	mem[0x8000 + 0x10] = 0b01101101;
+	constexpr s32 EXPECTED_CYCLES = 7;
+	CPU CPUCopy = cpu;
+
+	// when:
+	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+	// then:
+	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( mem[0x8000 + 0x10], 0b10110110 );
+	EXPECT_TRUE( cpu.Flag.C );
+	EXPECT_FALSE( cpu.Flag.Z );
+	EXPECT_TRUE( cpu.Flag.N );
+}

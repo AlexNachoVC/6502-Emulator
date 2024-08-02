@@ -935,6 +935,13 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 Byte Result = ROR( Operand );
                 WriteByte( Result, Cycles, Address, memory );
             } break;
+            case INS_ROR_ABSX:
+            {
+                Word Address = AddressAbsoluteX_5( Cycles, memory );
+                Byte Operand = ReadByte( Cycles, Address, memory );
+                Byte Result = ROR( Operand );
+                WriteByte( Result, Cycles, Address, memory );
+            } break;
             default:
             {
                 printf("Instruction %d not handled\n", Ins);
