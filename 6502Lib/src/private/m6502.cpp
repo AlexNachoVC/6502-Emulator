@@ -896,6 +896,17 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 Byte Result = ROL( Operand );
                 WriteByte( Result, Cycles, Address, memory );
             } break;
+            case INS_ROR:
+            {
+                A = A >> 1;
+                if ( Flag.C ) 
+                {
+                    A &= NegativeFlagBit;
+                }
+                Cycles--;
+                Flag.C = false;
+                SetZeroAndNegativeFlags( A );
+            } break;
             default:
             {
                 printf("Instruction %d not handled\n", Ins);
