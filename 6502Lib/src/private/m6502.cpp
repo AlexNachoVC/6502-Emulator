@@ -946,6 +946,7 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             {   
                 constexpr Word InterruptVector = 0xFFFE;
                 PC = ReadWord( Cycles, InterruptVector, memory );
+                Flag.B = true;
                 Cycles -= 4;
             } break;
             default:
