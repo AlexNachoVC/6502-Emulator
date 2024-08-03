@@ -135,8 +135,14 @@ struct m6502::CPU {
     }
 
     /* Push the PC-1 onto the stack */
-    void PushPCToStack( s32& Cycles, Mem& memory ) {
+    void PushPCMinusOneToStack( s32& Cycles, Mem& memory ) {
         WriteWord( PC - 1, Cycles, SPToAddress() - 1, memory );
+        SP -= 2;
+    }
+
+    /* Push the PC onto the stack */
+    void PushPCToStack( s32& Cycles, Mem& memory ) {
+        WriteWord( PC, Cycles, SPToAddress() - 1, memory );
         SP -= 2;
     }
 

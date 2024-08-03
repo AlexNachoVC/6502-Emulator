@@ -433,7 +433,7 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             case INS_JSR:
             {
                 Word SubAddress = FetchWord( Cycles, memory );
-                PushPCToStack( Cycles, memory );
+                PushPCMinusOneToStack( Cycles, memory );
                 PC = SubAddress;
                 Cycles--;
             } break;
@@ -944,10 +944,11 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             } break;
             case INS_BRK:
             {   
+                PushPCToStack( Cycles, memory );
+                PushByteOntoStack ( Cycles, PS, memory );
                 constexpr Word InterruptVector = 0xFFFE;
                 PC = ReadWord( Cycles, InterruptVector, memory );
                 Flag.B = true;
-                Cycles -= 4;
             } break;
             default:
             {

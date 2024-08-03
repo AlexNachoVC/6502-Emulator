@@ -129,7 +129,7 @@ TEST_F( M6502SystemFunctionsTests, BRKWillPushPCAndPSOntoTheStack )
 
 	// then:
 	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-	EXPECT_EQ( mem[(0x100 | OldSP) -0], 0 );
-	EXPECT_EQ( mem[(0x100 | OldSP) -1], 0 );
-	EXPECT_EQ( mem[(0x100 | OldSP) -2], 0  );
+	EXPECT_EQ( mem[(0x100 | OldSP) -0], 0xFF );
+	EXPECT_EQ( mem[(0x100 | OldSP) -1], 0x01 );
+	EXPECT_EQ( mem[(0x100 | OldSP) -2], CPUCopy.PS  );
 }
