@@ -943,8 +943,10 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 WriteByte( Result, Cycles, Address, memory );
             } break;
             case INS_BRK:
-            {
-
+            {   
+                constexpr Word InterruptVector = 0xFFFE;
+                PC = ReadWord( Cycles, InterruptVector, memory );
+                Cycles -= 4;
             } break;
             default:
             {
