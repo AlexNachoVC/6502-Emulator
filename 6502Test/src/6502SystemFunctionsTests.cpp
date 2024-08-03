@@ -97,3 +97,39 @@ TEST_F( M6502SystemFunctionsTests, BRKWillSetTheBreakFlag )
 	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
 	EXPECT_TRUE( cpu.Flag.B );
 }
+
+TEST_F( M6502SystemFunctionsTests, BRKWillPush3BytesOntoTheStack )
+{
+	// given:
+	using namespace m6502;
+	cpu.Reset( 0xFF00, mem );
+	mem[0xFF00] = CPU::INS_BRK;
+	constexpr s32 EXPECTED_CYCLES = 7;
+	CPU CPUCopy = cpu;
+
+	// when:
+	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+	// then:
+	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( cpu.SP, CPUCopy.SP - 3 );
+}
+
+TEST_F( M6502SystemFunctionsTests, BRKWillPushPCAndPSOntoTheStack )
+{
+	// given:
+	using namespace m6502;
+	cpu.Reset( 0xFF00, mem );
+	mem[0xFF00] = CPU::INS_BRK;
+	constexpr s32 EXPECTED_CYCLES = 7;
+	CPU CPUCopy = cpu;
+	Byte OldSP = CPUCopy.SP;
+	// when:
+	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+	// then:
+	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( mem[(0x100 | OldSP) -0], 0 );
+	EXPECT_EQ( mem[(0x100 | OldSP) -1], 0 );
+	EXPECT_EQ( mem[(0x100 | OldSP) -2], 0  );
+}
