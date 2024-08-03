@@ -38,3 +38,42 @@ TEST_F( M6502SystemFunctionsTests, NOPWillDoNothingButConsumeACycle )
 	EXPECT_EQ( cpu.Y, CPUCopy.Y );
 	EXPECT_EQ( cpu.SP, CPUCopy.SP );
 }
+
+TEST_F( M6502SystemFunctionsTests, BRKWillLoadTheProgramCounterFromTheInterruptVector )
+{
+	// given:
+	using namespace m6502;
+	cpu.Reset( 0xFF00, mem );
+	mem[0xFF00] = CPU::INS_BRK;
+	mem[0xFFFE] = 0x00;
+	mem[0xFFFF] = 0x80;
+	constexpr s32 EXPECTED_CYCLES = 7;
+	CPU CPUCopy = cpu;
+
+	// when:
+	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+	// then:
+	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( cpu.PC, 0x8000 );
+}
+
+
+TEST_F( M6502SystemFunctionsTests, BRKWillLoadTheProgramCounterFromTheInterruptVector2 )
+{
+	// given:
+	using namespace m6502;
+	cpu.Reset( 0xFF00, mem );
+	mem[0xFF00] = CPU::INS_BRK;
+	mem[0xFFFE] = 0x00;
+	mem[0xFFFF] = 0x90;
+	constexpr s32 EXPECTED_CYCLES = 7;
+	CPU CPUCopy = cpu;
+
+	// when:
+	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+	// then:
+	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( cpu.PC, 0x9000 );
+}
