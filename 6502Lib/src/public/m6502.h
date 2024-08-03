@@ -134,16 +134,22 @@ struct m6502::CPU {
         return 0x100 | SP;
     }
 
+    /* Push Word to stack*/
+     void PushWordToStack( s32& Cycles, Mem& memory, Word Value ) {
+        WriteByte( Value >> 8, Cycles, SPToAddress(), memory );
+        SP--;
+        WriteByte( Value & 0xFF, Cycles, SPToAddress(), memory );
+        SP--;
+    }
+
     /* Push the PC-1 onto the stack */
     void PushPCMinusOneToStack( s32& Cycles, Mem& memory ) {
-        WriteWord( PC - 1, Cycles, SPToAddress() - 1, memory );
-        SP -= 2;
+        PushWordToStack( Cycles, memory, PC - 1 );
     }
 
     /* Push the PC onto the stack */
     void PushPCToStack( s32& Cycles, Mem& memory ) {
-        WriteWord( PC, Cycles, SPToAddress() - 1, memory );
-        SP -= 2;
+        PushWordToStack( Cycles, memory, PC );
     }
 
     void PushByteOntoStack( s32& Cycles, Byte Value, Mem& memory ) {
