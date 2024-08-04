@@ -76,22 +76,24 @@ TEST_F( M6502LoadPrgTests, TestLoadProgramAndExecuteIt )
 
 TEST_F( M6502LoadPrgTests, LoadThe6502TestPrg )
 {
-    // Given:
-    
-    // When: 
-    FILE* fp;
-    fopen_s( &fp,
-    "6502FunctionalTestAsm\\6502_functional_test.bin", 
-    "rb");
+#if 0   // Test program that doesnt finish!   
+        // Given:
+        
+        // When: 
+        FILE* fp;
+        fopen_s( &fp,
+        "6502FunctionalTestAsm\\6502_functional_test.bin", 
+        "rb");
 
-    fread( &mem[0x000A], 1, 65526, fp );
-    fclose( fp );
+        fread( &mem[0x000A], 1, 65526, fp );
+        fclose( fp );
 
-    cpu.PC = 0x400;
+        cpu.PC = 0x400;
 
-    // Then:
-    while ( true )
-    {
-        cpu.Execute( 1, mem );
-    }
+        // Then:
+        while ( true )
+        {
+            cpu.Execute( 1, mem );
+        }
+#endif        
 }
