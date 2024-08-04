@@ -133,3 +133,25 @@ TEST_F( M6502SystemFunctionsTests, BRKWillPushPCAndPSOntoTheStack )
 	EXPECT_EQ( mem[(0x100 | OldSP) -1], 0x01 );
 	EXPECT_EQ( mem[(0x100 | OldSP) -2], CPUCopy.PS  );
 }
+
+TEST_F( M6502SystemFunctionsTests, RTICanReturnFromAnInterruptLeavingTheCPUInTheStateWhenItEntered )
+{
+	// given:
+	using namespace m6502;
+	cpu.Reset( 0xFF00, mem );
+	mem[0xFF00] = CPU::INS_BRK;
+	mem[0xFFFE] = 0x00;
+	mem[0xFFFF] = 0x80;
+	mem[0x8000] = CPU::INS_RTI;
+	constexpr s32 EXPECTED_CYCLES = 7 + 6;
+	CPU CPUCopy = cpu;
+	Byte OldSP = CPUCopy.SP;
+	// when:
+	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
+
+	// then:
+	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( CPUCopy.SP, cpu.SP );
+	EXPECT_EQ( CPUCopy.PC, cpu.PC );
+	EXPECT_EQ( CPUCopy.PS, cpu.PS );
+}

@@ -363,7 +363,8 @@ struct m6502::CPU {
 
         // System Functions
         INS_NOP = 0xEA,
-        INS_BRK = 0x00
+        INS_BRK = 0x00,
+        INS_RTI = 0x40
 
         ;
 
