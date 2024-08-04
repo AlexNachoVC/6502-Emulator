@@ -171,8 +171,8 @@ struct m6502::CPU {
     Byte PopByteFromStack( s32& Cycles, Mem& memory ){
         SP++;
         Byte ValueFromStack = ReadByte( Cycles, SPToAddress(), memory );
-        Cycles -= 2;
-
+        Cycles--;
+        
         return ValueFromStack;
     }
 

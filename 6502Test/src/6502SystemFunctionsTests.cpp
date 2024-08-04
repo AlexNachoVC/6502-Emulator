@@ -143,15 +143,18 @@ TEST_F( M6502SystemFunctionsTests, RTICanReturnFromAnInterruptLeavingTheCPUInThe
 	mem[0xFFFE] = 0x00;
 	mem[0xFFFF] = 0x80;
 	mem[0x8000] = CPU::INS_RTI;
-	constexpr s32 EXPECTED_CYCLES = 7 + 6;
+	constexpr s32 EXPECTED_CYCLES_BRK = 7;
+	constexpr s32 EXPECTED_CYCLES_RTI = 6;
 	CPU CPUCopy = cpu;
 	Byte OldSP = CPUCopy.SP;
+	
 	// when:
-	const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem );
-
+	const s32 ActualCyclesBRK = cpu.Execute( EXPECTED_CYCLES_BRK, mem );
+	const s32 ActualCyclesRTI = cpu.Execute( EXPECTED_CYCLES_RTI, mem );
 	// then:
-	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+	EXPECT_EQ( ActualCyclesBRK, EXPECTED_CYCLES_BRK );
+	EXPECT_EQ( ActualCyclesRTI, EXPECTED_CYCLES_RTI );
 	EXPECT_EQ( CPUCopy.SP, cpu.SP );
-	EXPECT_EQ( CPUCopy.PC, cpu.PC );
+	EXPECT_EQ( 0xFF01, cpu.PC );
 	EXPECT_EQ( CPUCopy.PS, cpu.PS );
 }

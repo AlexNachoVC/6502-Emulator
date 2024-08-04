@@ -950,6 +950,11 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 PC = ReadWord( Cycles, InterruptVector, memory );
                 Flag.B = true;
             } break;
+            case INS_RTI:
+            {
+                PS = PopByteFromStack( Cycles, memory );
+                PC = PopWordFromStack( Cycles, memory );
+            } break;
             default:
             {
                 printf("Instruction %d not handled\n", Ins);
