@@ -478,7 +478,10 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             } break;
             case INS_PHP:
             {
-                PushByteOntoStack( Cycles, PS, memory );
+                constexpr Byte BreakFlagBit =  0b000010000;
+                constexpr Byte UnusedFlagBit = 0b000100000;
+                Byte PSStack  = PS | BreakFlagBit | UnusedFlagBit;
+                PushByteOntoStack( Cycles, PSStack, memory );
             } break;
             case INS_PLA:
             {
