@@ -180,8 +180,10 @@ struct m6502::CPU {
     static constexpr Byte
         NegativeFlagBit = 0b10000000,
         OverflowFlagBit = 0b01000000,
+        BreakFlagBit =  0b00001000,
+        UnusedFlagBit = 0b000100000,
         ZeroBit = 0b00000001;
-
+        
     // Opcodes
     static constexpr Byte 
         // LDA

@@ -138,7 +138,7 @@ TEST_F( M6502StackOperationsTests, PHPCanPushProcessorStatusOntoTheStack )
 
     // Then:
     EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
-    EXPECT_EQ( mem[cpu.SPToAddress() + 1], 0xCC );
+    EXPECT_EQ( mem[cpu.SPToAddress() + 1], 0xCC | CPU::UnusedFlagBit | CPU::BreakFlagBit );
     EXPECT_EQ( cpu.PS, CPUCopy.PS );
     EXPECT_EQ( cpu.SP, 0xFE );
 }
@@ -147,7 +147,7 @@ TEST_F( M6502StackOperationsTests, PHPAlwaysSetsBits4And5OnTheStack )
 {
     // Given:
     cpu.Reset( 0xFF00, mem );
-    cpu.PS = 0xCC;  
+    cpu.PS = 0x0;  
     mem[0xFF00] = CPU::INS_PHP;
     constexpr s32 EXPECTED_CYCLES = 3;
     CPU CPUCopy = cpu;
@@ -166,8 +166,8 @@ TEST_F( M6502StackOperationsTests, PHPAlwaysSetsBits4And5OnTheStack )
 	// interrupt line being pulled low (/IRQ or /NMI). This is the only time 
 	// and place where the B flag actually exists: not in the status register 
 	// itself, but in bit 4 of the copy that is written to the stack. 
-    const Byte FlagsOnStack = 0b00110000;
-    EXPECT_EQ( mem[AddPSOnStack], FlagsOnStack);
+    const Byte FlagsOnStack = CPU::UnusedFlagBit | CPU::BreakFlagBit;
+    EXPECT_EQ( mem[AddPSOnStack], FlagsOnStack );
 }
 
 TEST_F( M6502StackOperationsTests, PLACanPullAValueFromTheStackIntoTheARegister )
