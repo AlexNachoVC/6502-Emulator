@@ -143,6 +143,33 @@ TEST_F( M6502StackOperationsTests, PHPCanPushProcessorStatusOntoTheStack )
     EXPECT_EQ( cpu.SP, 0xFE );
 }
 
+TEST_F( M6502StackOperationsTests, PHPAlwaysSetsBits4And5OnTheStack )
+{
+    // Given:
+    cpu.Reset( 0xFF00, mem );
+    cpu.PS = 0xCC;  
+    mem[0xFF00] = CPU::INS_PHP;
+    constexpr s32 EXPECTED_CYCLES = 3;
+    CPU CPUCopy = cpu;
+
+    // When:
+    const s32 ActualCycles = cpu.Execute( EXPECTED_CYCLES, mem);
+
+    // Then:
+    Word AddPSOnStack = cpu.SPToAddress() + 1;
+    EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
+
+    // https://wiki.nesdev.com/w/index.php/Status_flags
+	//Two interrupts (/IRQ and /NMI) and two instructions (PHP and BRK) push 
+	// the flags to the stack. In the byte pushed, bit 5 is always set to 1, 
+	//and bit 4 is 1 if from an instruction (PHP or BRK) or 0 if from an 
+	// interrupt line being pulled low (/IRQ or /NMI). This is the only time 
+	// and place where the B flag actually exists: not in the status register 
+	// itself, but in bit 4 of the copy that is written to the stack. 
+    const Byte FlagsOnStack = 0b00110000;
+    EXPECT_EQ( mem[AddPSOnStack], FlagsOnStack);
+}
+
 TEST_F( M6502StackOperationsTests, PLACanPullAValueFromTheStackIntoTheARegister )
 {
     // Given:

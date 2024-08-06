@@ -45,14 +45,14 @@ struct m6502::Mem {
 };
 
 struct m6502::StatusFlags {
-    Byte C : 1;         // Status Flag                
-    Byte Z : 1;         // Status Flag  
-    Byte I : 1;         // Status Flag  
-    Byte D : 1;         // Status Flag  
-    Byte B : 1;         // Status Flag  
-    Byte Unused : 1;    // Not used. Supposed to be logical 1 at all times
-    Byte V : 1;         // Status Flag  
-    Byte N : 1;         // Status Flag  
+    Byte C : 1;         // 0: Carry Flag                
+    Byte Z : 1;         // 1: Zero Flag  
+    Byte I : 1;         // 2: Interrupt Flag  
+    Byte D : 1;         // 3: Decimal Mode Flag  
+    Byte B : 1;         // 4: Break Flag  
+    Byte Unused : 1;    // 5: Not used. Supposed to be logical 1 at all times
+    Byte V : 1;         // 6: Overflow Flag  
+    Byte N : 1;         // 7: Negative Flag  
 };
 struct m6502::CPU {
 
