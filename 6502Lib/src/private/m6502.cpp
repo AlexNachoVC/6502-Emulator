@@ -482,7 +482,7 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 constexpr Byte UnusedFlagBit = 0b000100000;
                 Byte PSStack  = PS | BreakFlagBit | UnusedFlagBit;
                 PushByteOntoStack( Cycles, PSStack, memory );
-            } break;
+            } break; 
             case INS_PLA:
             {
                 A = PopByteFromStack( Cycles, memory );       
