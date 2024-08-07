@@ -491,7 +491,7 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             {
                 Byte PSFromStack = PopByteFromStack( Cycles, memory );
                 PSFromStack &= ~(UnusedFlagBit | BreakFlagBit);
-                PS = 0;
+                PS &= (UnusedFlagBit | BreakFlagBit);
                 PS |= PSFromStack;
                 Cycles--;
             } break;
