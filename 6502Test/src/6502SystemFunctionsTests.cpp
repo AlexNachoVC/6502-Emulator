@@ -131,7 +131,7 @@ TEST_F( M6502SystemFunctionsTests, BRKWillPushPCAndPSOntoTheStack )
 	EXPECT_EQ( ActualCycles, EXPECTED_CYCLES );
 	EXPECT_EQ( mem[(0x100 | OldSP) -0], 0xFF );
 	EXPECT_EQ( mem[(0x100 | OldSP) -1], 0x01 );
-	EXPECT_EQ( mem[(0x100 | OldSP) -2], CPUCopy.PS  );
+	EXPECT_EQ( mem[(0x100 | OldSP) -2], CPUCopy.PS | CPU::UnusedFlagBit | CPU::BreakFlagBit );
 }
 
 TEST_F( M6502SystemFunctionsTests, RTICanReturnFromAnInterruptLeavingTheCPUInTheStateWhenItEntered )
