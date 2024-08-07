@@ -135,6 +135,13 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
         return Operand;
     };
 
+    /* Push Proccessor Status onto stack. Setting bits 4 & 5 on the stack*/
+    auto PushPToStack =  [&Cycles, &memory, this] () 
+    {
+        Byte PSStack  = PS | BreakFlagBit | UnusedFlagBit;
+        PushByteOntoStack( Cycles, PSStack, memory );
+    };
+
     const s32 CyclesRequested = Cycles;
     while (Cycles > 0) {
         Byte Ins = FetchByte(Cycles, memory);
@@ -478,8 +485,7 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             } break;
             case INS_PHP:
             {
-                Byte PSStack  = PS | BreakFlagBit | UnusedFlagBit;
-                PushByteOntoStack( Cycles, PSStack, memory );
+                PushPToStack();
             } break; 
             case INS_PLA:
             {
@@ -951,7 +957,7 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             case INS_BRK:
             {   
                 PushPCToStack( Cycles, memory );
-                PushByteOntoStack ( Cycles, PS, memory );
+                PushPToStack();
                 constexpr Word InterruptVector = 0xFFFE;
                 PC = ReadWord( Cycles, InterruptVector, memory );
                 Flag.B = true;
