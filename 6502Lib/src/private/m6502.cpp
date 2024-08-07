@@ -489,7 +489,10 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             } break;
             case INS_PLP:
             {
-                PS = PopByteFromStack( Cycles, memory );
+                Byte PSFromStack = PopByteFromStack( Cycles, memory );
+                PSFromStack &= ~(UnusedFlagBit | BreakFlagBit);
+                PS = 0;
+                PS |= PSFromStack;
                 Cycles--;
             } break;
             case INS_TAX:
