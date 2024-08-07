@@ -244,7 +244,7 @@ TEST_F( M6502StackOperationsTests, PLPCanPullAValueFromTheStackIntoTheProcessorS
     cpu.Reset( 0xFF00, mem );
     cpu.SP = 0xFE;
     cpu.PS = 0;
-    mem[0x01FF] = 0x42; 
+    mem[0x01FF] = 0x42 | CPU::BreakFlagBit | CPU::UnusedFlagBit; 
     mem[0xFF00] = CPU::INS_PLP;
     constexpr s32 EXPECTED_CYCLES = 4;
     CPU CPUCopy = cpu;
