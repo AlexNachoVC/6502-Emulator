@@ -142,6 +142,15 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
         PushByteOntoStack( Cycles, PSStack, memory );
     };
 
+    /* Pop Processor Status from stack. Ignoring bits 4 and 5 on the stack*/
+    auto PopPSFromStack = [&Cycles, &memory, this] ()
+    {
+        Byte PSFromStack = PopByteFromStack( Cycles, memory );
+        PSFromStack &= ~(UnusedFlagBit | BreakFlagBit);
+        PS &= (UnusedFlagBit | BreakFlagBit);
+        PS |= PSFromStack;
+    };
+
     const s32 CyclesRequested = Cycles;
     while (Cycles > 0) {
         Byte Ins = FetchByte(Cycles, memory);
@@ -495,10 +504,7 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             } break;
             case INS_PLP:
             {
-                Byte PSFromStack = PopByteFromStack( Cycles, memory );
-                PSFromStack &= ~(UnusedFlagBit | BreakFlagBit);
-                PS &= (UnusedFlagBit | BreakFlagBit);
-                PS |= PSFromStack;
+                PopPSFromStack();
                 Cycles--;
             } break;
             case INS_TAX:
@@ -964,7 +970,7 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             } break;
             case INS_RTI:
             {
-                PS = PopByteFromStack( Cycles, memory );
+                PopPSFromStack();                
                 PC = PopWordFromStack( Cycles, memory );
             } break;
             default:
