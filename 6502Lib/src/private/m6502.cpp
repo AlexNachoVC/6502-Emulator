@@ -147,13 +147,12 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
         }
     };
 
-    /* Pop Processor Status from stack. Ignoring bits 4 and 5 on the stack*/
+    /* Pop Processor Status from stack. Clearing bits 4 and 5 (Break and Unused) */
     auto PopPSFromStack = [&Cycles, &memory, this] ()
     {
-        Byte PSFromStack = PopByteFromStack( Cycles, memory );
-        PSFromStack &= ~(UnusedFlagBit | BreakFlagBit);
-        PS &= (UnusedFlagBit | BreakFlagBit);
-        PS |= PSFromStack;
+        PS = PopByteFromStack( Cycles, memory );
+        Flag.B = false;
+        Flag.Unused = false;
     };
 
     const s32 CyclesRequested = Cycles;
@@ -979,6 +978,7 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             {
                 PopPSFromStack();                
                 PC = PopWordFromStack( Cycles, memory );
+                 
             } break;
             default:
             {
