@@ -254,7 +254,12 @@ public:
         ExpectUnaffectedRegisters( CPUCopy );
     }
 
-    void TestADCIndirectX( ADCTestData Test ) {
+    void TestSBCIndirectX( ADCTestData Test )
+	{
+		TestADCIndirectX( Test, EOperation::Subtract );
+	}
+
+    void TestADCIndirectX( ADCTestData Test, EOperation Operation = EOperation::Add ) {
         // given:
         using namespace m6502;
         cpu.Reset( 0xFF00, mem );
@@ -264,7 +269,9 @@ public:
         cpu.Flag.Z = !Test.ExpectZ;
         cpu.Flag.N = !Test.ExpectN;
         cpu.Flag.V = !Test.ExpectV;
-        mem[0xFF00] = CPU::INS_ADC_INDX;
+        mem[0xFF00] =
+			(Operation == EOperation::Add) ?
+			CPU::INS_ADC_INDX : CPU::INS_SBC_INDX;
         mem[0xFF01] = 0x02;
         mem[0x0006] = 0x00; //0x2 + 0x4
         mem[0x0007] = 0x80;
@@ -1369,4 +1376,118 @@ TEST_F( M6502Add_SubWithCarryTests, SBCAbsoluteYCanSubtractTwoNegativeNumbers )
 	Test.ExpectV = false;
 	Test.ExpectZ = false;
 	TestSBCAbsoluteY( Test );
+}
+
+// SBC Indirect, X ---------
+
+TEST_F( M6502Add_SubWithCarryTests, SBCIndirectXCanSubtractZeroFromZeroAndGetZero )
+{
+	ADCTestData Test;
+	Test.Carry = true;
+	Test.A = 0;
+	Test.Operand = 0;
+	Test.Answer = 0;
+	Test.ExpectC = true;
+	Test.ExpectN = false;
+	Test.ExpectV = false;
+	Test.ExpectZ = true;
+	TestSBCIndirectX( Test );
+}
+
+TEST_F( M6502Add_SubWithCarryTests, SBCIndirectXCanSubtractZeroFromZeroAndCarryAndGetMinusOne )
+{
+	ADCTestData Test;
+	Test.Carry = false;
+	Test.A = 0;
+	Test.Operand = 0;
+	Test.Answer = BYTE( -1 );
+	Test.ExpectC = false;
+	Test.ExpectN = true;
+	Test.ExpectV = false;
+	Test.ExpectZ = false;
+	TestSBCIndirectX( Test );
+}
+
+TEST_F( M6502Add_SubWithCarryTests, SBCIndirectXCanSubtractOneFromZeroAndGetMinusOne )
+{
+	ADCTestData Test;
+	Test.Carry = true;
+	Test.A = 0;
+	Test.Operand = 1;
+	Test.Answer = BYTE( -1 );
+	Test.ExpectC = false;
+	Test.ExpectN = true;
+	Test.ExpectV = false;
+	Test.ExpectZ = false;
+	TestSBCIndirectX( Test );
+}
+
+TEST_F( M6502Add_SubWithCarryTests, SBCIndirectXCanSubtractOneFromZeroWithCarryAndGetMinusTwo )
+{
+	ADCTestData Test;
+	Test.Carry = false;
+	Test.A = 0;
+	Test.Operand = 1;
+	Test.Answer = BYTE( -2 );
+	Test.ExpectC = false;
+	Test.ExpectN = true;
+	Test.ExpectV = false;
+	Test.ExpectZ = false;
+	TestSBCIndirectX( Test );
+}
+
+TEST_F( M6502Add_SubWithCarryTests, SBCIndirectXCanSubtractTwoNegativeNumbersAndGetSignedOverflow )
+{
+	ADCTestData Test;
+	Test.Carry = true;
+	Test.A = BYTE( -128 );
+	Test.Operand = 1;
+	Test.Answer = 127;
+	Test.ExpectC = true;
+	Test.ExpectN = false;
+	Test.ExpectV = true;
+	Test.ExpectZ = false;
+	TestSBCIndirectX( Test );
+}
+
+TEST_F( M6502Add_SubWithCarryTests, SBCIndirectXCanSubtractAPostitiveAndNegativeNumbersAndGetSignedOverflow )
+{
+	ADCTestData Test;
+	Test.Carry = true;
+	Test.A = 127;
+	Test.Operand = BYTE( -1 );
+	Test.Answer = 128;
+	Test.ExpectC = false;
+	Test.ExpectN = true;
+	Test.ExpectV = true;
+	Test.ExpectZ = false;
+	TestSBCIndirectX( Test );
+}
+
+TEST_F( M6502Add_SubWithCarryTests, SBCIndirectXCanSubtractTwoUnsignedNumbers )
+{
+	ADCTestData Test;
+	Test.Carry = true;
+	Test.A = 20;
+	Test.Operand = 17;
+	Test.Answer = 3;
+	Test.ExpectC = true;
+	Test.ExpectN = false;
+	Test.ExpectV = false;
+	Test.ExpectZ = false;
+	TestSBCIndirectX( Test );
+}
+
+TEST_F( M6502Add_SubWithCarryTests, SBCIndirectXCanSubtractTwoNegativeNumbers )
+{
+	ADCTestData Test;
+	Test.Carry = true;
+	Test.A = BYTE( -20 );
+	Test.Operand = BYTE( -17 );
+	Test.Answer = BYTE( -3 );
+	Test.ExpectC = false;
+	Test.ExpectN = true;
+	Test.ExpectV = false;
+	Test.ExpectZ = false;
+	TestSBCIndirectX( Test );
 }
