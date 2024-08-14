@@ -135,7 +135,7 @@ TEST_F( M6502SystemFunctionsTests, BRKWillPushPCAndPSOntoTheStack )
 	// 2 instead of 1, it is advisable to use a NOP after it 
 	// to avoid issues
 	EXPECT_EQ( mem[(0x100 | OldSP) -1], 0x02 );
-	EXPECT_EQ( mem[(0x100 | OldSP) -2], CPUCopy.PS | CPU::UnusedFlagBit |CPU::BreakFlagBit );
+	EXPECT_EQ( mem[(0x100 | OldSP) -2], CPUCopy.PS | CPU::UnusedFlagBit | CPU::BreakFlagBit );
 
 	// https://wiki.nesdev.com/w/index.php/Status_flags
 	// Instruction	|Bits 5 and 4	| Side effects after pushing 
