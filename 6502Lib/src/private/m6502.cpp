@@ -749,12 +749,6 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
                 Byte Operand = FetchByte( Cycles, memory );
                 SBC( Operand );
             } break;
-            case INS_SBC_ABS:
-            {
-                Word Address = AddressAbsolute( Cycles, memory );
-                Byte Operand = ReadByte( Cycles, Address, memory );
-                SBC( Operand );
-            } break;
             case INS_SBC_ZP:
             {
                 Word Address = AddressZeroPage( Cycles, memory );
@@ -764,6 +758,18 @@ m6502::s32 m6502::CPU::Execute(s32 Cycles, Mem &memory)
             case INS_SBC_ZPX:
             {
                 Word Address = AddressZeroPageX( Cycles, memory );
+                Byte Operand = ReadByte( Cycles, Address, memory );
+                SBC( Operand );
+            } break;
+            case INS_SBC_ABS:
+            {
+                Word Address = AddressAbsolute( Cycles, memory );
+                Byte Operand = ReadByte( Cycles, Address, memory );
+                SBC( Operand );
+            } break;
+            case INS_SBC_ABSX:
+            {
+                Word Address = AddressAbsoluteX( Cycles, memory );
                 Byte Operand = ReadByte( Cycles, Address, memory );
                 SBC( Operand );
             } break;
