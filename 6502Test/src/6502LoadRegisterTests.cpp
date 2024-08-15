@@ -328,9 +328,9 @@ void M6502LoadRegisterTests::TestLoadRegisterAbsoluteXWhenCrossingPageBoundary( 
     // Given: ;
     cpu.X = 0xFF;
     mem[0xFFFC] = OpcodeToTest;
-    mem[0xFFFD] = 0x02;
-    mem[0xFFFE] = 0x44; // 0x4480
-    mem[0x4501] = 0x37; // 0x4402 + 0xFF crosses page boundary!
+    mem[0xFFFD] = 0xFF;
+    mem[0xFFFE] = 0x44; // 0x44FF
+    mem[0x4600] = 0x37; // 0x44FF + 0x1 crosses page boundary!
     constexpr s32 EXPECTED_CYCLES = 5;
     CPU CPUCopy = cpu;
 
@@ -350,9 +350,9 @@ void M6502LoadRegisterTests::TestLoadRegisterAbsoluteYWhenCrossingPageBoundary( 
     // Given: ;
     cpu.Y = 0xFF;
     mem[0xFFFC] = OpcodeToTest;
-    mem[0xFFFD] = 0x02;
-    mem[0xFFFE] = 0x44; // 0x4480
-    mem[0x4501] = 0x37; // 0x4402 + 0xFF crosses page boundary!
+    mem[0xFFFD] = 0xFF;
+    mem[0xFFFE] = 0x44; // 0x44FF
+    mem[0x4500] = 0x37; // 0x44FF + 0x1 crosses page boundary!
     constexpr s32 EXPECTED_CYCLES = 5;
     CPU CPUCopy = cpu;
 
@@ -445,10 +445,10 @@ TEST_F( M6502LoadRegisterTests, LDAIndirectYCanLoadAValueIntoTheARegisterWhenItC
     // Given: ;
     cpu.Y = 0xFF;
     mem[0xFFFC] = CPU::INS_LDA_INDY;
-    mem[0xFFFD] = 0x02;
-    mem[0x0002] = 0x02; 
-    mem[0x0003] = 0x80; 
-    mem[0x8101] = 0x37; // 0x8002 + 0xFF
+    mem[0xFFFD] = 0x05;
+    mem[0x0005] = 0xFF; 
+    mem[0x0006] = 0x80; 
+    mem[0x8100] = 0x37; // 0x80FF + 1
     constexpr s32 EXPECTED_CYCLES = 6;
     CPU CPUCopy = cpu;
 
