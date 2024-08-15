@@ -1053,7 +1053,8 @@ m6502::Word m6502::CPU::AddressAbsolute( s32& Cycles, const Mem& memory ) {
 m6502::Word m6502::CPU::AddressAbsoluteX( s32& Cycles, const Mem& memory ) {
     Word AbsAddress = FetchWord( Cycles, memory );
     Word AbsAddressX = AbsAddress + X;
-    if ( AbsAddressX - AbsAddress >= 0xFF ) 
+    const bool CrossedPageBoundary = (AbsAddress ^ AbsAddressX) >> 8;
+    if ( CrossedPageBoundary ) 
     {
         Cycles--;
     }
@@ -1071,7 +1072,8 @@ m6502::Word m6502::CPU::AddressAbsoluteX_5( s32& Cycles, const Mem& memory ) {
 m6502::Word m6502::CPU::AddressAbsoluteY( s32& Cycles, const Mem& memory ) {
     Word AbsAddress = FetchWord( Cycles, memory );
     Word AbsAddressY = AbsAddress + Y;
-    if ( AbsAddressY - AbsAddress >= 0xFF ) 
+    const bool CrossedPageBoundary = (AbsAddress ^ AbsAddressY) >> 8;
+    if ( CrossedPageBoundary ) 
     {
         Cycles--;
     }
@@ -1098,7 +1100,8 @@ m6502::Word m6502::CPU::AddressIndirectY( s32& Cycles, const Mem& memory ) {
     Byte ZPAdress = FetchByte( Cycles, memory );
     Word EffectiveAddress = ReadWord( Cycles, ZPAdress, memory );
     Word EffectiveAddressY = EffectiveAddress + Y;
-    if ( EffectiveAddressY - EffectiveAddress >= 0xFF ) 
+    const bool CrossedPageBoundary = ( EffectiveAddress ^ EffectiveAddressY ) >> 8;
+    if ( CrossedPageBoundary ) 
     {
         Cycles--;
     }
